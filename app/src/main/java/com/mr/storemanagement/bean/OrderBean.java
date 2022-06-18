@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 public class OrderBean implements Serializable {
 
-    public String orderId;
-
-    public String orderName;
+    public String asn_code;
 
 }

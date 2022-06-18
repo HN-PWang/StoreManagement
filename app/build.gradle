@@ -46,5 +46,14 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
-    implementation files('libs\\pdasdk_v3.33_20200810.jar')
+//    implementation files('libs\\pdasdk_v3.33_20200810.jar')
+//
+//    implementation files('libs\\hl_uisdk_v3.33_20200810.aar') {
+//        exclude(group: 'com.google.code.gson')
+//    }
+//    implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    implementation fileTree(include: ['*.aar'], dir: 'libs'){
+//        exclude(module: 'com.google.code.gson')
+//    }
+
 }

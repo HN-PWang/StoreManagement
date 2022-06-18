@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.reactivex.Observer;
 import okhttp3.ResponseBody;
@@ -39,19 +40,25 @@ public abstract class VVICSubscriber<K> implements Observer<ResponseBody> {
             JSONObject jsonObject = new JSONObject(responseString);
             int code = jsonObject.getInt("code");
             String data = jsonObject.optString("data");
-            String message = jsonObject.getString("message");
+            String message = jsonObject.getString("msg");
 
             if (code == NetworkConstants.RESPONSE_SUCCESS_CODE) {
                 // 返回200
                 if (this.cls == null) {
                     // 表示不关心返回的数据，只要知道是成功就好
-                    onSuccess((K) message);
+                    onSuccess((K) message, null);
                 } else {
                     if (!TextUtils.isEmpty(data)) {
-                        toParseDataIsObject(responseString);
+                        if (data.startsWith("[") && data.endsWith("]")) {
+                            // data是一个jsonArray
+                            toParseDataIsArray(responseString);
+                        } else {
+                            // data是一个jsonObject
+                            toParseDataIsObject(responseString);
+                        }
                     } else {
                         // "data":null或者"data":""的情况
-                        onSuccess((K) message);
+                        onSuccess((K) message, null);
                     }
                 }
             } else {
@@ -70,11 +77,24 @@ public abstract class VVICSubscriber<K> implements Observer<ResponseBody> {
     /**
      * data是一个JSON Array的解析方式
      */
+    private void toParseDataIsArray(String responseString) {
+        BaseResponseIsList<K> baseResponseIsList = VVICGson.fromJson(responseString, this.cls, BaseResponseIsList.class);
+        List<K> resultList = baseResponseIsList.getData();
+        if (resultList != null) {
+            onSuccess(null, resultList);
+        } else {
+            errorException(new SMException(NetworkConstants.SERVER_ERROR_CODE));
+        }
+    }
+
+    /**
+     * data是一个JSON Object的解析方式
+     */
     private void toParseDataIsObject(String responseString) {
-        BaseResponse<K> baseResponse = VVICGson.fromJson(responseString, this.cls, BaseResponse.class);
-        K result = baseResponse.data;
+        BaseResponseNoList<K> baseResponseNoList = VVICGson.fromJson(responseString, this.cls, BaseResponseNoList.class);
+        K result = baseResponseNoList.getData();
         if (result != null) {
-            onSuccess(result);
+            onSuccess(result, null);
         } else {
             errorException(new SMException(NetworkConstants.SERVER_ERROR_CODE));
         }
@@ -118,6 +138,6 @@ public abstract class VVICSubscriber<K> implements Observer<ResponseBody> {
 
     public abstract void onError(SMException exception);
 
-    public abstract void onSuccess(K k);
+    public abstract void onSuccess(K k, List<K> list);
 
 }

@@ -45,7 +45,7 @@ public class SearchOrderAdapter extends RecyclerView.Adapter<SearchOrderAdapter.
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         OrderBean item = mDataList.get(position);
 
-        holder.tvName.setText(item.orderName);
+        holder.tvName.setText(item.asn_code);
 
         holder.itemView.setTag(position);
     }

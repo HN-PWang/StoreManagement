@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class SiteBean implements Serializable {
 
-    public String siteId;
-
-    public String siteName;
-
+    public String site_code;
 
 }

@@ -1,11 +1,10 @@
 package com.mr.lib_base.network;
 
-import com.google.gson.Gson;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 
-import org.reactivestreams.Subscription;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -64,10 +63,14 @@ public abstract class BasePresenter<T> {
             }
 
             @Override
-            public void onSuccess(T t) {
+            public void onSuccess(T t, List<T> list) {
                 finishLoading();
                 if (mNetResultListener != null) {
-                    mNetResultListener.loadSuccess(t);
+                    if (t != null) {
+                        mNetResultListener.loadSuccess(t);
+                    } else {
+                        mNetResultListener.loadSuccess(list);
+                    }
                 }
             }
         });

@@ -5,6 +5,5 @@ package com.mr.lib_base.network;
  */
 public class BaseResponse<T> {
     public int code;
-    public T data;
-    public String message;
+    public String msg;
 }

@@ -4,30 +4,32 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
-import com.mr.storemanagement.bean.UserInfoBean;
+import com.mr.storemanagement.bean.StoreInfoBean;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 
-public class LoginPresenter extends SMBasePresenter<UserInfoBean> {
+public class GetAsnCheckPresenter extends SMBasePresenter<StoreInfoBean> {
 
-    public LoginPresenter(BaseActivity baseActivity, NetResultListener resultListener
-            , NetLoadingListener loadingListener) {
+    private String mAsnCode;
+
+    public GetAsnCheckPresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void login(String name,String pwd){
+    public void check(String asnCode){
+        mAsnCode = asnCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getUserInfo("");
+        return netModel.getAsnCheck(mAsnCode);
     }
 
     @Override
-    protected Class<UserInfoBean> getEntityClass() {
-        return UserInfoBean.class;
+    protected Class<StoreInfoBean> getEntityClass() {
+        return StoreInfoBean.class;
     }
 }

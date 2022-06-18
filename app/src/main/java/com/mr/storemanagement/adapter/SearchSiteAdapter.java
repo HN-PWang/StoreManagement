@@ -45,7 +45,7 @@ public class SearchSiteAdapter extends RecyclerView.Adapter<SearchSiteAdapter.Si
     public void onBindViewHolder(@NonNull SiteViewHolder holder, int position) {
         SiteBean item = mDataList.get(position);
 
-        holder.tvName.setText(item.siteName);
+        holder.tvName.setText(item.site_code);
 
         holder.itemView.setTag(position);
     }

@@ -46,11 +46,24 @@ dependencies {
     api 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
     api "com.squareup.retrofit2:retrofit:2.9.0"
-    api "com.squareup.retrofit2:converter-gson:2.9.0"
+    api('com.squareup.retrofit2:converter-gson:2.9.0') {
+        exclude(group: 'com.google.code.gson')
+    }
     api "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
 
     api "org.greenrobot:eventbus:3.3.1"
 
-    api 'com.jakewharton:butterknife:10.2.3'
+    api "com.alibaba:fastjson:1.2.54"
+
+//    api files('libs\\pdasdk_v3.33_20200810.jar')
+//
+//    api files('libs\\hl_uisdk_v3.33_20200810.aar') {
+//        exclude(group: 'com.google.code.gson')
+//    }
+    api files('..\\app\\libs\\pdasdk_v3.33_20200810.jar')
+    api files('..\\app\\libs\\hl_uisdk_v3.33_20200810.aar')
+
+//    api fileTree(include: ['*.jar'], dir: 'libs')
+//    api fileTree(include: ['*.aar'], dir: 'libs')
 
 }
