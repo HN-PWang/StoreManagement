@@ -1,6 +1,7 @@
 package com.mr.storemanagement;
 
 import com.mr.lib_base.BaseApplication;
+import com.mr.lib_base.network.RetrofitManager;
 
 /**
  * @auther: pengwang
@@ -19,5 +20,7 @@ public class SMApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        RetrofitManager.init(BuildConfig.MAIN_SERVER_URL);
     }
 }

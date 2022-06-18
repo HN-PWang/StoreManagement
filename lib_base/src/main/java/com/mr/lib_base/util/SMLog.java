@@ -9,14 +9,14 @@ import org.greenrobot.eventbus.android.BuildConfig;
  * @date: 2022/6/17
  * @description:
  */
-public class MSLog {
+public class SMLog {
 
     private static final String TAG = "StoreManagement";
 
     private static final int LOG_LINE_MAX_LENGTH = 2048;
 
     public static void i(String msg) {
-        if (BuildConfig.DEBUG) {
+        if (true) {
             int strLength = msg.length();
             if (strLength > LOG_LINE_MAX_LENGTH) {
                 for (int i = 0; i < strLength; i += LOG_LINE_MAX_LENGTH) {
@@ -33,7 +33,7 @@ public class MSLog {
     }
 
     public static void e(String msg) {
-        if (BuildConfig.DEBUG) {
+        if (true) {
             int strLength = msg.length();
             if (strLength > LOG_LINE_MAX_LENGTH) {
                 for (int i = 0; i < strLength; i += LOG_LINE_MAX_LENGTH) {

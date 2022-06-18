@@ -1,5 +1,7 @@
 package com.mr.lib_base.network.listener;
 
+import com.mr.lib_base.network.SMException;
+
 /**
  * view基接口
  */

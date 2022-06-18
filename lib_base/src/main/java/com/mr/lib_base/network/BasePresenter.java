@@ -1,15 +1,17 @@
 package com.mr.lib_base.network;
 
-import com.mr.lib_base.network.listener.NetResultListener;
+import com.google.gson.Gson;
+import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
+import com.mr.lib_base.network.listener.NetResultListener;
 
 import org.reactivestreams.Subscription;
 
-import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 
 /**
@@ -22,49 +24,50 @@ import okhttp3.ResponseBody;
  */
 public abstract class BasePresenter<T> {
 
-    private RxAppCompatActivity mBaseActivity;
+    private BaseActivity mBaseActivity;
 
     private NetLoadingListener mNetLoadingListener;
 
     private NetResultListener mNetResultListener;
 
-
     protected BaseModel mBaseModel;
 
-
-    public BasePresenter(RxAppCompatActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
+    public BasePresenter(BaseActivity baseActivity, NetResultListener resultListener
+            , NetLoadingListener loadingListener) {
         mBaseActivity = baseActivity;
-        this.mNetResultListener = resultListener;
-        this.mNetLoadingListener = loadingListener;
+        mNetResultListener = resultListener;
+        mNetLoadingListener = loadingListener;
     }
 
     /**
      * 执行请求操作
      */
-    public Subscription executeRequest() {
+    public void executeRequest() {
         Class<T> cls = getEntityClass();
-        return getRequestWithoutServiceTimeObservable().subscribe(new SMSubscriber<T>(cls) {
+        getRequestObservable().subscribe(new VVICSubscriber<T>(cls) {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                startLoading();
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
             @Override
             public void onError(SMException exception) {
                 finishLoading();
                 if (mNetResultListener != null) {
                     mNetResultListener.loadFailure(exception);
                 }
-                //统一code处理 在BaseActivity可以接收
-                if (RetrofitClient.get().getAuthCallback() != null && mBaseActivity instanceof BaseActivity) {
-                    RetrofitClient.get().getAuthCallback().onAuthResult(exception.getErrorCode(), exception.getErrorMsg());
-                }
             }
 
             @Override
-            public void onSuccess(T t, List<T> list) {
+            public void onSuccess(T t) {
                 finishLoading();
                 if (mNetResultListener != null) {
-                    if (t != null) {
-                        mNetResultListener.loadSuccess(t);
-                    } else {
-                        mNetResultListener.loadSuccess(list);
-                    }
+                    mNetResultListener.loadSuccess(t);
                 }
             }
         });
@@ -75,26 +78,21 @@ public abstract class BasePresenter<T> {
      * 无需请求服务器时间
      * 直接去请求对应API接口
      */
-    private Observable<ResponseBody> getRequestWithoutServiceTimeObservable() {
+    private Observable<ResponseBody> getRequestObservable() {
         if (mBaseModel == null) {
             throw new NullPointerException("Model can not be empty!");
         }
         Observable<ResponseBody> o = toPerformApi()
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        startLoading();
-                    }
-                })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mBaseActivity != null) {
-            return o.compose(mBaseActivity.<ResponseBody>bindUntilEvent(ActivityEvent.DESTROY));
-        } else {
-            return o;
-        }
+//        if (mBaseActivity != null) {
+//            return o.compose(mBaseActivity.<ResponseBody>bindUntilEvent(ActivityEvent.DESTROY));
+//        } else {
+//            return o;
+//        }
+        return o;
     }
 
     /**
