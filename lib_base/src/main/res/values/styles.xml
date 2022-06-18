@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 对话框的基础样式 -->
+    <style name="lib_ui_base_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="lib_ui_loading_dialog" parent="@style/lib_ui_base_dialog">
+        <!-- 对话框显示的那部分背景 -->
+        <item name="android:windowBackground">@drawable/lib_ui_loading_dialog_bg_shape</item>
+        <!-- 对话框透明色的背景不显示 -->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+</resources>
