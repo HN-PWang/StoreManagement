@@ -93,7 +93,6 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
     private BroadcastReceiver mScanDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("PWDebug", "intent.getAction()  = " + intent.getAction());
             if (SCN_CUST_ACTION_SCODE.equals(intent.getAction())) {
                 try {
                     String result = intent.getStringExtra(SCN_CUST_EX_SCODE);
@@ -142,8 +141,6 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
     public void onCreate(@Nullable Bundle savedInstanceState
             , @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-
-        Log.e("PWDebug", "onCreate");
     }
 
     /**
@@ -360,6 +357,7 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
         intentFilter.addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
         intentFilter.addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
         intentFilter.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        intentFilter.addAction("com.rscja.scanner.action.scanner.RFID");
 
         registerReceiver(mScanDataReceiver, intentFilter);
 

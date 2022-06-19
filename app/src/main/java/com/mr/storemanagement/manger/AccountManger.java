@@ -48,4 +48,10 @@ public class AccountManger {
         return null;
     }
 
+    public String getUserCode() {
+        if (getAccount() != null)
+            return getAccount().userCode;
+        return "";
+    }
+
 }

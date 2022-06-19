@@ -4,6 +4,7 @@ import com.mr.lib_base.network.BaseModel;
 import com.mr.lib_base.network.RetrofitManager;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
 public class AppNetModel extends BaseModel {
@@ -62,6 +63,48 @@ public class AppNetModel extends BaseModel {
     public Observable<ResponseBody> getInventoryList(String asnCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
         return service.getInventoryList(getHeader(), asnCode);
+    }
+
+    /**
+     * 获取料箱号信息
+     */
+    public Observable<ResponseBody> getFeedBox(String SiteCode, String AsnCode, String ItemCode
+            , String UserCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getFeedBox(getHeader(), SiteCode, AsnCode, ItemCode, UserCode);
+    }
+
+    /**
+     * 获取Asn明细接口
+     */
+    public Observable<ResponseBody> getAsnDetail(String asnCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getAsnDetail(getHeader(), asnCode);
+    }
+
+    /**
+     * 获取已扫SN列表接口
+     */
+    public Observable<ResponseBody> getAsnDetailSnList(String asnCode, String KeyId) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getAsnDetailSnList(getHeader(), asnCode, KeyId);
+    }
+
+    /**
+     * 强制结束时要先调用保存当前记录接口
+     */
+    public Observable<ResponseBody> asnCloseOrder(String asnCode, String UserCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.asnCloseOrder(getHeader(), asnCode, UserCode);
+    }
+
+    /**
+     * 保存数据并关闭当前容器。如果所有货都收完则会结束订单。 保存数据接口
+     */
+    public Observable<ResponseBody> asnSaveDetail(String AsnCode, String ContainerCode
+            , String UserCode, String KeyId, String Qty, RequestBody body) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.asnSaveDetail(getHeader(), AsnCode, ContainerCode, UserCode, KeyId, Qty, body);
     }
 
 }
