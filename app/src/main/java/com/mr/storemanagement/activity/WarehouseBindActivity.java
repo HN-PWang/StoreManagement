@@ -11,6 +11,7 @@ import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
+import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.UserInfoBean;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.BindLocationPresenter;
@@ -18,7 +19,7 @@ import com.mr.storemanagement.presenter.BindLocationPresenter;
 /**
  * 库位绑定界面
  */
-public class WarehouseBindActivity extends BaseActivity implements View.OnClickListener {
+public class WarehouseBindActivity extends BaseScannerActivity implements View.OnClickListener {
 
     private TextView tvLocation;
 
@@ -35,6 +36,26 @@ public class WarehouseBindActivity extends BaseActivity implements View.OnClickL
 
         tvLocation = findViewById(R.id.tv_location);
         tvRfid = findViewById(R.id.tv_rfid);
+
+        tvRfid.setOnClickListener(this);
+        findViewById(R.id.tv_back).setOnClickListener(this);
+        findViewById(R.id.tv_save).setOnClickListener(this);
+
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                mLocationCode = message;
+                tvLocation.setText(mLocationCode);
+            }
+        });
+
+        setOnRfIdListener(new OnRfIdListener() {
+            @Override
+            public void onRFIdDataBack(String message) {
+                mRfid = message;
+                tvRfid.setText(mRfid);
+            }
+        });
     }
 
     private void bindLocation() {
@@ -42,12 +63,13 @@ public class WarehouseBindActivity extends BaseActivity implements View.OnClickL
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
-
+                ToastUtils.show(getString(R.string.str_operate_successfully));
+                finish();
             }
 
             @Override
             public void loadFailure(SMException exception) {
-
+                ToastUtils.show(exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -87,7 +109,9 @@ public class WarehouseBindActivity extends BaseActivity implements View.OnClickL
             case R.id.tv_save:
                 bindLocation();
                 break;
+            case R.id.tv_rfid:
+                readMactchData();
+                break;
         }
     }
-
 }

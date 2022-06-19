@@ -56,4 +56,12 @@ public class AppNetModel extends BaseModel {
         return service.bindLocation(getHeader(), locationCode, rfid, userCode);
     }
 
+    /**
+     * 查询库存信息
+     */
+    public Observable<ResponseBody> getInventoryList(String asnCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getInventoryList(getHeader(), asnCode);
+    }
+
 }

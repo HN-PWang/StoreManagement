@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
+import com.pda.rfid.EPCModel;
 import com.pda.scanner.ScanReader;
 import com.pda.scanner.Scanner;
 
@@ -39,17 +40,6 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
     }
 
     @Override
-    public void onScannerDataBack(String codeInfo) {
-        mScanningCode = codeInfo;
-
-        tvCode.setText(codeInfo);
-
-        if (!TextUtils.isEmpty(mScanningCode)) {
-            toNextActivity();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_standard_scanning);
@@ -57,6 +47,19 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
         tvCode = findViewById(R.id.tv_code);
 
         findViewById(R.id.tv_back).setOnClickListener(this);
+
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                mScanningCode = message;
+
+                tvCode.setText(mScanningCode);
+
+                if (!TextUtils.isEmpty(mScanningCode)) {
+                    toNextActivity();
+                }
+            }
+        });
     }
 
     private void toNextActivity() {

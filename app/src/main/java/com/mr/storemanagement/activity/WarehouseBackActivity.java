@@ -9,6 +9,8 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
+import com.mr.lib_base.util.ToastUtils;
+import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.bean.UserInfoBean;
 import com.mr.storemanagement.manger.AccountManger;
@@ -32,6 +34,8 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warehouse_back);
 
+        mContainerCode = getIntent().getStringExtra(Constants.SCANNER_DATA_KEY);
+
         tvContainer = findViewById(R.id.tv_container);
         tvShelfArea = findViewById(R.id.tv_shelf_area);
         tvShelfLocation = findViewById(R.id.tv_shelf_location);
@@ -39,16 +43,17 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_confirm).setOnClickListener(this);
 
+        allocate();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_back:
-
+                finish();
                 break;
             case R.id.tv_confirm:
-
+                //不知道出于什么想法
                 break;
         }
     }
@@ -63,17 +68,17 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void loadFailure(SMException exception) {
-
+                ToastUtils.show(exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
             public void startLoading() {
-
+                showLoadingDialog("请稍后", false);
             }
 
             @Override
             public void finishLoading() {
-
+                dismissLoadingDialog();
             }
         });
 

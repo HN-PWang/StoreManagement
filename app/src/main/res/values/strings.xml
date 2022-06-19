@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">StoreManagement</string>
+    <string name="str_operate_successfully">操作成功</string>
+    <string name="uhf_read_power_over">正在使用主电源供电， 功率不能超过25dBm!</string>
 </resources>
