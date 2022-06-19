@@ -11,9 +11,9 @@ public class AppNetModel extends BaseModel {
     /**
      * 登录
      */
-    public Observable<ResponseBody> getUserInfo(String name) {
+    public Observable<ResponseBody> getUserInfo(String name, String pwd) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.login(getHeader(), name);
+        return service.login(getHeader(), name, pwd);
     }
 
     /**
@@ -46,6 +46,14 @@ public class AppNetModel extends BaseModel {
     public Observable<ResponseBody> allocateLocation(String containerCode, String userCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
         return service.allocateLocation(getHeader(), containerCode, userCode);
+    }
+
+    /**
+     * 库位绑定rfid
+     */
+    public Observable<ResponseBody> bindLocation(String locationCode, String rfid, String userCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.bindLocation(getHeader(), locationCode, rfid, userCode);
     }
 
 }

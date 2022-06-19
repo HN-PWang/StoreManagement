@@ -15,7 +15,7 @@ import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AllocateLocationPresenter;
 
 /**
- * 回库扫描
+ * 回库扫描页
  */
 public class WarehouseBackActivity extends BaseActivity implements View.OnClickListener {
 

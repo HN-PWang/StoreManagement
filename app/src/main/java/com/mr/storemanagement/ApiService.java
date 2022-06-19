@@ -12,8 +12,9 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @GET("api/Mobile/GetLogin")
-    Observable<ResponseBody> login(@HeaderMap Map<String, String> header, @Query("w") String w);
+    @GET("api/Mobile/GetLogin/{UserCode}/{Pwd}")
+    Observable<ResponseBody> login(@HeaderMap Map<String, String> header
+            , @Path("UserCode") String UserCode, @Path("Pwd") String Pwd);
 
     @GET("api/Mobile/GetInboundSiteList")
     Observable<ResponseBody> getSiteList(@HeaderMap Map<String, String> header);
@@ -22,11 +23,16 @@ public interface ApiService {
     Observable<ResponseBody> getAsnList(@HeaderMap Map<String, String> header);
 
     @GET("api/Mobile/GetAsnCheck/{asnCode}")
-    Observable<ResponseBody> getAsnCheck(@HeaderMap Map<String, String> header, @Path("asnCode") String asnCode);
+    Observable<ResponseBody> getAsnCheck(@HeaderMap Map<String, String> header
+            , @Path("asnCode") String asnCode);
 
     @GET("api/AllocateLocation/AllocateLocationByContainerCode/{container_code}/{usercode}")
     Observable<ResponseBody> allocateLocation(@HeaderMap Map<String, String> header
             , @Path("container_code") String container_code, @Path("usercode") String usercode);
 
+    @GET("api/Mobile/SetLocationBindRfid/{LocationCode}/{Rfid}/{UserCode}")
+    Observable<ResponseBody> bindLocation(@HeaderMap Map<String, String> header
+            , @Path("LocationCode") String LocationCode, @Path("Rfid") String Rfid
+            , @Path("UserCode") String UserCode);
 
 }

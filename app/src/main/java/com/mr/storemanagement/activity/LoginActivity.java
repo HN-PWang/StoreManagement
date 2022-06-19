@@ -78,8 +78,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void toMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-
         startActivity(intent);
+        finish();
     }
 
     @Override

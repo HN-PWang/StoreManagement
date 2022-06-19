@@ -26,24 +26,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppDefaultTheme">
-        <activity android:name=".activity.StandardScanningActivity"></activity>
-        <activity android:name=".activity.WarehouseBackActivity" />
-        <activity android:name=".activity.WarehouseBindActivity" />
-        <activity android:name=".activity.GoodsScanningActivity" />
-        <activity android:name=".activity.WarehousingActivity" />
+        <activity android:name=".activity.WarehouseSearchActivity"></activity>
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- <activity -->
-        <!-- android:name=".activity.MainActivity" -->
-        <!-- android:screenOrientation="portrait" /> -->
+        </activity>
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.StandardScanningActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WarehouseBackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WarehouseBindActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.GoodsScanningActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WarehousingActivity"
             android:screenOrientation="portrait" />
     </application>
 
