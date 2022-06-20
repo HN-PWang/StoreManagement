@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="500dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:gravity="center"
+        android:text="入库单明细"
+        android:textColor="#333333"
+        android:textSize="17dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_stack_count"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="2dp"
+        android:background="#3296FA"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_tab_1"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="#F5F5F5"
+        android:gravity="center"
+        android:text="注册号"
+        android:textColor="#333333"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_tab_2"
+        app:layout_constraintTop_toBottomOf="@id/tv_stack_count" />
+
+    <TextView
+        android:id="@+id/tv_tab_2"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="#F5F5F5"
+        android:gravity="center"
+        android:text="可用数/系统数"
+        android:textColor="#333333"
+        app:layout_constraintLeft_toRightOf="@id/tv_tab_1"
+        app:layout_constraintRight_toLeftOf="@id/tv_tab_3"
+        app:layout_constraintTop_toBottomOf="@id/tv_stack_count" />
+
+    <TextView
+        android:id="@+id/tv_tab_3"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="#F5F5F5"
+        android:gravity="center"
+        android:text="序列号"
+        android:textColor="#333333"
+        app:layout_constraintLeft_toRightOf="@id/tv_tab_2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_stack_count" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_put_storage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_clear"
+        app:layout_constraintTop_toBottomOf="@id/tv_tab_1"
+        app:layout_constraintVertical_weight="1" />
+
+    <TextView
+        android:id="@+id/tv_clear"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="#FAFAFA"
+        android:gravity="center"
+        android:text="关闭"
+        android:textColor="#1E1E1E"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_put_storage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

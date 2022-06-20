@@ -11,7 +11,7 @@ import okhttp3.ResponseBody;
 /**
  * @auther: pengwang
  * @date: 2022/6/19
- * @description:
+ * @description: 强制关闭收货
  */
 public class AsnCloseOrderPresenter extends SMBasePresenter<String> {
 

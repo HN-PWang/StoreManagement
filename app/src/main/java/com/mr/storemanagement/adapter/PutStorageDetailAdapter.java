@@ -10,17 +10,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
+import com.mr.storemanagement.bean.PutStorageBean;
 import com.mr.storemanagement.bean.StackBean;
 
 import java.util.List;
 
-public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHolder> {
+/**
+ * @auther: pengwang
+ * @date: 2022/6/20
+ * @email: 1929774468@qq.com
+ * @description:
+ */
+public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDetailAdapter.StackViewHolder> {
 
     private Context mContext;
 
-    private List<StackBean> mDataList;
+    private List<PutStorageBean> mDataList;
 
-    public StackAdapter(Context context, List<StackBean> dataList) {
+    public PutStorageDetailAdapter(Context context, List<PutStorageBean> dataList) {
         this.mContext = context;
         this.mDataList = dataList;
     }
@@ -28,14 +35,14 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
     @NonNull
     @Override
     public StackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_stack_details_layout,
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_put_storage_detail_layout,
                 parent, false);
         return new StackViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
-        StackBean item = mDataList.get(position);
+        PutStorageBean item = mDataList.get(position);
 
         holder.tvNo.setText(item.copiesCode);
         holder.tvCount.setText(item.availableNum + "/" + item.systemNum);
@@ -60,6 +67,6 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
             tvCount = itemView.findViewById(R.id.tv_count);
             tvSerialCode = itemView.findViewById(R.id.tv_serial_code);
         }
-
     }
+
 }

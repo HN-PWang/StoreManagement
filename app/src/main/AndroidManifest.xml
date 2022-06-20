@@ -26,7 +26,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppDefaultTheme">
-        <activity android:name=".activity.WarehouseSearchActivity"></activity>
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait">
@@ -53,6 +52,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.WarehousingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SerialNumScannerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogStyleActivity" />
+        <activity
+            android:name=".activity.WarehouseSearchActivity"
             android:screenOrientation="portrait" />
     </application>
 

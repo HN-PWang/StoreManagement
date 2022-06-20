@@ -77,7 +77,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void toMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SerialNumScannerActivity.class);
         startActivity(intent);
         finish();
     }

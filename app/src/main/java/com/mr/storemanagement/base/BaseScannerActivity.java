@@ -199,7 +199,7 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
                     rt = true;
                     isFfModelOpen = true;
                 }
-                Thread.sleep(500);
+//                Thread.sleep(500);
             } else {
                 rt = true;
             }

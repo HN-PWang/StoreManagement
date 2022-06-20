@@ -28,5 +28,16 @@
         <item name="android:windowAnimationStyle">@style/BottomDialogAnim</item>
     </style>
 
+    <style name="DialogStyleActivity" parent="Theme.Design.BottomSheetDialog">
+        <!--是否悬浮在activity上-->
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFrame">@android:color/transparent</item><!--边框-->
+        <!--透明是否-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+<!--        <item name="android:windowAnimationStyle">@style/activityAnimation</item>-->
+    </style>
 
 </resources>
