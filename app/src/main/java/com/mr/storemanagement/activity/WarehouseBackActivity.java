@@ -84,7 +84,7 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
 
         UserInfoBean bean = AccountManger.getInstance().getAccount();
         if (!TextUtils.isEmpty(mContainerCode) && bean != null) {
-            presenter.allocate(mContainerCode, bean.userCode);
+            presenter.allocate(mContainerCode, AccountManger.getInstance().getUserCode());
         }
     }
 

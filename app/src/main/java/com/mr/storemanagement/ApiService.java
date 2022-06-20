@@ -72,9 +72,9 @@ public interface ApiService {
     /**
      * 获取Asn明细接口
      */
-    @GET("api/Mobile/GetAsnDetail/{asnCode}")
+    @GET("api/Mobile/GetAsnDetail/{AsnCode}")
     Observable<ResponseBody> getAsnDetail(@HeaderMap Map<String, String> header
-            , @Path("asnCode") String asnCode);
+            , @Path("AsnCode") String AsnCode);
 
     /**
      * 获取已扫SN列表接口

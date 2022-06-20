@@ -4,6 +4,7 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
+import com.mr.storemanagement.bean.AsnDetailBean;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -11,9 +12,9 @@ import okhttp3.ResponseBody;
 /**
  * @auther: pengwang
  * @date: 2022/6/19
- * @description:
+ * @description: 获取入库列表明细
  */
-public class GetAsnDetailPresenter extends SMBasePresenter<String> {
+public class GetAsnDetailPresenter extends SMBasePresenter<AsnDetailBean> {
 
     private String mAsnCode;
 
@@ -24,6 +25,8 @@ public class GetAsnDetailPresenter extends SMBasePresenter<String> {
 
     public void getData(String AsnCode) {
         mAsnCode = AsnCode;
+
+        executeRequest();
     }
 
     @Override
@@ -32,7 +35,7 @@ public class GetAsnDetailPresenter extends SMBasePresenter<String> {
     }
 
     @Override
-    protected Class<String> getEntityClass() {
-        return String.class;
+    protected Class<AsnDetailBean> getEntityClass() {
+        return AsnDetailBean.class;
     }
 }

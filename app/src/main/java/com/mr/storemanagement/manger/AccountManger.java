@@ -11,7 +11,7 @@ public class AccountManger {
 
     private static final String ACCOUNT_INFO_KEY = "account_info_key";
 
-    private static AccountManger instance;
+    private static volatile AccountManger instance;
 
     private AccountManger() {
 
@@ -20,7 +20,8 @@ public class AccountManger {
     public static AccountManger getInstance() {
         if (instance == null) {
             synchronized (AccountManger.class) {
-                instance = new AccountManger();
+                if (instance == null)
+                    instance = new AccountManger();
             }
         }
         return instance;
@@ -50,7 +51,7 @@ public class AccountManger {
 
     public String getUserCode() {
         if (getAccount() != null)
-            return getAccount().userCode;
+            return getAccount().UserCode;
         return "";
     }
 

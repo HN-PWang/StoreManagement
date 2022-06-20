@@ -3,25 +3,26 @@ package com.mr.storemanagement.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
+import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
 import com.mr.storemanagement.dialog.PutStorageDetailDialog;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AsnCloseOrderPresenter;
 import com.mr.storemanagement.presenter.AsnSaveDetailPresenter;
 import com.mr.storemanagement.presenter.GetAsnCheckPresenter;
+import com.mr.storemanagement.presenter.GetAsnDetailPresenter;
+import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
 import com.mr.storemanagement.presenter.GetFeedBoxPresenter;
 import com.mr.storemanagement.util.NullUtils;
 
@@ -69,6 +70,12 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
         tvScanSerialTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
         tvCollectedCount = findViewById(R.id.tv_collected_count);
+
+        findViewById(R.id.tv_detail_list).setOnClickListener(this);
+        findViewById(R.id.tv_complete).setOnClickListener(this);
+        findViewById(R.id.tv_save).setOnClickListener(this);
+        findViewById(R.id.tv_scanner).setOnClickListener(this);
+        findViewById(R.id.tv_back).setOnClickListener(this);
 
         tvSite.setText(site_code);
         tvOrder.setText(asn_code);
@@ -137,8 +144,8 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
             }
         });
 
-
-        presenter.getFeedBox(site_code, asn_code, mItemCode, AccountManger.getInstance().getUserCode());
+        String userCode = AccountManger.getInstance().getUserCode();
+        presenter.getFeedBox(site_code, asn_code, mItemCode, userCode);
     }
 
     /**
@@ -195,6 +202,60 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
         });
     }
 
+    private void getPutStorageDetail() {
+        GetAsnDetailPresenter presenter = new GetAsnDetailPresenter(this
+                , new NetResultListener<List<AsnDetailBean>>() {
+            @Override
+            public void loadSuccess(List<AsnDetailBean> beans) {
+                if (NullUtils.isNotEmpty(beans)) {
+                    showPutStorageDetailDialog(beans);
+                }
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ToastUtils.show(exception.getErrorMsg());
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+        presenter.getData(asn_code);
+    }
+
+    private void getSnData(String asnCode, String keyId) {
+        GetAsnDetailSnListPresenter presenter = new GetAsnDetailSnListPresenter(null
+                , new NetResultListener() {
+            @Override
+            public void loadSuccess(Object o) {
+
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ToastUtils.show(exception.getErrorMsg());
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+        presenter.getData(asnCode, keyId);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -205,9 +266,15 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
         }
     }
 
-    private void showPutStorageDetailDialog() {
+    private void showPutStorageDetailDialog(List<AsnDetailBean> beans) {
         if (mPutStorageDetailDialog == null || !mPutStorageDetailDialog.isShowing()) {
-            mPutStorageDetailDialog = new PutStorageDetailDialog(this);
+            mPutStorageDetailDialog = new PutStorageDetailDialog(this, beans);
+            mPutStorageDetailDialog.setSnClickListener(new PutStorageDetailDialog.OnSnClickListener() {
+                @Override
+                public void OnSnClick(AsnDetailBean bean) {
+                    getSnData(bean.asn_code, bean.keyid);
+                }
+            });
             mPutStorageDetailDialog.show();
         }
     }
@@ -229,7 +296,7 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
                 break;
             case R.id.tv_detail_list:
                 //收货明细列表
-                showPutStorageDetailDialog();
+                getPutStorageDetail();
                 break;
             case R.id.tv_complete:
                 //强制完成收货

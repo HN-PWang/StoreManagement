@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
+import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.PutStorageBean;
 import com.mr.storemanagement.bean.StackBean;
+import com.mr.storemanagement.util.DataUtil;
 
 import java.util.List;
 
@@ -25,9 +27,15 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
 
     private Context mContext;
 
-    private List<PutStorageBean> mDataList;
+    private List<AsnDetailBean> mDataList;
 
-    public PutStorageDetailAdapter(Context context, List<PutStorageBean> dataList) {
+    private OnSerialCodeClickListener codeClickListener;
+
+    public void setCodeClickListener(OnSerialCodeClickListener codeClickListener) {
+        this.codeClickListener = codeClickListener;
+    }
+
+    public PutStorageDetailAdapter(Context context, List<AsnDetailBean> dataList) {
         this.mContext = context;
         this.mDataList = dataList;
     }
@@ -42,11 +50,12 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
 
     @Override
     public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
-        PutStorageBean item = mDataList.get(position);
+        holder.itemView.setTag(position);
+        AsnDetailBean item = mDataList.get(position);
 
-        holder.tvNo.setText(item.copiesCode);
-        holder.tvCount.setText(item.availableNum + "/" + item.systemNum);
-        holder.tvSerialCode.setText(item.serialCode);
+        holder.tvNo.setText(item.item_Code);
+        holder.tvCount.setText(DataUtil.getIntStr(item.finish_qty) + "/" + item.quantity);
+        holder.tvSerialCode.setText(item.product_batch);
     }
 
     @Override
@@ -66,7 +75,21 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
             tvNo = itemView.findViewById(R.id.tv_no);
             tvCount = itemView.findViewById(R.id.tv_count);
             tvSerialCode = itemView.findViewById(R.id.tv_serial_code);
+
+            tvSerialCode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (codeClickListener != null) {
+                        int position = (int) itemView.getTag();
+                        codeClickListener.onClick(mDataList.get(position));
+                    }
+                }
+            });
         }
+    }
+
+    public interface OnSerialCodeClickListener {
+        void onClick(AsnDetailBean bean);
     }
 
 }

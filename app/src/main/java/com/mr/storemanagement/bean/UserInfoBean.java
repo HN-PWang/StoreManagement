@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 public class UserInfoBean implements Serializable {
 
-    public String userID;
-    public String userCode;
-    public String userName;
-    public String userPWD;
-    public String adminFlag;
-    public String validFlag;
-    public String dept;
+    public String UserID;
+    public String UserCode;
+    public String UserName;
+    public String UserPWD;
+    public String AdminFlag;
+    public String ValidFlag;
+    public String Dept;
     public String userGroup;
-    public String team;
-    public String jobNo;
-    public int allowShow;
-    public String remark;
+    public String Team;
+    public String JobNo;
+    public int AllowShow;
+    public String Remark;
 
 }

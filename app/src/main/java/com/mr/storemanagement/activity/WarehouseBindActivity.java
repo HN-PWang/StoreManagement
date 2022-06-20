@@ -96,7 +96,7 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
         }
 
         if (bean != null) {
-            presenter.bind(mLocationCode, mRfid, bean.userCode);
+            presenter.bind(mLocationCode, mRfid, AccountManger.getInstance().getUserCode());
         }
     }
 

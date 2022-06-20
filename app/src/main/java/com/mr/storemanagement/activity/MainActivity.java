@@ -30,11 +30,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.tv_search_stack).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
 
-        UserInfoBean userInfo = AccountManger.getInstance().getAccount();
-        if (userInfo != null) {
-            tvUserName.setText("用户：" + userInfo.userName);
-        }
-
+        tvUserName.setText("用户：" + AccountManger.getInstance().getUserCode());
     }
 
     @Override

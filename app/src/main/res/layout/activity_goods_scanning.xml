@@ -197,6 +197,8 @@
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:background="#3296FA"
+        android:clickable="true"
+        android:enabled="true"
         android:gravity="center"
         android:text="收货明细列表"
         android:textColor="@color/white"

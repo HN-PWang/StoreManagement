@@ -1,25 +1,15 @@
 package com.mr.storemanagement.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
-import com.pda.rfid.EPCModel;
-import com.pda.scanner.ScanReader;
-import com.pda.scanner.Scanner;
-
-import java.nio.charset.Charset;
 
 /**
  * 通用的扫码界面

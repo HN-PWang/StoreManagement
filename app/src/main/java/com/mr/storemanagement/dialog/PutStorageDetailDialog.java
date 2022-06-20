@@ -13,9 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mr.lib_base.network.SMException;
+import com.mr.lib_base.network.listener.NetLoadingListener;
+import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.PutStorageDetailAdapter;
+import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.PutStorageBean;
+import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +39,15 @@ public class PutStorageDetailDialog extends Dialog implements View.OnClickListen
 
     private PutStorageDetailAdapter storageDetailAdapter;
 
-    private List<PutStorageBean> mDataList = new ArrayList<>();
+    private List<AsnDetailBean> mDataList = new ArrayList<>();
 
-    public PutStorageDetailDialog(@NonNull Context context) {
+    private OnSnClickListener snClickListener;
+
+    public void setSnClickListener(OnSnClickListener snClickListener) {
+        this.snClickListener = snClickListener;
+    }
+
+    public PutStorageDetailDialog(@NonNull Context context, List<AsnDetailBean> dataList) {
         super(context, R.style.BottomDialogStyle);
         setContentView(R.layout.dialog_put_storage_detail_layout);
         Window window = getWindow();
@@ -51,9 +62,20 @@ public class PutStorageDetailDialog extends Dialog implements View.OnClickListen
         tvStackCount = findViewById(R.id.tv_stack_count);
         rvPutStorage = findViewById(R.id.rv_put_storage);
 
+        mDataList.addAll(dataList);
+
         storageDetailAdapter = new PutStorageDetailAdapter(context, mDataList);
         rvPutStorage.setLayoutManager(new LinearLayoutManager(context));
         rvPutStorage.setAdapter(storageDetailAdapter);
+
+        storageDetailAdapter.setCodeClickListener(new PutStorageDetailAdapter.OnSerialCodeClickListener() {
+            @Override
+            public void onClick(AsnDetailBean bean) {
+                if (snClickListener != null) {
+                    snClickListener.OnSnClick(bean);
+                }
+            }
+        });
     }
 
     @Override
@@ -63,5 +85,9 @@ public class PutStorageDetailDialog extends Dialog implements View.OnClickListen
                 dismiss();
                 break;
         }
+    }
+
+    public interface OnSnClickListener {
+        void OnSnClick(AsnDetailBean bean);
     }
 }
