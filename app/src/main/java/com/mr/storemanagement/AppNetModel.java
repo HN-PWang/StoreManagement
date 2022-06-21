@@ -107,4 +107,20 @@ public class AppNetModel extends BaseModel {
         return service.asnSaveDetail(getHeader(), AsnCode, ContainerCode, UserCode, KeyId, Qty, body);
     }
 
+    /**
+     * 强制结束时要先调用保存当前记录接口
+     */
+    public Observable<ResponseBody> getTaskList(String SiteCode, String UserCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getTaskList(getHeader(), SiteCode, UserCode);
+    }
+
+    /**
+     * 强制结束时要先调用保存当前记录接口
+     */
+    public Observable<ResponseBody> checkFeedBox(String SiteCode, String UserCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.checkFeedBox(getHeader(), SiteCode, UserCode);
+    }
+
 }

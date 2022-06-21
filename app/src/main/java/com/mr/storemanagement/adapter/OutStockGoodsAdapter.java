@@ -11,45 +11,43 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.bean.AsnDetailBean;
-import com.mr.storemanagement.bean.PutStorageBean;
-import com.mr.storemanagement.bean.StackBean;
 import com.mr.storemanagement.util.DataUtil;
 
 import java.util.List;
 
 /**
  * @auther: pengwang
- * @date: 2022/6/20
+ * @date: 2022/6/21
  * @email: 1929774468@qq.com
- * @description: 入库商品列表
+ * @description: 出库拣货商品列表
  */
-public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDetailAdapter.StackViewHolder> {
+public class OutStockGoodsAdapter extends RecyclerView.Adapter<OutStockGoodsAdapter.GoodsViewHolder> {
 
     private Context mContext;
 
     private List<AsnDetailBean> mDataList;
 
-    private OnSerialCodeClickListener codeClickListener;
+    private OnSerialCodeClickListener serialCodeClickListener;
 
-    public void setCodeClickListener(OnSerialCodeClickListener codeClickListener) {
-        this.codeClickListener = codeClickListener;
+    public void setSerialCodeClickListener(OnSerialCodeClickListener serialCodeClickListener) {
+        this.serialCodeClickListener = serialCodeClickListener;
     }
 
-    public PutStorageDetailAdapter(Context context, List<AsnDetailBean> dataList) {
+    public OutStockGoodsAdapter(Context context, List<AsnDetailBean> dataList) {
         this.mContext = context;
         this.mDataList = dataList;
     }
 
     @NonNull
     @Override
-    public StackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_put_storage_detail_layout,
+    public GoodsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_out_stock_goods_layout,
                 parent, false);
-        return new StackViewHolder(view);
+        return new GoodsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GoodsViewHolder holder, int position) {
         holder.itemView.setTag(position);
         AsnDetailBean item = mDataList.get(position);
 
@@ -63,13 +61,13 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
         return mDataList == null ? 0 : mDataList.size();
     }
 
-    public class StackViewHolder extends RecyclerView.ViewHolder {
+    public class GoodsViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvNo;
         public TextView tvCount;
         public TextView tvSerialCode;
 
-        public StackViewHolder(@NonNull View itemView) {
+        public GoodsViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvNo = itemView.findViewById(R.id.tv_no);
@@ -79,9 +77,9 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
             tvSerialCode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (codeClickListener != null) {
+                    if (serialCodeClickListener != null) {
                         int position = (int) itemView.getTag();
-                        codeClickListener.onClick(mDataList.get(position));
+                        serialCodeClickListener.onClick(mDataList.get(position));
                     }
                 }
             });
@@ -91,5 +89,4 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
     public interface OnSerialCodeClickListener {
         void onClick(AsnDetailBean bean);
     }
-
 }

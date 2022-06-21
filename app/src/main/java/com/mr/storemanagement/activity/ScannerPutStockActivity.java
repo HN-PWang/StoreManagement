@@ -16,6 +16,7 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
+import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.dialog.PutStorageDetailDialog;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AsnCloseOrderPresenter;
@@ -32,7 +33,7 @@ import java.util.List;
 /**
  * 入库扫描界面
  */
-public class GoodsScanningActivity extends BaseScannerActivity implements View.OnClickListener {
+public class ScannerPutStockActivity extends BaseScannerActivity implements View.OnClickListener {
 
     public static final int REQUEST_SERIAL_CODE = 101;
 
@@ -48,6 +49,8 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
 
     private PutStorageDetailDialog mPutStorageDetailDialog;
 
+    private CheckSnDialog mCheckSnDialog;
+
     private String site_code;
     private String asn_code;
     private String mItemCode;
@@ -57,7 +60,7 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goods_scanning);
+        setContentView(R.layout.activity_scanner_put_stock);
 
         site_code = getIntent().getStringExtra("site_key");
         asn_code = getIntent().getStringExtra("ans_key");
@@ -232,10 +235,14 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
 
     private void getSnData(String asnCode, String keyId) {
         GetAsnDetailSnListPresenter presenter = new GetAsnDetailSnListPresenter(null
-                , new NetResultListener() {
+                , new NetResultListener<List<String>>() {
             @Override
-            public void loadSuccess(Object o) {
-
+            public void loadSuccess(List<String> list) {
+                if (NullUtils.isNotEmpty(list)) {
+                    showCheckSnDialog(list, asnCode);
+                } else {
+                    ToastUtils.show("没有数据");
+                }
             }
 
             @Override
@@ -263,6 +270,13 @@ public class GoodsScanningActivity extends BaseScannerActivity implements View.O
             if (requestCode == REQUEST_SERIAL_CODE) {
 
             }
+        }
+    }
+
+    private void showCheckSnDialog(List<String> dataList, String asnCode) {
+        if (mCheckSnDialog == null || !mCheckSnDialog.isShowing()) {
+            mCheckSnDialog = new CheckSnDialog(this, asnCode, dataList);
+            mCheckSnDialog.show();
         }
     }
 

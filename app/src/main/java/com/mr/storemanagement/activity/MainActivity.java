@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.tv_out_stack:
                 //出库挑拣
-
+                startActivity(new Intent(this, GetTaskActivity.class));
                 break;
             case R.id.tv_inventory:
                 //盘点

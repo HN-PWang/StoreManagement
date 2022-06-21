@@ -99,4 +99,18 @@ public interface ApiService {
             , @Path("UserCode") String UserCode, @Path("KeyId") String KeyId
             , @Path("Qty") String Qty, @Body RequestBody body);
 
+    /**
+     * 领取任务列表
+     */
+    @GET("api/Mobile/GetTaskList/{SiteCode}/{UserCode}")
+    Observable<ResponseBody> getTaskList(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode, @Path("UserCode") String UserCode);
+
+    /**
+     * 校验料箱容器
+     */
+    @GET("api/Mobile/GetTaskList/{SiteCode}/{UserCode}")
+    Observable<ResponseBody> checkFeedBox(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode, @Path("UserCode") String UserCode);
+
 }

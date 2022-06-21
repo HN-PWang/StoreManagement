@@ -48,7 +48,7 @@
             android:name=".activity.WarehouseBindActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.GoodsScanningActivity"
+            android:name=".activity.ScannerPutStockActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.WarehousingActivity"
@@ -59,6 +59,15 @@
             android:theme="@style/DialogStyleActivity" />
         <activity
             android:name=".activity.WarehouseSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ScannerOutStockActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PickingFeedBoxScannerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.GetTaskActivity"
             android:screenOrientation="portrait" />
     </application>
 

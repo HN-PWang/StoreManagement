@@ -2,13 +2,11 @@ package com.mr.storemanagement.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
-import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
@@ -16,8 +14,8 @@ import com.mr.storemanagement.bean.OrderBean;
 import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.OrderNoSelectDialog;
 import com.mr.storemanagement.dialog.SiteSearchDialog;
+import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.presenter.GetAsnPresenter;
-import com.mr.storemanagement.presenter.GetSitePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +40,8 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
 
     private OrderBean currentOrderBean = null;
 
+    private SiteChooseHelper siteChooseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,30 +56,24 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
-        getSite();
+        siteChooseHelper = new SiteChooseHelper(this);
+        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
+            @Override
+            public void onClick(SiteBean site) {
+                currentSiteBean = site;
+                setSiteInfo();
+            }
+
+            @Override
+            public void onFirst(SiteBean site) {
+                currentSiteBean = site;
+                setSiteInfo();
+            }
+        });
+
         getAsn();
     }
 
-    private void getSite() {
-        GetSitePresenter presenter = new GetSitePresenter(this
-                , new NetResultListener<List<SiteBean>>() {
-            @Override
-            public void loadSuccess(List<SiteBean> beans) {
-                if (beans != null && beans.size() > 0) {
-                    mSiteBeans.clear();
-                    mSiteBeans.addAll(beans);
-                    currentSiteBean = mSiteBeans.get(0);
-                    setSiteInfo();
-                }
-            }
-
-            @Override
-            public void loadFailure(SMException exception) {
-
-            }
-        }, null);
-        presenter.getSite();
-    }
 
     private void getAsn() {
         GetAsnPresenter presenter = new GetAsnPresenter(this
@@ -98,20 +92,6 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
             }
         }, null);
         presenter.getAsn();
-    }
-
-    private void showSiteDialog() {
-        if (siteSearchDialog == null || !siteSearchDialog.isShowing()) {
-            siteSearchDialog = new SiteSearchDialog(this, mSiteBeans);
-            siteSearchDialog.setSiteSelectListener(new SiteSearchDialog.OnSiteSelectListener() {
-                @Override
-                public void onSelect(SiteBean siteBean) {
-                    currentSiteBean = siteBean;
-                    setSiteInfo();
-                }
-            });
-            siteSearchDialog.show();
-        }
     }
 
     private void showOrderDialog() {
@@ -144,7 +124,7 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_search_site:
-                showSiteDialog();
+                siteChooseHelper.selectSite();
                 break;
             case R.id.et_order_no:
                 showOrderDialog();
@@ -170,7 +150,7 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
             ToastUtils.show("单号信息不能为空");
             return;
         }
-        Intent intent = new Intent(this, GoodsScanningActivity.class);
+        Intent intent = new Intent(this, ScannerPutStockActivity.class);
         intent.putExtra("site_key", currentSiteBean.site_code);
         intent.putExtra("ans_key", currentOrderBean.asn_code);
         startActivity(intent);
