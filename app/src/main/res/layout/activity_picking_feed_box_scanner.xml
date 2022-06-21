@@ -10,28 +10,30 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="49dp"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginHorizontal="36dp"
         android:layout_marginTop="80dp"
         android:gravity="center"
         android:text="扫描序列号"
         android:textColor="#333333"
         android:textSize="17dp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_rdid_read"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="80dp"
         android:layout_marginHorizontal="36dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/bg_scanning_text"
-        android:gravity="center_vertical"
-        android:hint="点击读取芯片或者扫码获取"
+        android:gravity="center"
+        android:hint="请扫描"
         android:paddingHorizontal="4dp"
         android:textColor="#333333"
         android:textColorHint="#C6C6C6"
-        android:textSize="15dp"
+        android:textSize="17dp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <TextView

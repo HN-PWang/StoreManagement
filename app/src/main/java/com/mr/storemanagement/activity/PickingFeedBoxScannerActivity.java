@@ -1,20 +1,24 @@
 package com.mr.storemanagement.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
-import com.mr.storemanagement.bean.CheckBoxBackBean;
-import com.mr.storemanagement.manger.AccountManger;
-import com.mr.storemanagement.presenter.CheckFeedBoxPresenter;
+import com.mr.storemanagement.bean.ContainerGoodsBean;
+import com.mr.storemanagement.presenter.CheckContainerPresenter;
+import com.mr.storemanagement.util.NullUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,12 +28,21 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
 
     private TextView tvRdIdRead;
 
-    private String mSerialCode;
+    private String mContainerCode;
+
+    private String mSiteCode;
+
+    private String mTaskData;
+
+    private List<ContainerGoodsBean> mDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picking_feed_box_scanner);
+
+        mSiteCode = getIntent().getStringExtra(Constants.SITE_CODE_KEY);
+        mTaskData = getIntent().getStringExtra(Constants.TASK_DATA_KEY);
 
         tvRdIdRead = findViewById(R.id.tv_rdid_read);
 
@@ -41,15 +54,16 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
             @Override
             public void onScannerDataBack(String message) {
                 if (!TextUtils.isEmpty(message)) {
-                    mSerialCode = message;
+                    mContainerCode = message;
                     setSerialCodeToView();
+                    check();
                 }
             }
         });
     }
 
     private void setSerialCodeToView() {
-        tvRdIdRead.setText(mSerialCode);
+        tvRdIdRead.setText(mContainerCode);
     }
 
     @Override
@@ -62,17 +76,38 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
                 finish();
                 break;
             case R.id.tv_next:
-                check();
+                toScannerGoods();
                 break;
         }
     }
 
-    private void check() {
-        CheckFeedBoxPresenter presenter = new CheckFeedBoxPresenter(this
-                , new NetResultListener<List<CheckBoxBackBean>>() {
-            @Override
-            public void loadSuccess(List<CheckBoxBackBean> beans) {
+    private void toScannerGoods() {
+        if (NullUtils.isEmpty(mDataList)) {
+            ToastUtils.show("料箱返回数据为空");
+            return;
+        }
 
+        Intent intent = new Intent(this, ScannerOutStockActivity.class);
+        intent.putExtra(Constants.SITE_CODE_KEY, mSiteCode);
+        intent.putExtra(Constants.TASK_DATA_KEY, mTaskData);
+        intent.putExtra(Constants.CONTAINER_CODE_KEY, mContainerCode);
+        String cgd = JSONObject.toJSONString(mDataList);
+        intent.putExtra(Constants.CONTAINER_GOODS_DATA_KEY, cgd);
+        startActivity(intent);
+
+        finish();
+    }
+
+    private void check() {
+        CheckContainerPresenter presenter = new CheckContainerPresenter(this
+                , new NetResultListener<List<ContainerGoodsBean>>() {
+            @Override
+            public void loadSuccess(List<ContainerGoodsBean> beans) {
+                mDataList.clear();
+                if (NullUtils.isNotEmpty(beans)) {
+                    mDataList.addAll(beans);
+                }
+                toScannerGoods();
             }
 
             @Override
@@ -90,7 +125,7 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
                 dismissLoadingDialog();
             }
         });
-        presenter.check(mSerialCode, AccountManger.getInstance().getUserCode());
+        presenter.check(mSiteCode, mContainerCode);
     }
 
 }

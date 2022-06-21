@@ -15,30 +15,28 @@ import okhttp3.ResponseBody;
  * @email: 1929774468@qq.com
  * @description: 领取任务
  */
-public class GetTaskPresenter extends SMBasePresenter<String> {
+public class GetPickWorkPresenter extends SMBasePresenter<GetTaskBean> {
 
     private String mSiteCode;
-    private String mUserCode;
 
-    public GetTaskPresenter(BaseActivity baseActivity, NetResultListener resultListener
+    public GetPickWorkPresenter(BaseActivity baseActivity, NetResultListener resultListener
             , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void getTask(String SiteCode, String UserCode) {
+    public void getPickWork(String SiteCode) {
         mSiteCode = SiteCode;
-        mUserCode = UserCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getTaskList(mSiteCode, mUserCode);
+        return netModel.getPickWorkList(mSiteCode);
     }
 
     @Override
-    protected Class<String> getEntityClass() {
-        return null;
+    protected Class<GetTaskBean> getEntityClass() {
+        return GetTaskBean.class;
     }
 }

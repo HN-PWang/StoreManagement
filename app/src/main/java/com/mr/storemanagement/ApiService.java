@@ -27,6 +27,12 @@ public interface ApiService {
     Observable<ResponseBody> getSiteList(@HeaderMap Map<String, String> header);
 
     /**
+     * 获取站点信息
+     */
+    @GET("api/Mobile/GetOutboundSiteList")
+    Observable<ResponseBody> getOutSiteList(@HeaderMap Map<String, String> header);
+
+    /**
      * 获取单号信息
      */
     @GET("api/Mobile/GetAsnList")
@@ -102,15 +108,30 @@ public interface ApiService {
     /**
      * 领取任务列表
      */
-    @GET("api/Mobile/GetTaskList/{SiteCode}/{UserCode}")
+    @GET("api/Mobile/GetPickWorkList/{SiteCode}")
+    Observable<ResponseBody> getPickWorkList(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode);
+
+    /**
+     * 领取任务列表
+     */
+    @GET("api/Mobile/GetTask/{SiteCode}/{UserCode}")
     Observable<ResponseBody> getTaskList(@HeaderMap Map<String, String> header
             , @Path("SiteCode") String SiteCode, @Path("UserCode") String UserCode);
 
     /**
      * 校验料箱容器
      */
-    @GET("api/Mobile/GetTaskList/{SiteCode}/{UserCode}")
-    Observable<ResponseBody> checkFeedBox(@HeaderMap Map<String, String> header
-            , @Path("SiteCode") String SiteCode, @Path("UserCode") String UserCode);
+    @GET("api/Mobile/GetArriveContainerItemList/{siteCode}/{ContainerCode}")
+    Observable<ResponseBody> getArriveContainerItemList(@HeaderMap Map<String, String> header
+            , @Path("siteCode") String siteCode, @Path("ContainerCode") String ContainerCode);
+
+    /**
+     * 拣货确认,提交数据到后台保存
+     */
+    @GET("api/Mobile/CheckConfirmByContainerAndItem/{site_code}/{usercode}")
+    Observable<ResponseBody> checkConfirm(@HeaderMap Map<String, String> header
+            , @Path("site_code") String siteCode, @Path("usercode") String usercode
+            , @Body RequestBody body);
 
 }

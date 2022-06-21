@@ -4,7 +4,7 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
-import com.mr.storemanagement.bean.CheckBoxBackBean;
+import com.mr.storemanagement.bean.ContainerGoodsBean;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -13,33 +13,33 @@ import okhttp3.ResponseBody;
  * @auther: pengwang
  * @date: 2022/6/21
  * @email: 1929774468@qq.com
- * @description:
+ * @description: 校验容器，校验成功进入扫描商品界面
  */
-public class CheckFeedBoxPresenter extends SMBasePresenter<CheckBoxBackBean> {
+public class CheckContainerPresenter extends SMBasePresenter<ContainerGoodsBean> {
 
     private String mAsnCode;
-    private String mUserCode;
+    private String mContainerCode;
 
-    public CheckFeedBoxPresenter(BaseActivity baseActivity, NetResultListener resultListener
+    public CheckContainerPresenter(BaseActivity baseActivity, NetResultListener resultListener
             , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void check(String AsnCode, String UserCode) {
+    public void check(String AsnCode, String ContainerCode) {
         mAsnCode = AsnCode;
-        mUserCode = UserCode;
+        mContainerCode = ContainerCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.checkFeedBox(mAsnCode, mUserCode);
+        return netModel.checkContainer(mAsnCode, mContainerCode);
     }
 
     @Override
-    protected Class<CheckBoxBackBean> getEntityClass() {
-        return CheckBoxBackBean.class;
+    protected Class<ContainerGoodsBean> getEntityClass() {
+        return ContainerGoodsBean.class;
     }
 
 }

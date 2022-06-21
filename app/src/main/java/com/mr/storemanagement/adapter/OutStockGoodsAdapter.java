@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.bean.AsnDetailBean;
+import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.util.DataUtil;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class OutStockGoodsAdapter extends RecyclerView.Adapter<OutStockGoodsAdap
 
     private Context mContext;
 
-    private List<AsnDetailBean> mDataList;
+    private List<ContainerGoodsBean> mDataList;
 
     private OnSerialCodeClickListener serialCodeClickListener;
 
@@ -33,7 +34,7 @@ public class OutStockGoodsAdapter extends RecyclerView.Adapter<OutStockGoodsAdap
         this.serialCodeClickListener = serialCodeClickListener;
     }
 
-    public OutStockGoodsAdapter(Context context, List<AsnDetailBean> dataList) {
+    public OutStockGoodsAdapter(Context context, List<ContainerGoodsBean> dataList) {
         this.mContext = context;
         this.mDataList = dataList;
     }
@@ -49,10 +50,10 @@ public class OutStockGoodsAdapter extends RecyclerView.Adapter<OutStockGoodsAdap
     @Override
     public void onBindViewHolder(@NonNull GoodsViewHolder holder, int position) {
         holder.itemView.setTag(position);
-        AsnDetailBean item = mDataList.get(position);
+        ContainerGoodsBean item = mDataList.get(position);
 
         holder.tvNo.setText(item.item_Code);
-        holder.tvCount.setText(DataUtil.getIntStr(item.finish_qty) + "/" + item.quantity);
+        holder.tvCount.setText(DataUtil.getIntStr(item.checkQty) + "/" + item.request_Qty);
         holder.tvSerialCode.setText(item.product_batch);
     }
 
@@ -87,6 +88,6 @@ public class OutStockGoodsAdapter extends RecyclerView.Adapter<OutStockGoodsAdap
     }
 
     public interface OnSerialCodeClickListener {
-        void onClick(AsnDetailBean bean);
+        void onClick(ContainerGoodsBean bean);
     }
 }

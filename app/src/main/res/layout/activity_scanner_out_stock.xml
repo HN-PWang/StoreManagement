@@ -8,7 +8,7 @@
     tools:context=".activity.ScannerOutStockActivity">
 
     <TextView
-        android:id="@+id/tv_feed_box_title"
+        android:id="@+id/tv_container_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -19,16 +19,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_feed_box_no"
+        android:id="@+id/tv_container_no"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="30dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/re_f5f5f5_radius_12dp"
         android:gravity="center_vertical"
         android:paddingHorizontal="12dp"
         android:textColor="#333333"
-        app:layout_constraintTop_toBottomOf="@id/tv_feed_box_title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_container_title" />
 
     <TextView
         android:id="@+id/tv_cx_no_title"
@@ -39,12 +39,12 @@
         android:text="册序号"
         android:textColor="#333333"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_feed_box_no" />
+        app:layout_constraintTop_toBottomOf="@id/tv_container_no" />
 
     <TextView
         android:id="@+id/tv_cx_no"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="30dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_scanning_text"
@@ -69,6 +69,32 @@
         app:layout_constraintTop_toBottomOf="@id/tv_cx_no" />
 
     <TextView
+        android:id="@+id/tv_out_count_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        android:text="拣选数量"
+        android:textColor="#333333"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_scan_serial_tag" />
+
+    <EditText
+        android:id="@+id/et_out_count"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_scanning_text"
+        android:enabled="false"
+        android:gravity="center_vertical"
+        android:inputType="number"
+        android:paddingHorizontal="12dp"
+        android:singleLine="true"
+        android:textColor="#333333"
+        app:layout_constraintTop_toBottomOf="@id/tv_out_count_title" />
+
+    <TextView
         android:id="@+id/tv_tab_1"
         android:layout_width="0dp"
         android:layout_height="30dp"
@@ -79,7 +105,7 @@
         android:textColor="#333333"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_tab_2"
-        app:layout_constraintTop_toBottomOf="@id/tv_scan_serial_tag" />
+        app:layout_constraintTop_toBottomOf="@id/et_out_count" />
 
     <TextView
         android:id="@+id/tv_tab_2"
@@ -128,6 +154,7 @@
         android:id="@+id/tv_scanner"
         android:layout_width="0dp"
         android:layout_height="49dp"
+        android:enabled="false"
         android:gravity="center"
         android:text="扫描序列号"
         android:textColor="#333333"

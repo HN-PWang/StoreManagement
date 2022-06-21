@@ -6,6 +6,7 @@ import com.mr.lib_base.network.RetrofitManager;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.http.Body;
 
 public class AppNetModel extends BaseModel {
 
@@ -23,6 +24,14 @@ public class AppNetModel extends BaseModel {
     public Observable<ResponseBody> getSiteList() {
         ApiService service = RetrofitManager.create(ApiService.class);
         return service.getSiteList(getHeader());
+    }
+
+    /**
+     * 获取站点列表
+     */
+    public Observable<ResponseBody> getOutSiteList() {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getOutSiteList(getHeader());
     }
 
     /**
@@ -110,6 +119,14 @@ public class AppNetModel extends BaseModel {
     /**
      * 强制结束时要先调用保存当前记录接口
      */
+    public Observable<ResponseBody> getPickWorkList(String SiteCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getPickWorkList(getHeader(), SiteCode);
+    }
+
+    /**
+     * 强制结束时要先调用保存当前记录接口
+     */
     public Observable<ResponseBody> getTaskList(String SiteCode, String UserCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
         return service.getTaskList(getHeader(), SiteCode, UserCode);
@@ -118,9 +135,18 @@ public class AppNetModel extends BaseModel {
     /**
      * 强制结束时要先调用保存当前记录接口
      */
-    public Observable<ResponseBody> checkFeedBox(String SiteCode, String UserCode) {
+    public Observable<ResponseBody> checkContainer(String SiteCode, String ContainerCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.checkFeedBox(getHeader(), SiteCode, UserCode);
+        return service.getArriveContainerItemList(getHeader(), SiteCode, ContainerCode);
+    }
+
+    /**
+     * 拣货确认,提交数据到后台保存
+     */
+    public Observable<ResponseBody> checkConfirm(String SiteCode, String usercode
+            , @Body RequestBody body) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.checkConfirm(getHeader(), SiteCode, usercode, body);
     }
 
 }

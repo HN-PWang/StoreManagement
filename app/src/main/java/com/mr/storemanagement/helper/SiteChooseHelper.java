@@ -27,14 +27,17 @@ public class SiteChooseHelper {
 
     private OnSiteEventListener siteClickListener;
 
+    private boolean mIsOutStock;
+
     private List<SiteBean> mSiteBeans = new ArrayList<>();
 
     public void setSiteClickListener(OnSiteEventListener siteClickListener) {
         this.siteClickListener = siteClickListener;
     }
 
-    public SiteChooseHelper(Context context) {
+    public SiteChooseHelper(Context context, boolean isOutStock) {
         this.mContext = context;
+        this.mIsOutStock = isOutStock;
 
         getSite(false);
     }
@@ -60,7 +63,33 @@ public class SiteChooseHelper {
                 ToastUtils.show(exception.getErrorMsg());
             }
         }, null);
-        presenter.getSite();
+
+        GetSitePresenter outPresenter = new GetSitePresenter(null
+                , new NetResultListener<List<SiteBean>>() {
+            @Override
+            public void loadSuccess(List<SiteBean> beans) {
+                if (NullUtils.isNotEmpty(beans)) {
+                    mSiteBeans.clear();
+                    mSiteBeans.addAll(beans);
+                    if (siteClickListener != null) {
+                        siteClickListener.onFirst(beans.get(0));
+                    }
+                } else {
+                    ToastUtils.show("站点信息为空");
+                }
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ToastUtils.show(exception.getErrorMsg());
+            }
+        }, null);
+
+        if (mIsOutStock){
+            outPresenter.getSite();
+        }else {
+            presenter.getSite();
+        }
     }
 
     public void selectSite() {

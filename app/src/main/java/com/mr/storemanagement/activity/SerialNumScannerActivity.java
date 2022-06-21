@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.SerialNumAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
+import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +27,6 @@ import java.util.List;
  * 序列号扫描界面
  */
 public class SerialNumScannerActivity extends BaseScannerActivity implements View.OnClickListener {
-
-    public static final String SERIAL_NUM_DATA_KEY = "serial_num_data_key";
 
     private TextView tvCount;
 
@@ -49,6 +49,12 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
         findViewById(R.id.tv_rdid_read).setOnClickListener(this);
         findViewById(R.id.tv_clear).setOnClickListener(this);
+
+        String sns = getIntent().getStringExtra(Constants.SN_CODE_DATA_KEY);
+        sns = TextUtils.isEmpty(sns) ? "" : sns;
+        List<String> list = JSONObject.parseArray(sns, String.class);
+        if (NullUtils.isNotEmpty(list))
+            mDataList.addAll(list);
 
         serialNumAdapter = new SerialNumAdapter(this, mDataList);
         rvSerialNum.setLayoutManager(new LinearLayoutManager(this));
@@ -90,8 +96,9 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
                 break;
             case R.id.tv_clear:
                 Intent intent = new Intent();
-                intent.putExtra(SERIAL_NUM_DATA_KEY, JSONObject.toJSONString(mDataList));
+                intent.putExtra(Constants.SN_CODE_DATA_KEY, JSONObject.toJSONString(mDataList));
                 setResult(Activity.RESULT_OK, intent);
+                finish();
                 break;
         }
     }

@@ -6,9 +6,9 @@ import java.util.List;
  * @auther: pengwang
  * @date: 2022/6/21
  * @email: 1929774468@qq.com
- * @description:
+ * @description: 容器所含商品
  */
-public class CheckBoxBackBean {
+public class ContainerGoodsBean {
 
     public String id;
     public String picktaskguid;

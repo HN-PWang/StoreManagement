@@ -44,9 +44,9 @@ public class GetTaskAdapter extends RecyclerView.Adapter<GetTaskAdapter.TaskView
         holder.itemView.setTag(position);
         GetTaskBean item = mDataList.get(position);
 
-        holder.tvNo.setText(item.no);
-        holder.tvStartLocation.setText(item.start_location);
-        holder.tvCurrentLocation.setText(item.current_location);
+        holder.tvNo.setText(item.container_code);
+        holder.tvStartLocation.setText(item.fromlocation);
+        holder.tvCurrentLocation.setText(item.tolocation);
     }
 
     @Override

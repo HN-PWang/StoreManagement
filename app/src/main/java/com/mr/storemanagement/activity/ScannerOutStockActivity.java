@@ -1,17 +1,32 @@
 package com.mr.storemanagement.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.mr.lib_base.network.SMException;
+import com.mr.lib_base.network.listener.NetLoadingListener;
+import com.mr.lib_base.network.listener.NetResultListener;
+import com.mr.lib_base.util.ToastUtils;
+import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.OutStockGoodsAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnDetailBean;
+import com.mr.storemanagement.bean.ContainerGoodsBean;
+import com.mr.storemanagement.manger.AccountManger;
+import com.mr.storemanagement.presenter.OutStockConfirmPresenter;
+import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +36,52 @@ import java.util.List;
  */
 public class ScannerOutStockActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvFeedBoxNo;
+    public static final int REQUEST_SERIAL_CODE = 101;
+
+    private TextView tvContainerNo;
 
     private TextView tvCxNo;
+
+    private EditText etOutCount;
 
     private TextView tvScanSerialTag;
 
     private RecyclerView rvContent;
 
+    private TextView tvScanner;
+
     private OutStockGoodsAdapter goodsAdapter;
 
-    private List<AsnDetailBean> mDataList = new ArrayList<>();
+    private String mSiteCode;
+
+    private String mContainerCode;
+
+    private List<ContainerGoodsBean> mContainerGoodsList;
+
+    private List<ContainerGoodsBean> mDataList = new ArrayList<>();
+
+    private ContainerGoodsBean currentGoodsBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner_out_stock);
 
-        tvFeedBoxNo = findViewById(R.id.tv_feed_box_no);
+        mSiteCode = getIntent().getStringExtra(Constants.SITE_CODE_KEY);
+        mContainerCode = getIntent().getStringExtra(Constants.CONTAINER_CODE_KEY);
+        String cgd = getIntent().getStringExtra(Constants.CONTAINER_GOODS_DATA_KEY);
+        if (!TextUtils.isEmpty(cgd)) {
+            mContainerGoodsList = JSONObject.parseArray(cgd, ContainerGoodsBean.class);
+        }
+
+        mDataList.addAll(mContainerGoodsList);
+
+        tvContainerNo = findViewById(R.id.tv_container_no);
         tvCxNo = findViewById(R.id.tv_cx_no);
+        etOutCount = findViewById(R.id.et_out_count);
         tvScanSerialTag = findViewById(R.id.tv_scan_serial_tag);
         rvContent = findViewById(R.id.rv_content);
+        tvScanner = findViewById(R.id.tv_scanner);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_scanner).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
@@ -53,10 +93,63 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-
+                if (!TextUtils.isEmpty(message)) {
+                    currentGoodsBean = findGoodsByCode(message);
+                    if (currentGoodsBean != null) {
+                        setGoodsInfoToView(currentGoodsBean);
+                    } else {
+                        ToastUtils.show("容器中没有找到该商品");
+                    }
+                }
             }
         });
 
+        setBaseDataToView();
+    }
+
+    private ContainerGoodsBean findGoodsByCode(String code) {
+        if (NullUtils.isNotEmpty(mDataList)) {
+            for (ContainerGoodsBean bean : mDataList) {
+                if (code.equals(bean.item_Code))
+                    return bean;
+            }
+        }
+        return null;
+    }
+
+    private void setBaseDataToView() {
+        tvContainerNo.setText(mContainerCode);
+
+        goodsAdapter.notifyDataSetChanged();
+    }
+
+    private void setGoodsInfoToView(ContainerGoodsBean goodsBean) {
+        tvCxNo.setText(goodsBean.item_Code);
+
+        if ("1".equals(goodsBean.is_SN)) {
+            etOutCount.setEnabled(false);
+            tvScanner.setEnabled(true);
+            tvScanSerialTag.setSelected(true);
+            toSnScanner();
+        } else {
+            etOutCount.setEnabled(true);
+            tvScanner.setEnabled(false);
+            tvScanSerialTag.setSelected(false);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_SERIAL_CODE) {
+                String snData = data.getStringExtra(Constants.SN_CODE_DATA_KEY);
+                snData = TextUtils.isEmpty(snData) ? "" : snData;
+                List<String> snList = JSONObject.parseArray(snData, String.class);
+                if (currentGoodsBean != null)
+                    currentGoodsBean.snList = snList;
+            }
+        }
     }
 
     @Override
@@ -66,13 +159,61 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                 finish();
                 break;
             case R.id.tv_scanner:
-                Intent intent = new Intent(this, SerialNumScannerActivity.class);
-                startActivityForResult(intent, RESULT_FIRST_USER);
+                toSnScanner();
                 break;
             case R.id.tv_save:
                 //确认拣货
-
+                confirm();
                 break;
         }
     }
+
+    private void toSnScanner() {
+        Intent intent = new Intent(this, SerialNumScannerActivity.class);
+        intent.putExtra(Constants.SN_CODE_DATA_KEY, JSONObject.toJSONString(currentGoodsBean.snList));
+        startActivityForResult(intent, RESULT_FIRST_USER);
+    }
+
+    private void confirm() {
+        OutStockConfirmPresenter presenter = new OutStockConfirmPresenter(this
+                , new NetResultListener() {
+            @Override
+            public void loadSuccess(Object o) {
+                ToastUtils.show("拣货成功");
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ToastUtils.show(exception.getErrorMsg());
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+        presenter.save(mSiteCode, AccountManger.getInstance().getUserCode(), buildData());
+    }
+
+    private JSONObject buildData() {
+        JSONObject object = null;
+        if (currentGoodsBean != null) {
+            object = JSONObject.parseObject(JSONObject.toJSONString(currentGoodsBean));
+
+            if (NullUtils.isNotEmpty(currentGoodsBean.snList)) {
+                JSONArray snA = new JSONArray();
+                for (String sn : currentGoodsBean.snList) {
+                    snA.add(sn);
+                }
+                object.put("SNList", snA);
+            }
+        }
+        return object;
+    }
+
 }

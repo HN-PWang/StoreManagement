@@ -1,44 +1,46 @@
 package com.mr.storemanagement.presenter;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
-import com.mr.storemanagement.bean.GetTaskBean;
 
 import io.reactivex.Observable;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
-/**
- * @auther: pengwang
- * @date: 2022/6/21
- * @email: 1929774468@qq.com
- * @description: 领取任务
- */
-public class GetTaskPresenter extends SMBasePresenter<String> {
+public class OutStockConfirmPresenter extends SMBasePresenter<String> {
 
     private String mSiteCode;
     private String mUserCode;
 
-    public GetTaskPresenter(BaseActivity baseActivity, NetResultListener resultListener
+    private RequestBody mRequestBody;
+
+    public OutStockConfirmPresenter(BaseActivity baseActivity, NetResultListener resultListener
             , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void getTask(String SiteCode, String UserCode) {
-        mSiteCode = SiteCode;
-        mUserCode = UserCode;
+    public void save(String siteCode, String userCode, JSONObject data) {
+        mSiteCode = siteCode;
+
+        mUserCode = userCode;
+
+        mRequestBody = RequestBody.create(MediaType.parse("application/json"), data.toString());
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getTaskList(mSiteCode, mUserCode);
+        return netModel.checkConfirm(mSiteCode, mUserCode, mRequestBody);
     }
 
     @Override
     protected Class<String> getEntityClass() {
         return null;
     }
+
 }

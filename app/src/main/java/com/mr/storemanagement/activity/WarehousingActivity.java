@@ -56,7 +56,7 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
-        siteChooseHelper = new SiteChooseHelper(this);
+        siteChooseHelper = new SiteChooseHelper(this, false);
         siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
             @Override
             public void onClick(SiteBean site) {

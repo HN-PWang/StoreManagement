@@ -8,8 +8,11 @@ package com.mr.storemanagement.bean;
  */
 public class GetTaskBean {
 
-    public String no;
-    public String start_location;
-    public String current_location;
+    public String id;
+    public String container_code;
+    public String fromlocation;
+    public String tolocation;
+    public String currlocation;
+    public String isArrive;
 
 }
