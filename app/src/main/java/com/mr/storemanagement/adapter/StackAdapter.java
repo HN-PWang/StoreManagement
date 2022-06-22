@@ -37,9 +37,9 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
     public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
         StackBean item = mDataList.get(position);
 
-        holder.tvNo.setText(item.copiesCode);
-        holder.tvCount.setText(item.availableNum + "/" + item.systemNum);
-        holder.tvSerialCode.setText(item.serialCode);
+        holder.tvNo.setText(item.item_Code);
+        holder.tvCount.setText(item.available_qty + "/" + item.real_qty);
+        holder.tvSerialCode.setText(item.product_batch);
     }
 
     @Override

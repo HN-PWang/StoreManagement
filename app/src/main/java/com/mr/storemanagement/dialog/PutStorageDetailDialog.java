@@ -13,14 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mr.lib_base.network.SMException;
-import com.mr.lib_base.network.listener.NetLoadingListener;
-import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.PutStorageDetailAdapter;
 import com.mr.storemanagement.bean.AsnDetailBean;
-import com.mr.storemanagement.bean.PutStorageBean;
-import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
+import com.mr.storemanagement.util.DataUtil;
+import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +58,10 @@ public class PutStorageDetailDialog extends Dialog implements View.OnClickListen
 
         tvStackCount = findViewById(R.id.tv_stack_count);
         rvPutStorage = findViewById(R.id.rv_put_storage);
+        findViewById(R.id.tv_clear).setOnClickListener(this);
 
-        mDataList.addAll(dataList);
+        if (NullUtils.isNotEmpty(dataList))
+            mDataList.addAll(dataList);
 
         storageDetailAdapter = new PutStorageDetailAdapter(context, mDataList);
         rvPutStorage.setLayoutManager(new LinearLayoutManager(context));
@@ -76,6 +75,22 @@ public class PutStorageDetailDialog extends Dialog implements View.OnClickListen
                 }
             }
         });
+
+        String countStr = "入库明细：[" + getFinishQuantity() + "/" + mDataList.size() + "]";
+        tvStackCount.setText(countStr);
+    }
+
+    private int getFinishQuantity() {
+        int finishQuantity = 0;
+        if (NullUtils.isNotEmpty(mDataList)) {
+            for (AsnDetailBean bean : mDataList) {
+                int q = bean.quantity;
+                int fq = DataUtil.getInt(bean.finish_qty);
+                if (q != 0 && q == fq)
+                    finishQuantity = finishQuantity++;
+            }
+        }
+        return finishQuantity;
     }
 
     @Override

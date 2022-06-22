@@ -53,6 +53,13 @@ public interface ApiService {
             , @Path("container_code") String container_code, @Path("usercode") String usercode);
 
     /**
+     * 回库扫描
+     */
+    @GET("api/Mobile/SetContainerBackToLocation/{ContainerCode}/{UserCode}")
+    Observable<ResponseBody> setContainerBackToLocation(@HeaderMap Map<String, String> header
+            , @Path("ContainerCode") String ContainerCode, @Path("UserCode") String UserCode);
+
+    /**
      * 绑定库位
      */
     @GET("api/Mobile/SetLocationBindRfid/{LocationCode}/{Rfid}/{UserCode}")
@@ -63,9 +70,9 @@ public interface ApiService {
     /**
      * 库存查询
      */
-    @GET("api/Mobile/GetInventoryList/{asnCode}")
+    @GET("api/Mobile/GetStockInfo/{value}")
     Observable<ResponseBody> getInventoryList(@HeaderMap Map<String, String> header
-            , @Path("asnCode") String asnCode);
+            , @Path("value") String value);
 
     /**
      * 获取料箱号信息

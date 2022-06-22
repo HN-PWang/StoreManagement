@@ -2,9 +2,14 @@ package com.mr.storemanagement.bean;
 
 public class StackBean {
 
-    public String serialCode;
-    public String copiesCode;
-    public String systemNum;
-    public String availableNum;
+    public String guid;
+    public String item_Code;
+    public String container_code;
+    public String location_code;
+    public String real_qty;
+    public String available_qty;
+    public String order_occupy_qty;
+    public String product_batch;
+    public String is_SN;
 
 }

@@ -12,9 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="100dp"
         android:text="站点"
         android:textColor="#333333"
+        android:textSize="17dp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,36 +25,42 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/re_f5f5f5_radius_12dp"
         android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
         android:gravity="center_vertical"
+        android:hint="点击这里选站点"
         android:paddingHorizontal="12dp"
         android:textColor="#333333"
+        android:textColorHint="#C6C6C6"
         app:layout_constraintTop_toBottomOf="@id/tv_site_title" />
 
     <TextView
-        android:id="@+id/tv_order_no_title"
+        android:id="@+id/tv_asn_code_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="60dp"
-        android:text="盘点单号"
+        android:text="入库序号"
         android:textColor="#333333"
+        android:textSize="17dp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_search_site" />
 
     <TextView
-        android:id="@+id/et_order_no"
+        android:id="@+id/tv_asn_code"
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/re_f5f5f5_radius_12dp"
         android:gravity="center_vertical"
+        android:hint="点击这里选择序号"
         android:paddingHorizontal="12dp"
         android:textColor="#333333"
-        app:layout_constraintTop_toBottomOf="@id/tv_order_no_title" />
+        android:textColorHint="#C6C6C6"
+        app:layout_constraintTop_toBottomOf="@id/tv_asn_code_title" />
 
     <TextView
         android:id="@+id/tv_back"
@@ -66,20 +74,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_select" />
-
-    <TextView
-        android:id="@+id/tv_select"
-        android:layout_width="0dp"
-        android:layout_height="49dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:text="选择盘点库位"
-        android:textColor="#333333"
-        android:textSize="14dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/tv_back"
         app:layout_constraintRight_toLeftOf="@id/tv_next" />
 
     <TextView
@@ -93,7 +87,7 @@
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/tv_select"
+        app:layout_constraintLeft_toRightOf="@id/tv_back"
         app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

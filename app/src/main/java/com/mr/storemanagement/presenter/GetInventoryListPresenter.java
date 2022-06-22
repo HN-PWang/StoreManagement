@@ -15,22 +15,22 @@ import okhttp3.ResponseBody;
  */
 public class GetInventoryListPresenter extends SMBasePresenter<StackBean> {
 
-    private String mAsnCode;
+    private String mCode;
 
     public GetInventoryListPresenter(BaseActivity baseActivity, NetResultListener resultListener
             , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void getData(String asnCode) {
-        mAsnCode = asnCode;
+    public void getData(String locationCode) {
+        mCode = locationCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getInventoryList(mAsnCode);
+        return netModel.getInventoryList(mCode);
     }
 
     @Override

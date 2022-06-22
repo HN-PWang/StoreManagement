@@ -105,6 +105,8 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
         });
 
         setBaseDataToView();
+
+        setOutCount();
     }
 
     private ContainerGoodsBean findGoodsByCode(String code) {
@@ -148,8 +150,18 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                 List<String> snList = JSONObject.parseArray(snData, String.class);
                 if (currentGoodsBean != null)
                     currentGoodsBean.snList = snList;
+
+                setOutCount();
             }
         }
+    }
+
+    private void setOutCount() {
+        String count = "0";
+        if (currentGoodsBean != null && NullUtils.isNotEmpty(currentGoodsBean.snList)) {
+            count = String.valueOf(currentGoodsBean.snList.size());
+        }
+        etOutCount.setText(count);
     }
 
     @Override
@@ -171,7 +183,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
     private void toSnScanner() {
         Intent intent = new Intent(this, SerialNumScannerActivity.class);
         intent.putExtra(Constants.SN_CODE_DATA_KEY, JSONObject.toJSONString(currentGoodsBean.snList));
-        startActivityForResult(intent, RESULT_FIRST_USER);
+        startActivityForResult(intent, REQUEST_SERIAL_CODE);
     }
 
     private void confirm() {

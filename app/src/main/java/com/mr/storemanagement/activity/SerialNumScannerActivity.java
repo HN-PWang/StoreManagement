@@ -63,7 +63,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                if (!TextUtils.isEmpty(message)) {
+                if (!TextUtils.isEmpty(message) && !mDataList.contains(message)) {
                     mDataList.add(message);
                     serialNumAdapter.notifyDataSetChanged();
                     setCount();
@@ -74,7 +74,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
         setOnRfIdListener(new OnRfIdListener() {
             @Override
             public void onRFIdDataBack(String message) {
-                if (!TextUtils.isEmpty(message)) {
+                if (!TextUtils.isEmpty(message) && !mDataList.contains(message)) {
                     mDataList.add(message);
                     serialNumAdapter.notifyDataSetChanged();
                     setCount();

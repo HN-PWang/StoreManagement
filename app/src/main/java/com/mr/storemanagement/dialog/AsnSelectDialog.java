@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,28 +18,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.SearchOrderAdapter;
-import com.mr.storemanagement.bean.OrderBean;
+import com.mr.storemanagement.bean.AsnCodeBean;
 import com.mr.storemanagement.listener.OnAdapterItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class OrderNoSelectDialog extends Dialog {
+public class AsnSelectDialog extends Dialog {
 
-    private RecyclerView rvOrder;
+    private RecyclerView rvAsnCode;
 
     private EditText etSearch;
 
     private OnOrderSelectListener orderSelectListener;
 
-    private List<OrderBean> showOrderBeans = new ArrayList<>();
+    private List<AsnCodeBean> showAsnCodeBeans = new ArrayList<>();
 
     public void setOrderSelectListener(OnOrderSelectListener orderSelectListener) {
         this.orderSelectListener = orderSelectListener;
     }
 
-    public OrderNoSelectDialog(@NonNull Context context, List<OrderBean> orderBeans) {
+    public AsnSelectDialog(@NonNull Context context, List<AsnCodeBean> asnCodeBeans) {
         super(context, R.style.BottomDialogStyle);
         setContentView(R.layout.dialog_order_no_select_layout);
         Window window = getWindow();
@@ -52,27 +51,27 @@ public class OrderNoSelectDialog extends Dialog {
         setCancelable(true);
         setCanceledOnTouchOutside(true);
 
-        showOrderBeans.addAll(orderBeans);
+        showAsnCodeBeans.addAll(asnCodeBeans);
 
         etSearch = findViewById(R.id.et_search);
-        rvOrder = findViewById(R.id.tv_order);
-        SearchOrderAdapter orderAdapter = new SearchOrderAdapter(getContext(), showOrderBeans);
-        rvOrder.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvOrder.setAdapter(orderAdapter);
+        rvAsnCode = findViewById(R.id.tv_order);
+        SearchOrderAdapter orderAdapter = new SearchOrderAdapter(getContext(), showAsnCodeBeans);
+        rvAsnCode.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvAsnCode.setAdapter(orderAdapter);
 
         etSearch.addTextChangedListener(new AfterTextChangedListener() {
             @Override
             public void afterChanged(Editable editable) {
                 String content = editable.toString();
                 if (!TextUtils.isEmpty(content)) {
-                    showOrderBeans.clear();
-                    for (OrderBean bean : orderBeans) {
+                    showAsnCodeBeans.clear();
+                    for (AsnCodeBean bean : asnCodeBeans) {
                         if (bean.asn_code.contains(content)) {
-                            showOrderBeans.add(bean);
+                            showAsnCodeBeans.add(bean);
                         }
                     }
                 } else {
-                    showOrderBeans.addAll(orderBeans);
+                    showAsnCodeBeans.addAll(asnCodeBeans);
                 }
                 orderAdapter.notifyDataSetChanged();
             }
@@ -88,8 +87,8 @@ public class OrderNoSelectDialog extends Dialog {
         orderAdapter.setItemClickListener(new OnAdapterItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (orderSelectListener != null && orderBeans != null) {
-                    orderSelectListener.onSelect(orderBeans.get(position));
+                if (orderSelectListener != null && asnCodeBeans != null) {
+                    orderSelectListener.onSelect(asnCodeBeans.get(position));
                 }
                 dismiss();
             }
@@ -97,7 +96,7 @@ public class OrderNoSelectDialog extends Dialog {
     }
 
     public interface OnOrderSelectListener {
-        void onSelect(OrderBean siteBean);
+        void onSelect(AsnCodeBean siteBean);
     }
 
 }

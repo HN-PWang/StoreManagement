@@ -17,6 +17,7 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
 import com.mr.storemanagement.dialog.CheckSnDialog;
+import com.mr.storemanagement.dialog.ConfirmDialog;
 import com.mr.storemanagement.dialog.PutStorageDetailDialog;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AsnCloseOrderPresenter;
@@ -51,9 +52,17 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private CheckSnDialog mCheckSnDialog;
 
+    private ConfirmDialog mConfirmDialog;
+
     private String site_code;
     private String asn_code;
     private String mItemCode;
+
+    private StoreInfoBean currentStore;
+
+    private String mQty;//大概是商品数量吧
+
+    private List<String> snCodeList = new ArrayList<>();
 
     private List<StoreInfoBean> storeInfoBeans = new ArrayList<>();
 
@@ -77,11 +86,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         findViewById(R.id.tv_detail_list).setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
-        findViewById(R.id.tv_scanner).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
-
-        tvSite.setText(site_code);
-        tvOrder.setText(asn_code);
 
         setOnScannerListener(new OnScannerListener() {
             @Override
@@ -91,7 +96,14 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             }
         });
 
+        setBaseDataToView();
+
         checkAsn();
+    }
+
+    private void setBaseDataToView() {
+        tvSite.setText(site_code);
+        tvOrder.setText(asn_code);
     }
 
     private void checkAsn() {
@@ -180,12 +192,14 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         presenter.close(asn_code, AccountManger.getInstance().getUserCode());
     }
 
-    private void saveDeliveryState() {
+    private void saveDeliveryState(boolean isForceComplete) {
         AsnSaveDetailPresenter presenter = new AsnSaveDetailPresenter(this
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
-
+                if (isForceComplete) {
+                    forceCompleteDelivery();
+                }
             }
 
             @Override
@@ -203,6 +217,14 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 dismissLoadingDialog();
             }
         });
+
+        if (currentStore == null) {
+            ToastUtils.show("没有可执行收货容器");
+            return;
+        }
+
+        presenter.save(asn_code, currentStore.container_code, AccountManger.getInstance().getUserCode()
+                , currentStore.keyid, mQty, snCodeList);
     }
 
     private void getPutStorageDetail() {
@@ -293,28 +315,36 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         }
     }
 
+    private void showConfirmDialog() {
+        mConfirmDialog = new ConfirmDialog(this, "确认收货完成吗？", "取消"
+                , "确认", new ConfirmDialog.OnConfirmClickListener() {
+            @Override
+            public void onClick(boolean confirm) {
+                if (confirm) {
+                    saveDeliveryState(true);
+                }
+            }
+        });
+        mConfirmDialog.show();
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_back:
                 finish();
                 break;
-            case R.id.tv_scanner:
-                //扫描序列号
-                Intent intent = new Intent(this, SerialNumScannerActivity.class);
-                startActivityForResult(intent, RESULT_FIRST_USER);
-                break;
             case R.id.tv_save:
                 //保存
-                saveDeliveryState();
+                saveDeliveryState(false);
                 break;
             case R.id.tv_detail_list:
                 //收货明细列表
                 getPutStorageDetail();
                 break;
             case R.id.tv_complete:
-                //强制完成收货
-                forceCompleteDelivery();
+                //强制完成收货,先进行二次确认,然后调用保存接口
+                showConfirmDialog();
                 break;
         }
     }

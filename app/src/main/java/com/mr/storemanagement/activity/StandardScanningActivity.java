@@ -20,13 +20,16 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
 
     private static Class<?> mNextAct;
 
+    private static String mHint;
+
     private String mScanningCode;
 
-    public static void actionIntent(Context context, Class<?> nextAct) {
+    public static void actionIntent(Context context, Class<?> nextAct, String hint) {
         Intent intent = new Intent(context, StandardScanningActivity.class);
         context.startActivity(intent);
 
         mNextAct = nextAct;
+        mHint = hint;
     }
 
     @Override
@@ -37,6 +40,8 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
         tvCode = findViewById(R.id.tv_code);
 
         findViewById(R.id.tv_back).setOnClickListener(this);
+
+        tvCode.setHint(mHint);
 
         setOnScannerListener(new OnScannerListener() {
             @Override

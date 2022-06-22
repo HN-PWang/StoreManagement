@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
-import com.mr.storemanagement.bean.OrderBean;
+import com.mr.storemanagement.bean.AsnCodeBean;
 import com.mr.storemanagement.listener.OnAdapterItemClickListener;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class SearchOrderAdapter extends RecyclerView.Adapter<SearchOrderAdapter.
 
     private Context mContext;
 
-    private List<OrderBean> mDataList;
+    private List<AsnCodeBean> mDataList;
 
     private OnAdapterItemClickListener itemClickListener;
 
@@ -28,7 +28,7 @@ public class SearchOrderAdapter extends RecyclerView.Adapter<SearchOrderAdapter.
         this.itemClickListener = itemClickListener;
     }
 
-    public SearchOrderAdapter(Context context, List<OrderBean> dateList) {
+    public SearchOrderAdapter(Context context, List<AsnCodeBean> dateList) {
         this.mContext = context;
         this.mDataList = dateList;
     }
@@ -43,7 +43,7 @@ public class SearchOrderAdapter extends RecyclerView.Adapter<SearchOrderAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        OrderBean item = mDataList.get(position);
+        AsnCodeBean item = mDataList.get(position);
 
         holder.tvName.setText(item.asn_code);
 

@@ -4,30 +4,38 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
-import com.mr.storemanagement.bean.AsnCodeBean;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 
-public class GetAsnPresenter extends SMBasePresenter<AsnCodeBean> {
+/**
+ * 回库扫描
+ */
+public class SetContainerBackPresenter extends SMBasePresenter<String> {
 
-    public GetAsnPresenter(BaseActivity baseActivity, NetResultListener resultListener
+    private String mContainerCode;
+
+    private String mUserCode;
+
+    public SetContainerBackPresenter(BaseActivity baseActivity, NetResultListener resultListener
             , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void getAsn() {
+    public void allocate(String containerCode, String userCode) {
+        mContainerCode = containerCode;
+        mUserCode = userCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getAsnList();
+        return netModel.setContainerBackToLocation(mContainerCode, mUserCode);
     }
 
     @Override
-    protected Class<AsnCodeBean> getEntityClass() {
-        return AsnCodeBean.class;
+    protected Class<String> getEntityClass() {
+        return null;
     }
 }

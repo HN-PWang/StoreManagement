@@ -354,9 +354,6 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SCN_CUST_ACTION_SCODE);
-        intentFilter.addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
-        intentFilter.addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
-        intentFilter.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
         intentFilter.addAction("com.rscja.scanner.action.scanner.RFID");
 
         registerReceiver(mScanDataReceiver, intentFilter);

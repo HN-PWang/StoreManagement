@@ -10,10 +10,9 @@ import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
-import com.mr.storemanagement.bean.OrderBean;
+import com.mr.storemanagement.bean.AsnCodeBean;
 import com.mr.storemanagement.bean.SiteBean;
-import com.mr.storemanagement.dialog.OrderNoSelectDialog;
-import com.mr.storemanagement.dialog.SiteSearchDialog;
+import com.mr.storemanagement.dialog.AsnSelectDialog;
 import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.presenter.GetAsnPresenter;
 
@@ -26,19 +25,16 @@ import java.util.List;
 public class WarehousingActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView tvSearchSite;
-    private TextView tvSearchOrder;
 
-    private List<SiteBean> mSiteBeans = new ArrayList<>();
+    private TextView tvSearchAsn;
 
-    private List<OrderBean> mOrderBeans = new ArrayList<>();
+    private List<AsnCodeBean> mAsnCodeBeans = new ArrayList<>();
 
-    private SiteSearchDialog siteSearchDialog;
-
-    private OrderNoSelectDialog orderNoSelectDialog;
+    private AsnSelectDialog asnSelectDialog;
 
     private SiteBean currentSiteBean = null;
 
-    private OrderBean currentOrderBean = null;
+    private AsnCodeBean currentAsnCodeBean = null;
 
     private SiteChooseHelper siteChooseHelper;
 
@@ -48,12 +44,11 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_warehousing);
 
         tvSearchSite = findViewById(R.id.tv_search_site);
-        tvSearchOrder = findViewById(R.id.et_order_no);
+        tvSearchAsn = findViewById(R.id.tv_asn_code);
 
         tvSearchSite.setOnClickListener(this);
-        tvSearchOrder.setOnClickListener(this);
+        tvSearchAsn.setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
-        findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
         siteChooseHelper = new SiteChooseHelper(this, false);
@@ -77,12 +72,12 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
 
     private void getAsn() {
         GetAsnPresenter presenter = new GetAsnPresenter(this
-                , new NetResultListener<List<OrderBean>>() {
+                , new NetResultListener<List<AsnCodeBean>>() {
             @Override
-            public void loadSuccess(List<OrderBean> beans) {
+            public void loadSuccess(List<AsnCodeBean> beans) {
                 if (beans != null) {
-                    mOrderBeans.clear();
-                    mOrderBeans.addAll(beans);
+                    mAsnCodeBeans.clear();
+                    mAsnCodeBeans.addAll(beans);
                 }
             }
 
@@ -94,17 +89,17 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
         presenter.getAsn();
     }
 
-    private void showOrderDialog() {
-        if (orderNoSelectDialog == null || !orderNoSelectDialog.isShowing()) {
-            orderNoSelectDialog = new OrderNoSelectDialog(this, mOrderBeans);
-            orderNoSelectDialog.setOrderSelectListener(new OrderNoSelectDialog.OnOrderSelectListener() {
+    private void showAsnSelectDialog() {
+        if (asnSelectDialog == null || !asnSelectDialog.isShowing()) {
+            asnSelectDialog = new AsnSelectDialog(this, mAsnCodeBeans);
+            asnSelectDialog.setOrderSelectListener(new AsnSelectDialog.OnOrderSelectListener() {
                 @Override
-                public void onSelect(OrderBean orderBean) {
-                    currentOrderBean = orderBean;
+                public void onSelect(AsnCodeBean asnCodeBean) {
+                    currentAsnCodeBean = asnCodeBean;
                     setOrderInfo();
                 }
             });
-            orderNoSelectDialog.show();
+            asnSelectDialog.show();
         }
     }
 
@@ -115,8 +110,8 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setOrderInfo() {
-        if (currentOrderBean != null) {
-            tvSearchOrder.setText(currentOrderBean.asn_code);
+        if (currentAsnCodeBean != null) {
+            tvSearchAsn.setText(currentAsnCodeBean.asn_code);
         }
     }
 
@@ -126,14 +121,11 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_search_site:
                 siteChooseHelper.selectSite();
                 break;
-            case R.id.et_order_no:
-                showOrderDialog();
+            case R.id.tv_asn_code:
+                showAsnSelectDialog();
                 break;
             case R.id.tv_back:
                 finish();
-                break;
-            case R.id.tv_select:
-                showOrderDialog();
                 break;
             case R.id.tv_next:
                 intoScanning();
@@ -146,13 +138,13 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
             ToastUtils.show("站点信息不能为空");
             return;
         }
-        if (currentOrderBean == null) {
+        if (currentAsnCodeBean == null) {
             ToastUtils.show("单号信息不能为空");
             return;
         }
         Intent intent = new Intent(this, ScannerPutStockActivity.class);
         intent.putExtra("site_key", currentSiteBean.site_code);
-        intent.putExtra("ans_key", currentOrderBean.asn_code);
+        intent.putExtra("ans_key", currentAsnCodeBean.asn_code);
         startActivity(intent);
     }
 

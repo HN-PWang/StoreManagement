@@ -15,6 +15,9 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.bean.UserInfoBean;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AllocateLocationPresenter;
+import com.mr.storemanagement.presenter.SetContainerBackPresenter;
+
+import java.util.Arrays;
 
 /**
  * 回库扫描页
@@ -29,6 +32,8 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
 
     private String mContainerCode;
 
+    private String[] datas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,8 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
 
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_confirm).setOnClickListener(this);
+
+        tvContainer.setText(mContainerCode);
 
         allocate();
     }
@@ -58,12 +65,27 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void allocate() {
-        AllocateLocationPresenter presenter = new AllocateLocationPresenter(this
-                , new NetResultListener() {
-            @Override
-            public void loadSuccess(Object o) {
+    private void setDataToView() {
+        if (datas != null) {
+            if (datas.length > 0) {
+                tvShelfArea.setText(datas[0]);
+            }
+            if (datas.length > 1) {
+                tvShelfLocation.setText(datas[1]);
+            }
+        }
+    }
 
+    private void allocate() {
+        SetContainerBackPresenter presenter = new SetContainerBackPresenter(this
+                , new NetResultListener<String>() {
+            @Override
+            public void loadSuccess(String date) {
+                if (!TextUtils.isEmpty(date)) {
+                    datas = date.split(",");
+                    setDataToView();
+                }
+                ToastUtils.show("操作成功");
             }
 
             @Override

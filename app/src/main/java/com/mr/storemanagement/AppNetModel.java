@@ -59,6 +59,14 @@ public class AppNetModel extends BaseModel {
     }
 
     /**
+     * 回库扫描
+     */
+    public Observable<ResponseBody> setContainerBackToLocation(String containerCode, String userCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.setContainerBackToLocation(getHeader(), containerCode, userCode);
+    }
+
+    /**
      * 库位绑定rfid
      */
     public Observable<ResponseBody> bindLocation(String locationCode, String rfid, String userCode) {
@@ -69,9 +77,9 @@ public class AppNetModel extends BaseModel {
     /**
      * 查询库存信息
      */
-    public Observable<ResponseBody> getInventoryList(String asnCode) {
+    public Observable<ResponseBody> getInventoryList(String locationCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.getInventoryList(getHeader(), asnCode);
+        return service.getInventoryList(getHeader(), locationCode);
     }
 
     /**
