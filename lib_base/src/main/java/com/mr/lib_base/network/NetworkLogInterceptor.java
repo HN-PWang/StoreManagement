@@ -2,6 +2,8 @@ package com.mr.lib_base.network;
 
 import android.text.TextUtils;
 
+import com.mr.lib_base.util.SMLog;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -26,7 +28,7 @@ public class NetworkLogInterceptor implements Interceptor {
         Request request = chain.request();
         String url = request.url().toString();
         if ("GET".equalsIgnoreCase(request.method())) {
-//            VVICLog.i("*****GET请求*****" + url);
+            SMLog.i("*****GET请求*****" + url);
         } else if ("POST".equalsIgnoreCase(request.method())) {
             StringBuilder paramSB = new StringBuilder();
             String headerStr = getRequestHeaderString(request);
@@ -54,7 +56,7 @@ public class NetworkLogInterceptor implements Interceptor {
                     }
                 }
             }
-//            VVICLog.i("*****POST请求*****" + url + "\n" + paramSB.toString());
+            SMLog.i("*****POST请求*****" + url + "\n" + paramSB.toString());
         }
 
         // 响应内容处理
@@ -68,7 +70,7 @@ public class NetworkLogInterceptor implements Interceptor {
                 response.request().url().encodedPath() +
                 "）响应内容===>>>" +
                 responseStr;
-//        VVICLog.i(responseSB);
+        SMLog.i(responseSB);
         ResponseBody newBody = ResponseBody.create(contentType, responseStr);
         return response.newBuilder().body(newBody).build();
     }

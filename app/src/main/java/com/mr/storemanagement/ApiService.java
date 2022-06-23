@@ -8,6 +8,7 @@ import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -136,7 +137,7 @@ public interface ApiService {
     /**
      * 拣货确认,提交数据到后台保存
      */
-    @GET("api/Mobile/CheckConfirmByContainerAndItem/{site_code}/{usercode}")
+    @POST("api/Mobile/CheckConfirmByContainerAndItem/{site_code}/{usercode}")
     Observable<ResponseBody> checkConfirm(@HeaderMap Map<String, String> header
             , @Path("site_code") String siteCode, @Path("usercode") String usercode
             , @Body RequestBody body);

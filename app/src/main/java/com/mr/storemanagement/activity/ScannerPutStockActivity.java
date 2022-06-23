@@ -3,18 +3,22 @@ package com.mr.storemanagement.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnDetailBean;
+import com.mr.storemanagement.bean.FeedBoxBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
 import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.dialog.ConfirmDialog;
@@ -26,6 +30,7 @@ import com.mr.storemanagement.presenter.GetAsnCheckPresenter;
 import com.mr.storemanagement.presenter.GetAsnDetailPresenter;
 import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
 import com.mr.storemanagement.presenter.GetFeedBoxPresenter;
+import com.mr.storemanagement.util.DataUtil;
 import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
@@ -44,6 +49,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView etCxNo;//册序号
     private TextView tvCalled;//已呼叫的料箱标签
     private TextView etFeedBoxNo;//料箱
+    private TextView tvScanSerial;//扫描料箱标记
     private TextView tvScanSerialTag;//扫描料箱标记
     private TextView etCount;//数量
     private TextView tvCollectedCount;//待收数量
@@ -59,6 +65,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private String mItemCode;
 
     private StoreInfoBean currentStore;
+
+    private FeedBoxBean mFeedBoxBean;
 
     private String mQty;//大概是商品数量吧
 
@@ -79,10 +87,12 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         etCxNo = findViewById(R.id.et_cx_no);
         tvCalled = findViewById(R.id.tv_called);
         etFeedBoxNo = findViewById(R.id.et_feed_box_no);
+        tvScanSerial = findViewById(R.id.tv_scan_serial);
         tvScanSerialTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
         tvCollectedCount = findViewById(R.id.tv_collected_count);
 
+        findViewById(R.id.tv_scan_serial).setOnClickListener(this);
         findViewById(R.id.tv_detail_list).setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
@@ -104,6 +114,32 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private void setBaseDataToView() {
         tvSite.setText(site_code);
         tvOrder.setText(asn_code);
+    }
+
+    private void setFeedBoxDataToView() {
+        tvCalled.setText("已呼叫：" + mFeedBoxBean.container_code);
+        etFeedBoxNo.setText(mFeedBoxBean.container_code);
+        etCount.setText(String.valueOf(snCodeList.size()));
+
+        if ("1".equals(mFeedBoxBean.is_SN)) {
+            tvScanSerial.setEnabled(true);
+            etCount.setEnabled(false);
+            tvScanSerialTag.setSelected(true);
+
+            toSnScanner();
+        } else {
+            tvScanSerial.setEnabled(false);
+            etCount.setEnabled(true);
+            tvScanSerialTag.setSelected(false);
+        }
+    }
+
+    //设置待收数量
+    private void setAwaitCount() {
+        if (mFeedBoxBean != null) {
+            int quantity = DataUtil.getInt(mFeedBoxBean.quantity);
+            tvCollectedCount.setText(String.valueOf(quantity - snCodeList.size()));
+        }
     }
 
     private void checkAsn() {
@@ -137,10 +173,14 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private void getFeedBox() {
         GetFeedBoxPresenter presenter = new GetFeedBoxPresenter(this
-                , new NetResultListener<String>() {
+                , new NetResultListener<FeedBoxBean>() {
             @Override
-            public void loadSuccess(String s) {
-
+            public void loadSuccess(FeedBoxBean boxBean) {
+                if (boxBean != null) {
+                    mFeedBoxBean = boxBean;
+                    setFeedBoxDataToView();
+                    setAwaitCount();
+                }
             }
 
             @Override
@@ -290,7 +330,11 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_SERIAL_CODE) {
+                String snData = data.getStringExtra(Constants.SN_CODE_DATA_KEY);
+                snData = TextUtils.isEmpty(snData) ? "" : snData;
+                snCodeList = JSONObject.parseArray(snData, String.class);
 
+                setAwaitCount();
             }
         }
     }
@@ -328,6 +372,12 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         mConfirmDialog.show();
     }
 
+    private void toSnScanner() {
+        Intent intent = new Intent(this, SerialNumScannerActivity.class);
+        intent.putExtra(Constants.SN_CODE_DATA_KEY, JSONObject.toJSONString(snCodeList));
+        startActivityForResult(intent, REQUEST_SERIAL_CODE);
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -345,6 +395,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             case R.id.tv_complete:
                 //强制完成收货,先进行二次确认,然后调用保存接口
                 showConfirmDialog();
+                break;
+            case R.id.tv_scan_serial:
+                toSnScanner();
                 break;
         }
     }

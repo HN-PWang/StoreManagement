@@ -38,8 +38,9 @@ public class RetrofitManager {
         if (okHttpClient == null) {
             synchronized (OkHttpClient.class) {
                 if (null == okHttpClient) {
+                    NetworkLogInterceptor logInterceptor = new NetworkLogInterceptor();
                     okHttpClient = new OkHttpClient.Builder()
-                            .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                            .addInterceptor(logInterceptor)
                             .connectTimeout(3000, TimeUnit.SECONDS)
                             .writeTimeout(3000, TimeUnit.SECONDS)
                             .readTimeout(3000, TimeUnit.SECONDS)
