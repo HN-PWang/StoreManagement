@@ -1,0 +1,5 @@
+
+
+store pwd StoreManagement
+alias key0
+pwd StoreManagement
