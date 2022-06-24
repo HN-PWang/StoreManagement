@@ -4,6 +4,7 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
+import com.mr.storemanagement.bean.FeedBoxBean;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -13,7 +14,7 @@ import okhttp3.ResponseBody;
  * @date: 2022/6/19
  * @description:
  */
-public class GetFeedBoxPresenter extends SMBasePresenter<String> {
+public class GetFeedBoxPresenter extends SMBasePresenter<FeedBoxBean> {
 
     private String mSiteCode;
     private String mAsnCode;
@@ -40,7 +41,7 @@ public class GetFeedBoxPresenter extends SMBasePresenter<String> {
     }
 
     @Override
-    protected Class<String> getEntityClass() {
-        return String.class;
+    protected Class<FeedBoxBean> getEntityClass() {
+        return FeedBoxBean.class;
     }
 }

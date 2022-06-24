@@ -129,7 +129,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
     private void setGoodsInfoToView(ContainerGoodsBean goodsBean) {
         tvCxNo.setText(goodsBean.item_Code);
 
-        if ("1".equals(goodsBean.is_SN)) {
+        if (1 == goodsBean.is_SN) {
             etOutCount.setEnabled(false);
             tvScanner.setEnabled(true);
             tvScanSerialTag.setSelected(true);
@@ -193,6 +193,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
             @Override
             public void loadSuccess(Object o) {
                 ToastUtils.show("拣货成功");
+                finish();
             }
 
             @Override

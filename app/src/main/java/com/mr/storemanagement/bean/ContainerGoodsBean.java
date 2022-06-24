@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ContainerGoodsBean {
 
-    public String id;
+    public Integer id;
     public String picktaskguid;
     public String so_code;
     public String site_code;
@@ -22,19 +22,19 @@ public class ContainerGoodsBean {
     public String barcode;
     public String item_name;
     public String item_batch_id;
-    public String request_Qty;
+    public Integer request_Qty;
     public String item_unit;
     public String product_batch;
-    public String status;
+    public Integer status;
     public String pick_time;
     public String pick_user;
-    public String pickedqty;
-    public String checkQty;
+    public Integer pickedqty;
+    public Integer checkQty;
     public String check_user;
-    public String is_SN;
-    public String is_danger;
-    public String is_fragile;
-    public String isArrive;
+    public Integer is_SN;
+    public Integer is_danger;
+    public Integer is_fragile;
+    public Integer isArrive;
     public List<String> snList;
 
 }

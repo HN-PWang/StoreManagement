@@ -107,7 +107,7 @@ public interface ApiService {
     /**
      * 保存数据并关闭当前容器。如果所有货都收完则会结束订单。 保存数据接口
      */
-    @GET("api/Mobile/AsnSaveDetail/{AsnCode}/{ContainerCode}/{UserCode}/{KeyId}/{Qty}")
+    @POST("api/Mobile/AsnSaveDetail/{AsnCode}/{ContainerCode}/{UserCode}/{KeyId}/{Qty}")
     Observable<ResponseBody> asnSaveDetail(@HeaderMap Map<String, String> header
             , @Path("AsnCode") String AsnCode, @Path("ContainerCode") String ContainerCode
             , @Path("UserCode") String UserCode, @Path("KeyId") String KeyId

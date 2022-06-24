@@ -12,6 +12,12 @@ public class DataUtil {
         return str;
     }
 
+    public static String getIntStr(Integer str) {
+        if (str == null)
+            return "0";
+        return String.valueOf(str);
+    }
+
     public static int getInt(String str) {
         int value = 0;
         if (TextUtils.isEmpty(str))
@@ -23,6 +29,14 @@ public class DataUtil {
             SMLog.i(e.toString());
         }
         return value;
+    }
+
+    public static int getInt(Integer v) {
+        int value = 0;
+        if (v == null)
+            return value;
+
+        return v;
     }
 
 }

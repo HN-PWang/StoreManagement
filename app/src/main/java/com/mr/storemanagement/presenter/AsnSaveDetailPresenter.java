@@ -66,6 +66,6 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<String> {
 
     @Override
     protected Class<String> getEntityClass() {
-        return String.class;
+        return null;
     }
 }
