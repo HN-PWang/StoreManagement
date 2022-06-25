@@ -2,11 +2,14 @@ package com.mr.storemanagement.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -26,7 +29,7 @@ import java.util.List;
  */
 public class PickingFeedBoxScannerActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvRdIdRead;
+    private EditText tvRdIdRead;
 
     private String mContainerCode;
 
@@ -49,6 +52,13 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
         findViewById(R.id.tv_rdid_read).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
+
+        tvRdIdRead.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+                mContainerCode = tvRdIdRead.getText().toString();
+            }
+        });
 
         setOnScannerListener(new OnScannerListener() {
             @Override

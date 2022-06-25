@@ -27,6 +27,7 @@
         android:background="@drawable/re_f5f5f5_radius_12dp"
         android:gravity="center_vertical"
         android:paddingHorizontal="12dp"
+        android:singleLine="true"
         android:textColor="#333333"
         android:textSize="14dp"
         app:layout_constraintTop_toBottomOf="@id/tv_name_title" />
@@ -50,10 +51,42 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/re_f5f5f5_radius_12dp"
         android:gravity="center_vertical"
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:paddingHorizontal="12dp"
+        android:singleLine="true"
         android:textColor="#333333"
         app:layout_constraintTop_toBottomOf="@id/tv_pwd_title" />
+
+    <EditText
+        android:id="@+id/et_change_url"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/re_f5f5f5_radius_12dp"
+        android:gravity="center_vertical"
+        android:hint="修改连接"
+        android:imeOptions="actionDone"
+        android:paddingHorizontal="12dp"
+        android:singleLine="true"
+        android:textColor="#333333"
+        android:textColorHint="#C6C6C6"
+        app:layout_constraintBottom_toTopOf="@id/tv_change_url" />
+
+    <TextView
+        android:id="@+id/tv_change_url"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="8dp"
+        android:background="#3296FA"
+        android:gravity="center"
+        android:text="修改连接"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/tv_version_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/tv_version_name"

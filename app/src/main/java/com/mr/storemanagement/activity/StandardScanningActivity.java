@@ -3,10 +3,16 @@ package com.mr.storemanagement.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mr.lib_base.AfterTextChangedListener;
+import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
@@ -16,7 +22,7 @@ import com.mr.storemanagement.base.BaseScannerActivity;
  */
 public class StandardScanningActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvCode;
+    private EditText tvCode;
 
     private static Class<?> mNextAct;
 
@@ -40,6 +46,7 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
         tvCode = findViewById(R.id.tv_code);
 
         findViewById(R.id.tv_back).setOnClickListener(this);
+        findViewById(R.id.tv_station).setOnClickListener(this);
 
         tvCode.setHint(mHint);
 
@@ -55,9 +62,31 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
                 }
             }
         });
+
+        tvCode.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+                mScanningCode = tvCode.getText().toString();
+            }
+        });
+
+        tvCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    toNextActivity();
+                }
+                return false;
+            }
+        });
     }
 
     private void toNextActivity() {
+        if (TextUtils.isEmpty(mScanningCode)) {
+            ToastUtils.show("请输入条码");
+            return;
+        }
+
         if (mNextAct != null) {
             Intent intent = new Intent(this, mNextAct);
             intent.putExtra(Constants.SCANNER_DATA_KEY, mScanningCode);
@@ -72,6 +101,9 @@ public class StandardScanningActivity extends BaseScannerActivity implements Vie
         switch (view.getId()) {
             case R.id.tv_back:
                 finish();
+                break;
+            case R.id.tv_station:
+                toNextActivity();
                 break;
         }
     }

@@ -24,7 +24,7 @@ android {
         }
 
         release {
-            buildConfigField("String", "MAIN_SERVER_URL", '"http://app-dev.vvic.com/"')
+            buildConfigField("String", "MAIN_SERVER_URL", '"http://39.98.151.192:7010/"')
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

@@ -1,10 +1,15 @@
 package com.mr.storemanagement.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
@@ -21,9 +26,9 @@ import com.mr.storemanagement.presenter.BindLocationPresenter;
  */
 public class WarehouseBindActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvLocation;
+    private EditText tvLocation;
 
-    private TextView tvRfid;
+    private EditText tvRfid;
 
     private String mLocationCode;
 
@@ -37,7 +42,7 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
         tvLocation = findViewById(R.id.tv_location);
         tvRfid = findViewById(R.id.tv_rfid);
 
-        tvRfid.setOnClickListener(this);
+        findViewById(R.id.tv_get_rfid).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
 
@@ -56,6 +61,31 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
                 tvRfid.setText(mRfid);
             }
         });
+
+        tvLocation.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+                mLocationCode = tvLocation.getText().toString();
+            }
+        });
+
+        tvRfid.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+                mRfid = tvRfid.getText().toString();
+            }
+        });
+
+        tvRfid.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    bindLocation();
+                }
+                return false;
+            }
+        });
+
     }
 
     private void bindLocation() {
@@ -109,7 +139,7 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
             case R.id.tv_save:
                 bindLocation();
                 break;
-            case R.id.tv_rfid:
+            case R.id.tv_get_rfid:
                 readMactchData();
                 break;
         }

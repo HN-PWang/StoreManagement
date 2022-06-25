@@ -41,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_container_no" />
 
-    <TextView
+    <EditText
         android:id="@+id/tv_cx_no"
         android:layout_width="match_parent"
         android:layout_height="30dp"
@@ -49,7 +49,9 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_scanning_text"
         android:gravity="center_vertical"
+        android:imeOptions="actionDone"
         android:paddingHorizontal="12dp"
+        android:singleLine="true"
         android:textColor="#333333"
         app:layout_constraintTop_toBottomOf="@id/tv_cx_no_title" />
 

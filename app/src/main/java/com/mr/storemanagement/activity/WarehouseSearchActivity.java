@@ -77,6 +77,9 @@ public class WarehouseSearchActivity extends BaseActivity
             case R.id.tv_search:
                 getData();
                 break;
+            case R.id.tv_back:
+                finish();
+                break;
         }
     }
 

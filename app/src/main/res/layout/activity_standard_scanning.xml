@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activity.StandardScanningActivity">
 
-
-    <TextView
+    <EditText
         android:id="@+id/tv_code"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -15,6 +15,8 @@
         android:background="@drawable/bg_scanning_text"
         android:gravity="center"
         android:hint="请扫码"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:textColor="#333333"
         android:textColorHint="#C6C6C6"
         android:textSize="16dp"
@@ -40,6 +42,9 @@
         android:id="@+id/tv_station"
         android:layout_width="0dp"
         android:layout_height="49dp"
+        android:background="#3296FA"
+        android:gravity="center"
+        android:text="下一步"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toRightOf="@id/tv_back"

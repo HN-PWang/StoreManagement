@@ -2,7 +2,11 @@ package com.mr.storemanagement.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mr.lib_base.base.BaseActivity;
@@ -10,6 +14,7 @@ import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
+import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnCodeBean;
 import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.AsnSelectDialog;
@@ -22,11 +27,11 @@ import java.util.List;
 /**
  * 入库界面
  */
-public class WarehousingActivity extends BaseActivity implements View.OnClickListener {
+public class WarehousingActivity extends BaseScannerActivity implements View.OnClickListener {
 
     private TextView tvSearchSite;
 
-    private TextView tvSearchAsn;
+    private EditText tvSearchAsn;
 
     private List<AsnCodeBean> mAsnCodeBeans = new ArrayList<>();
 
@@ -49,6 +54,7 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
         tvSearchSite.setOnClickListener(this);
         tvSearchAsn.setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
+        findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
         siteChooseHelper = new SiteChooseHelper(this, false);
@@ -63,6 +69,24 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
             public void onFirst(SiteBean site) {
                 currentSiteBean = site;
                 setSiteInfo();
+            }
+        });
+
+        tvSearchAsn.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    getAsn();
+                }
+                return false;
+            }
+        });
+
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (TextUtils.isEmpty(message))
+                    tvSearchAsn.setText(message);
             }
         });
 
@@ -121,11 +145,11 @@ public class WarehousingActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_search_site:
                 siteChooseHelper.selectSite();
                 break;
-            case R.id.tv_asn_code:
-                showAsnSelectDialog();
-                break;
             case R.id.tv_back:
                 finish();
+                break;
+            case R.id.tv_select:
+                showAsnSelectDialog();
                 break;
             case R.id.tv_next:
                 intoScanning();

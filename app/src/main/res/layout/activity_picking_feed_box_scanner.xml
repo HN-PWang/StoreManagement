@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/tv_rdid_read"
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -30,6 +30,7 @@
         android:gravity="center"
         android:hint="请扫描 容器号/料箱 码"
         android:paddingHorizontal="4dp"
+        android:singleLine="true"
         android:textColor="#333333"
         android:textColorHint="#C6C6C6"
         android:textSize="17dp"

@@ -3,13 +3,16 @@ package com.mr.storemanagement.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -46,10 +49,10 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView tvSite;
     private TextView tvOrder;
 
-    private TextView etCxNo;//册序号
+    private EditText etCxNo;//册序号
     private TextView tvCalled;//已呼叫的料箱标签
-    private TextView etFeedBoxNo;//料箱
-    private TextView tvScanSerial;//扫描料箱标记
+    private EditText etFeedBoxNo;//料箱
+    private EditText tvScanSerial;//扫描料箱标记
     private TextView tvScanSerialTag;//扫描料箱标记
     private TextView etCount;//数量
     private TextView tvCollectedCount;//待收数量
@@ -65,7 +68,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private StoreInfoBean currentStore;
 
-    private FeedBoxBean mFeedBoxBean;
+    private String mContainerCode;
 
     private List<String> snCodeList = new ArrayList<>();
 
@@ -99,6 +102,13 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         findViewById(R.id.tv_save).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
 
+        etCxNo.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+
+            }
+        });
+
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
@@ -110,9 +120,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                     mScannerInitiator = 2;//归零
                 } else if (mScannerInitiator == 2) {
                     getFeedBox();
-                    mScannerInitiator = 0;//归
+                    mScannerInitiator = 3;//归
                 } else if (mScannerInitiator == 3) {
-
+                    mScannerInitiator = 3;//归
                 }
                 setInputViewState();
             }
@@ -149,9 +159,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     private void setFeedBoxDataToView() {
-        if (mFeedBoxBean != null) {
-            tvCalled.setText("已呼叫：" + mFeedBoxBean.ContainerCode);
-            etFeedBoxNo.setText(mFeedBoxBean.ContainerCode);
+        if (!TextUtils.isEmpty(mContainerCode)) {
+            tvCalled.setText("已呼叫：" + mContainerCode);
+            etFeedBoxNo.setText(mContainerCode);
         }
     }
 
@@ -221,9 +231,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             @Override
             public void loadSuccess(FeedBoxBean boxBean) {
                 if (boxBean != null) {
-                    mFeedBoxBean = boxBean;
+                    mContainerCode = boxBean.ContainerCode;
                     if (currentStore != null) {
-                        currentStore.container_code = boxBean.ContainerCode;
+                        currentStore.container_code = mContainerCode;
                     }
                     setFeedBoxDataToView();
                     setAwaitCount();
@@ -263,7 +273,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
-
+                ToastUtils.show("收货完成");
+                finish();
             }
 
             @Override
@@ -291,6 +302,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             public void loadSuccess(Object o) {
                 if (isForceComplete) {
                     forceCompleteDelivery();
+                } else {
+                    ToastUtils.show("保存成功");
                 }
             }
 

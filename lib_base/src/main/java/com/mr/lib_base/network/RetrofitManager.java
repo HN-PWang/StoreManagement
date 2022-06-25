@@ -1,5 +1,9 @@
 package com.mr.lib_base.network;
 
+import android.text.TextUtils;
+
+import com.mr.lib_base.util.SPUtils;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -10,9 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitManager {
 
-    private final String baseUrl;
+    private String baseUrl;
     private static RetrofitManager instance;
     private static OkHttpClient okHttpClient;
+
+    private static final String BASE_URL_KEY = "base_url_key";
 
     //静态块
     static {
@@ -22,7 +28,11 @@ public class RetrofitManager {
     private static Retrofit retrofit;
 
     private RetrofitManager(String baseUrl) {
-        this.baseUrl = baseUrl;
+        if (TextUtils.isEmpty(getSaveBaseUrl())) {
+            this.baseUrl = baseUrl;
+        } else {
+            this.baseUrl = getSaveBaseUrl();
+        }
         initRetrofit();
     }
 
@@ -59,6 +69,14 @@ public class RetrofitManager {
                 .client(okHttpClient)
                 .build();
 
+    }
+
+    public static String getSaveBaseUrl() {
+        return SPUtils.getStringWithOther(BASE_URL_KEY, "");
+    }
+
+    public static void setSaveBaseUrl(String baseUrl) {
+        SPUtils.saveStringWithOther(BASE_URL_KEY, baseUrl);
     }
 
     public static <T> T create(Class<T> meq) {

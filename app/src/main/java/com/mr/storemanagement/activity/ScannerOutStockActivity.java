@@ -3,8 +3,11 @@ package com.mr.storemanagement.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -90,6 +94,23 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
         rvContent.setLayoutManager(new LinearLayoutManager(this));
         goodsAdapter = new OutStockGoodsAdapter(this, mDataList);
         rvContent.setAdapter(goodsAdapter);
+
+        tvCxNo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    if (!TextUtils.isEmpty(tvCxNo.getText().toString())) {
+                        currentGoodsBean = findGoodsByCode(tvCxNo.getText().toString());
+                        if (currentGoodsBean != null) {
+                            setGoodsInfoToView(currentGoodsBean);
+                        } else {
+                            ToastUtils.show("容器中没有找到该商品");
+                        }
+                    }
+                }
+                return false;
+            }
+        });
 
         setOnScannerListener(new OnScannerListener() {
             @Override

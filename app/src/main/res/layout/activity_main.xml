@@ -122,7 +122,7 @@
             android:drawableTop="@drawable/ic_baseline_search_24"
             android:gravity="center"
             android:paddingTop="15dp"
-            android:text="库位查询"
+            android:text="库存查询"
             android:textColor="#3296FA"
             android:textSize="14dp" />
 
