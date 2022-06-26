@@ -2,6 +2,7 @@ package com.mr.storemanagement.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -39,7 +41,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
 
     private SiteBean currentSiteBean = null;
 
-    private AsnCodeBean currentAsnCodeBean = null;
+    private String mAsnCode;
 
     private SiteChooseHelper siteChooseHelper;
 
@@ -72,10 +74,18 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
             }
         });
 
+        tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+                mAsnCode = tvSearchAsn.getText().toString();
+            }
+        });
+
         tvSearchAsn.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
                     getAsn();
                 }
                 return false;
@@ -92,7 +102,6 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
 
         getAsn();
     }
-
 
     private void getAsn() {
         GetAsnPresenter presenter = new GetAsnPresenter(this
@@ -119,7 +128,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
             asnSelectDialog.setOrderSelectListener(new AsnSelectDialog.OnOrderSelectListener() {
                 @Override
                 public void onSelect(AsnCodeBean asnCodeBean) {
-                    currentAsnCodeBean = asnCodeBean;
+                    mAsnCode = asnCodeBean.asn_code;
                     setOrderInfo();
                 }
             });
@@ -134,9 +143,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
     }
 
     private void setOrderInfo() {
-        if (currentAsnCodeBean != null) {
-            tvSearchAsn.setText(currentAsnCodeBean.asn_code);
-        }
+        tvSearchAsn.setText(mAsnCode);
     }
 
     @Override
@@ -162,13 +169,13 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
             ToastUtils.show("站点信息不能为空");
             return;
         }
-        if (currentAsnCodeBean == null) {
+        if (TextUtils.isEmpty(mAsnCode)) {
             ToastUtils.show("单号信息不能为空");
             return;
         }
         Intent intent = new Intent(this, ScannerPutStockActivity.class);
         intent.putExtra("site_key", currentSiteBean.site_code);
-        intent.putExtra("ans_key", currentAsnCodeBean.asn_code);
+        intent.putExtra("ans_key", mAsnCode);
         startActivity(intent);
     }
 

@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,7 +45,8 @@ import java.util.List;
 /**
  * 入库扫描界面
  */
-public class ScannerPutStockActivity extends BaseScannerActivity implements View.OnClickListener {
+public class ScannerPutStockActivity extends BaseScannerActivity implements View.OnClickListener
+        , View.OnFocusChangeListener {
 
     public static final int REQUEST_SERIAL_CODE = 101;
 
@@ -94,18 +98,36 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         etCount = findViewById(R.id.et_count);
         tvCollectedCount = findViewById(R.id.tv_collected_count);
 
-        etFeedBoxNo.setOnClickListener(this);
-        etCxNo.setOnClickListener(this);
+        etCxNo.setOnFocusChangeListener(this);
+        etFeedBoxNo.setOnFocusChangeListener(this);
+        tvScanSerial.setOnFocusChangeListener(this);
+
         findViewById(R.id.tv_scan_serial).setOnClickListener(this);
         findViewById(R.id.tv_detail_list).setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
 
-        etCxNo.addTextChangedListener(new AfterTextChangedListener() {
+        etCxNo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void afterChanged(Editable editable) {
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
+                    String text = textView.getText().toString().trim();
+                    checkScannerCode(text);
+                }
+                return false;
+            }
+        });
 
+        etFeedBoxNo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
+                    String text = textView.getText().toString().trim();
+                }
+                return false;
             }
         });
 
@@ -117,14 +139,12 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
                 if (mScannerInitiator == 1) {
                     checkScannerCode(message);
-                    mScannerInitiator = 2;//归零
                 } else if (mScannerInitiator == 2) {
-                    getFeedBox();
-                    mScannerInitiator = 3;//归
+                    mScannerInitiator = 3;
+                    setInputViewState();
                 } else if (mScannerInitiator == 3) {
-                    mScannerInitiator = 3;//归
+                    mScannerInitiator = 3;
                 }
-                setInputViewState();
             }
         });
 
@@ -136,6 +156,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     private void checkScannerCode(String itemCode) {
+        currentStore = null;
         if (NullUtils.isNotEmpty(storeInfoBeans)) {
             for (StoreInfoBean bean : storeInfoBeans) {
                 if (itemCode.equals(bean.item_Code)) {
@@ -145,6 +166,11 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             if (currentStore != null) {
                 setCurrentStoreInfo();
                 setAwaitCount();
+
+                getFeedBox();
+
+                mScannerInitiator = 2;
+                setInputViewState();
             } else {
                 ToastUtils.show("无效商品");
             }
@@ -170,12 +196,10 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             etCxNo.setText(currentStore.item_Code);
 
             if ("1".equals(currentStore.is_SN)) {
-                tvScanSerial.setEnabled(true);
                 tvScanSerialTag.setSelected(true);
 
                 toSnScanner();
             } else {
-                tvScanSerial.setEnabled(false);
                 tvScanSerialTag.setSelected(false);
             }
         }
@@ -184,6 +208,21 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private void setInputViewState() {
         etCxNo.setSelected(mScannerInitiator == 1);
         etFeedBoxNo.setSelected(mScannerInitiator == 2);
+        tvScanSerial.setSelected(mScannerInitiator == 3);
+
+        if (mScannerInitiator == 1) {
+            if (!etCxNo.isFocused()) {
+                etCxNo.requestFocus();
+            }
+        } else if (mScannerInitiator == 2) {
+            if (!etFeedBoxNo.isFocused()) {
+                etFeedBoxNo.requestFocus();
+            }
+        } else if (mScannerInitiator == 3) {
+            if (!tvScanSerial.isFocused()) {
+                tvScanSerial.requestFocus();
+            }
+        }
     }
 
     //设置待收数量
@@ -237,6 +276,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                     }
                     setFeedBoxDataToView();
                     setAwaitCount();
+
+                    mScannerInitiator = 3;
+                    setInputViewState();
                 }
             }
 
@@ -461,17 +503,32 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 //强制完成收货,先进行二次确认,然后调用保存接口
                 showConfirmDialog();
                 break;
-            case R.id.tv_scan_serial:
-                toSnScanner();
-                break;
-            case R.id.et_cx_no:
-                mScannerInitiator = 1;
-                setInputViewState();
-                break;
-            case R.id.et_feed_box_no:
-                mScannerInitiator = 2;
-                setInputViewState();
-                break;
+//            case R.id.tv_scan_serial:
+//                toSnScanner();
+//                break;
         }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        if (b)
+            switch (view.getId()) {
+                case R.id.et_cx_no:
+                    mScannerInitiator = 1;
+                    setInputViewState();
+                    Log.e("PWDebug","mScannerInitiator = 1");
+                    break;
+                case R.id.et_feed_box_no:
+                    mScannerInitiator = 2;
+                    setInputViewState();
+                    Log.e("PWDebug","mScannerInitiator = 2");
+                    break;
+                case R.id.tv_scan_serial:
+                    mScannerInitiator = 3;
+                    setInputViewState();
+                    Log.e("PWDebug","mScannerInitiator = 3");
+                    break;
+
+            }
     }
 }

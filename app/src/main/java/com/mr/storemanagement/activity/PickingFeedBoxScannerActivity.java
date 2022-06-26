@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -49,7 +51,7 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
 
         tvRdIdRead = findViewById(R.id.tv_rdid_read);
 
-        findViewById(R.id.tv_rdid_read).setOnClickListener(this);
+        findViewById(R.id.tv_from_rfid).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
@@ -57,6 +59,18 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
             @Override
             public void afterChanged(Editable editable) {
                 mContainerCode = tvRdIdRead.getText().toString();
+            }
+        });
+
+        tvRdIdRead.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
+                    setSerialCodeToView();
+                    check();
+                }
+                return false;
             }
         });
 
@@ -79,7 +93,7 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_rdid_read:
+            case R.id.tv_from_rfid:
                 readMactchData();
                 break;
             case R.id.tv_back:

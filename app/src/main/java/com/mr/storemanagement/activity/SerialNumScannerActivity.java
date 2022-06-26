@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +33,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
     private TextView tvCount;
 
+    private EditText tvRdidRead;
+
     private RecyclerView rvSerialNum;
 
     private SerialNumAdapter serialNumAdapter;
@@ -46,8 +51,9 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
         tvCount = findViewById(R.id.tv_count);
         rvSerialNum = findViewById(R.id.rv_serial_num);
+        tvRdidRead = findViewById(R.id.tv_rdid_read);
 
-        findViewById(R.id.tv_rdid_read).setOnClickListener(this);
+        findViewById(R.id.iv_rfid).setOnClickListener(this);
         findViewById(R.id.tv_clear).setOnClickListener(this);
 
         String sns = getIntent().getStringExtra(Constants.SN_CODE_DATA_KEY);
@@ -60,27 +66,38 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
         rvSerialNum.setLayoutManager(new LinearLayoutManager(this));
         rvSerialNum.setAdapter(serialNumAdapter);
 
+        tvRdidRead.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
+                    addCode(tvRdidRead.getText().toString());
+                }
+                return false;
+            }
+        });
+
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                if (!TextUtils.isEmpty(message) && !mDataList.contains(message)) {
-                    mDataList.add(message);
-                    serialNumAdapter.notifyDataSetChanged();
-                    setCount();
-                }
+                addCode(message);
             }
         });
 
         setOnRfIdListener(new OnRfIdListener() {
             @Override
             public void onRFIdDataBack(String message) {
-                if (!TextUtils.isEmpty(message) && !mDataList.contains(message)) {
-                    mDataList.add(message);
-                    serialNumAdapter.notifyDataSetChanged();
-                    setCount();
-                }
+                addCode(message);
             }
         });
+    }
+
+    private void addCode(String data) {
+        if (!TextUtils.isEmpty(data) && !mDataList.contains(data)) {
+            mDataList.add(data);
+            serialNumAdapter.notifyDataSetChanged();
+            setCount();
+        }
     }
 
     private void setCount() {
@@ -91,7 +108,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_rdid_read:
+            case R.id.iv_rfid:
                 readMactchData();
                 break;
             case R.id.tv_clear:
@@ -101,11 +118,6 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
                 finish();
                 break;
         }
-    }
-
-    public static List<String> getSerialList(String backData) {
-        List<String> list = JSONObject.parseArray(backData, String.class);
-        return list;
     }
 
 }
