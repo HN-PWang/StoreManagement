@@ -4,12 +4,26 @@ import android.text.TextUtils;
 
 import com.mr.lib_base.util.SMLog;
 
+import java.math.BigDecimal;
+
 public class DataUtil {
 
     public static String getIntStr(String str) {
         if (TextUtils.isEmpty(str))
             return "0";
         return str;
+    }
+
+    public static String getIntStr(BigDecimal dec) {
+        if (dec == null)
+            return "0";
+        return dec.toString();
+    }
+
+    public static String getIntStr(Double dec) {
+        if (dec == null)
+            return "0";
+        return String.valueOf(dec);
     }
 
     public static String getIntStr(Integer str) {

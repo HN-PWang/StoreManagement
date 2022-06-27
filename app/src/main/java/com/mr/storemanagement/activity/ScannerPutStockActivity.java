@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -57,6 +58,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView tvCalled;//已呼叫的料箱标签
     private EditText etFeedBoxNo;//料箱
     private EditText tvScanSerial;//扫描料箱标记
+    private ImageView ivScanSerial;//扫描料箱标记
     private TextView tvScanSerialTag;//扫描料箱标记
     private TextView etCount;//数量
     private TextView tvCollectedCount;//待收数量
@@ -78,7 +80,11 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private List<StoreInfoBean> storeInfoBeans = new ArrayList<>();
 
-    private int mScannerInitiator = 1; //1:测序号 2:料箱号 3:序列号
+    private int mScannerInitiator = 1; //1:测序号 2:料箱号 3:序列号 4:数量
+
+    private boolean isCompleteDelivery = false;
+
+    private int IS_SN = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,15 +100,18 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         tvCalled = findViewById(R.id.tv_called);
         etFeedBoxNo = findViewById(R.id.et_feed_box_no);
         tvScanSerial = findViewById(R.id.tv_scan_serial);
+        ivScanSerial = findViewById(R.id.iv_scan_rfid);
         tvScanSerialTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
         tvCollectedCount = findViewById(R.id.tv_collected_count);
+
+        ivScanSerial.setEnabled(false);
 
         etCxNo.setOnFocusChangeListener(this);
         etFeedBoxNo.setOnFocusChangeListener(this);
         tvScanSerial.setOnFocusChangeListener(this);
 
-        findViewById(R.id.tv_scan_serial).setOnClickListener(this);
+        findViewById(R.id.iv_scan_rfid).setOnClickListener(this);
         findViewById(R.id.tv_detail_list).setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
@@ -131,6 +140,52 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             }
         });
 
+        tvScanSerial.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
+                    String text = textView.getText().toString().trim();
+                    if (!TextUtils.isEmpty(text)) {
+                        snCodeList.clear();
+                        snCodeList.add(text);
+
+                        setAwaitCount(snCodeList.size());
+
+                        if (IS_SN == 0) {
+                            mScannerInitiator = 4;
+                        } else {
+                            mScannerInitiator = -1;
+                        }
+                        setInputViewState();
+                    }
+                }
+                return false;
+            }
+        });
+
+        etCount.addTextChangedListener(new AfterTextChangedListener() {
+            @Override
+            public void afterChanged(Editable editable) {
+                String countStr = editable.toString();
+                if (currentStore == null) {
+                    if (!TextUtils.isEmpty(countStr) || !"0".equals(countStr)) {
+                        ToastUtils.show("当前商品为空");
+                        etCount.setText("0");
+                    }
+                } else {
+                    if (!TextUtils.isEmpty(countStr)) {
+                        int count = Integer.parseInt(countStr);
+                        if (count > currentStore.quantity) {
+                            ToastUtils.show("商品数量不能超出待收数量");
+                            etCount.setText(String.valueOf(currentStore.quantity));
+                        }
+                    }
+                }
+                calculateAwaitCount(getCount());
+            }
+        });
+
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
@@ -148,6 +203,27 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             }
         });
 
+        setOnRfIdListener(new OnRfIdListener() {
+            @Override
+            public void onRFIdDataBack(String message) {
+                if (!TextUtils.isEmpty(message)) {
+                    tvScanSerial.setText(message);
+
+                    snCodeList.clear();
+                    snCodeList.add(message);
+
+                    setAwaitCount(snCodeList.size());
+
+                    if (IS_SN == 0) {
+                        mScannerInitiator = 4;
+                    } else {
+                        mScannerInitiator = -1;
+                    }
+                    setInputViewState();
+                }
+            }
+        });
+
         setBaseDataToView();
 
         checkAsn();
@@ -156,7 +232,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     private void checkScannerCode(String itemCode) {
+        IS_SN = 0;
         currentStore = null;
+        isCompleteDelivery = false;
         if (NullUtils.isNotEmpty(storeInfoBeans)) {
             for (StoreInfoBean bean : storeInfoBeans) {
                 if (itemCode.equals(bean.item_Code)) {
@@ -165,9 +243,16 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             }
             if (currentStore != null) {
                 setCurrentStoreInfo();
-                setAwaitCount();
+                setAwaitCount(0);
 
                 getFeedBox();
+
+                if ("1".equals(currentStore.status)) {
+                    isCompleteDelivery = true;
+                    ToastUtils.show("该商品已经完成收货");
+                    finish();
+                    return;
+                }
 
                 mScannerInitiator = 2;
                 setInputViewState();
@@ -191,16 +276,23 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         }
     }
 
+    /**
+     * 设置当前入库单信息
+     */
     private void setCurrentStoreInfo() {
         if (currentStore != null) {
             etCxNo.setText(currentStore.item_Code);
 
             if ("1".equals(currentStore.is_SN)) {
                 tvScanSerialTag.setSelected(true);
-
-                toSnScanner();
+                etCount.setEnabled(false);
+                ivScanSerial.setEnabled(true);
+                IS_SN = 1;
             } else {
                 tvScanSerialTag.setSelected(false);
+                etCount.setEnabled(true);
+                ivScanSerial.setEnabled(false);
+                IS_SN = 0;
             }
         }
     }
@@ -209,6 +301,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         etCxNo.setSelected(mScannerInitiator == 1);
         etFeedBoxNo.setSelected(mScannerInitiator == 2);
         tvScanSerial.setSelected(mScannerInitiator == 3);
+        etCount.setSelected(mScannerInitiator == 4);
 
         if (mScannerInitiator == 1) {
             if (!etCxNo.isFocused()) {
@@ -222,16 +315,22 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             if (!tvScanSerial.isFocused()) {
                 tvScanSerial.requestFocus();
             }
+        } else if (mScannerInitiator == 4) {
+            if (!etCount.isFocused()) {
+                etCount.requestFocus();
+            }
         }
     }
 
     //设置待收数量
-    private void setAwaitCount() {
+    private void setAwaitCount(int count) {
+        etCount.setText(String.valueOf(count));
+    }
+
+    private void calculateAwaitCount(int count) {
         if (currentStore != null) {
             int quantity = DataUtil.getInt(currentStore.quantity);
-            tvCollectedCount.setText(String.valueOf(quantity - snCodeList.size()));
-
-            etCount.setText(String.valueOf(snCodeList.size()));
+            tvCollectedCount.setText(String.valueOf(quantity - count));
         }
     }
 
@@ -243,12 +342,16 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 if (NullUtils.isNotEmpty(beans)) {
                     storeInfoBeans.clear();
                     storeInfoBeans.addAll(beans);
+                } else {
+                    ToastUtils.show("没有获取到校验数据");
+                    finish();
                 }
             }
 
             @Override
             public void loadFailure(SMException exception) {
                 ToastUtils.show(exception.getErrorMsg());
+                finish();
             }
         }, new NetLoadingListener() {
             @Override
@@ -271,11 +374,18 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             public void loadSuccess(FeedBoxBean boxBean) {
                 if (boxBean != null) {
                     mContainerCode = boxBean.ContainerCode;
-                    if (currentStore != null) {
-                        currentStore.container_code = mContainerCode;
+
+                    if (currentStore != null && !TextUtils.isEmpty(mContainerCode)) {
+                        if (mContainerCode.equals(currentStore.container_code)) {
+                            ToastUtils.show("料箱号与商品不一致");
+                            //TODO 料箱号不一致要怎么样没说
+                        }
                     }
+                    currentStore.container_code = mContainerCode;
+
                     setFeedBoxDataToView();
-                    setAwaitCount();
+
+                    setAwaitCount(0);
 
                     mScannerInitiator = 3;
                     setInputViewState();
@@ -370,8 +480,13 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             return;
         }
 
+        if (getCount() == 0) {
+            TextUtils.isEmpty("商品数量为0");
+            return;
+        }
+
         presenter.save(asn_code, currentStore.container_code, AccountManger.getInstance().getUserCode()
-                , currentStore.keyid, String.valueOf(snCodeList.size()), snCodeList);
+                , currentStore.keyid, String.valueOf(getCount()), snCodeList);
     }
 
     private void getPutStorageDetail() {
@@ -441,7 +556,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 snData = TextUtils.isEmpty(snData) ? "" : snData;
                 snCodeList = JSONObject.parseArray(snData, String.class);
 
-                setAwaitCount();
+                setAwaitCount(snCodeList.size());
             }
         }
     }
@@ -503,9 +618,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 //强制完成收货,先进行二次确认,然后调用保存接口
                 showConfirmDialog();
                 break;
-//            case R.id.tv_scan_serial:
-//                toSnScanner();
-//                break;
+            case R.id.iv_scan_rfid:
+                readMactchData();
+                break;
         }
     }
 
@@ -516,19 +631,27 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 case R.id.et_cx_no:
                     mScannerInitiator = 1;
                     setInputViewState();
-                    Log.e("PWDebug","mScannerInitiator = 1");
                     break;
                 case R.id.et_feed_box_no:
                     mScannerInitiator = 2;
                     setInputViewState();
-                    Log.e("PWDebug","mScannerInitiator = 2");
                     break;
                 case R.id.tv_scan_serial:
                     mScannerInitiator = 3;
                     setInputViewState();
-                    Log.e("PWDebug","mScannerInitiator = 3");
+                    break;
+                case R.id.et_count:
+                    mScannerInitiator = 4;
+                    setInputViewState();
                     break;
 
             }
     }
+
+    private int getCount() {
+        String str = etCount.getText().toString();
+
+        return DataUtil.getInt(str);
+    }
+
 }

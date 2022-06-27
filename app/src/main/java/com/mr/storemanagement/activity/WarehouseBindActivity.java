@@ -94,7 +94,10 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
             @Override
             public void loadSuccess(Object o) {
                 ToastUtils.show(getString(R.string.str_operate_successfully));
-                finish();
+                mLocationCode = "";
+                mRfid = "";
+                tvLocation.setText(mLocationCode);
+                tvRfid.setText(mRfid);
             }
 
             @Override

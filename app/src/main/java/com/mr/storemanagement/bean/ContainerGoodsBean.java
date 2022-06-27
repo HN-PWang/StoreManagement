@@ -1,5 +1,6 @@
 package com.mr.storemanagement.bean;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,19 +23,19 @@ public class ContainerGoodsBean {
     public String barcode;
     public String item_name;
     public String item_batch_id;
-    public Integer request_Qty;
+    public Double request_Qty;
     public String item_unit;
     public String product_batch;
     public Integer status;
     public String pick_time;
     public String pick_user;
-    public Integer pickedqty;
-    public Integer checkQty;
+    public Double pickedqty;
+    public Double checkQty;
     public String check_user;
     public Integer is_SN;
     public Integer is_danger;
-    public Integer is_fragile;
-    public Integer isArrive;
+    public String is_fragile;
+    public String isArrive;
     public List<String> snList;
 
 }
