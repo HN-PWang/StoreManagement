@@ -38,7 +38,8 @@ public class DataUtil {
             return value;
 
         try {
-            value = Integer.parseInt(str);
+            double v = Double.parseDouble(str);
+            value = (int) v;
         } catch (Exception e) {
             SMLog.i(e.toString());
         }

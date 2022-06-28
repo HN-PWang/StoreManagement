@@ -8,7 +8,7 @@ public class StoreInfoBean {
     public String originLineSeq;
     public String barcode;
     public String item_Code;
-    public Integer quantity;
+    public String quantity;
     public String finish_qty;
     public String item_unit;
     public String item_batch_id;
