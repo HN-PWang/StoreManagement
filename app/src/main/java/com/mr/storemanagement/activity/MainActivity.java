@@ -42,8 +42,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.tv_back_stack:
                 //回库  去扫描界面扫描后跳转
-                StandardScanningActivity.actionIntent(this, WarehouseBackActivity.class,
-                        "请扫描 容器/料箱 码");
+//                StandardScanningActivity.actionIntent(this, WarehouseBackActivity.class,
+//                        "请扫描 容器/料箱 码");
+                startActivity(new Intent(this, WarehouseBackActivity.class));
                 break;
             case R.id.tv_out_stack:
                 //出库挑拣

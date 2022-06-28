@@ -2,29 +2,29 @@ package com.mr.storemanagement.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
+import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.UserInfoBean;
 import com.mr.storemanagement.manger.AccountManger;
-import com.mr.storemanagement.presenter.AllocateLocationPresenter;
 import com.mr.storemanagement.presenter.SetContainerBackPresenter;
-
-import java.util.Arrays;
 
 /**
  * 回库扫描页
  */
-public class WarehouseBackActivity extends BaseActivity implements View.OnClickListener {
+public class WarehouseBackActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvContainer;
+    private EditText etContainer;
 
     private TextView tvShelfArea;
 
@@ -41,16 +41,36 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
 
         mContainerCode = getIntent().getStringExtra(Constants.SCANNER_DATA_KEY);
 
-        tvContainer = findViewById(R.id.tv_container);
+        etContainer = findViewById(R.id.et_container);
         tvShelfArea = findViewById(R.id.tv_shelf_area);
         tvShelfLocation = findViewById(R.id.tv_shelf_location);
 
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_confirm).setOnClickListener(this);
 
-        tvContainer.setText(mContainerCode);
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (!TextUtils.isEmpty(message)) {
+                    mContainerCode = message;
+                    etContainer.setText(mContainerCode);
+                    allocate();
+                }
+            }
+        });
 
-        allocate();
+        etContainer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    if (!TextUtils.isEmpty(etContainer.getText())) {
+                        mContainerCode = etContainer.getText().toString();
+                        allocate();
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -86,6 +106,8 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
                     setDataToView();
                 }
                 ToastUtils.show("操作成功");
+
+                setContainerMarker();
             }
 
             @Override
@@ -108,6 +130,12 @@ public class WarehouseBackActivity extends BaseActivity implements View.OnClickL
         if (!TextUtils.isEmpty(mContainerCode) && bean != null) {
             presenter.allocate(mContainerCode, AccountManger.getInstance().getUserCode());
         }
+    }
+
+    private void setContainerMarker() {
+//        etContainer.setSelection(0, length);
+//        etContainer.setSelection(0);
+        etContainer.setSelectAllOnFocus(true);
     }
 
 }

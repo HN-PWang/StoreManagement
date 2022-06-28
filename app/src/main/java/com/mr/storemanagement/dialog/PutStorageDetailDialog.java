@@ -86,8 +86,9 @@ public class PutStorageDetailDialog extends Dialog implements View.OnClickListen
             for (AsnDetailBean bean : mDataList) {
                 int q = bean.quantity;
                 int fq = DataUtil.getInt(bean.finish_qty);
-                if (q != 0 && q == fq)
-                    finishQuantity = finishQuantity++;
+                if (q != 0 && q == fq) {
+                    finishQuantity++;
+                }
             }
         }
         return finishQuantity;
