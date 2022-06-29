@@ -51,11 +51,7 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                if (!TextUtils.isEmpty(message)) {
-                    mContainerCode = message;
-                    etContainer.setText(mContainerCode);
-                    allocate();
-                }
+                writeContainerCode(message);
             }
         });
 
@@ -63,14 +59,23 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    if (!TextUtils.isEmpty(etContainer.getText())) {
-                        mContainerCode = etContainer.getText().toString();
-                        allocate();
-                    }
+                    writeContainerCode(etContainer.getText().toString().trim());
                 }
                 return false;
             }
         });
+    }
+
+    private void writeContainerCode(String code) {
+        if (!TextUtils.isEmpty(code)) {
+            mContainerCode = code;
+            etContainer.setText(mContainerCode);
+
+            tvShelfArea.setText("");
+            tvShelfLocation.setText("");
+
+            allocate();
+        }
     }
 
     @Override

@@ -20,8 +20,12 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnCodeBean;
 import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.AsnSelectDialog;
+import com.mr.storemanagement.eventbean.SaveAsnEvent;
 import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.presenter.GetAsnPresenter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,9 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warehousing);
+
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
 
         tvSearchSite = findViewById(R.id.tv_search_site);
         tvSearchAsn = findViewById(R.id.tv_asn_code);
@@ -122,6 +129,11 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         presenter.getAsn();
     }
 
+    @Subscribe
+    public void onEventMainThread(SaveAsnEvent event) {
+        getAsn();
+    }
+
     private void showAsnSelectDialog() {
         if (asnSelectDialog == null || !asnSelectDialog.isShowing()) {
             asnSelectDialog = new AsnSelectDialog(this, mAsnCodeBeans);
@@ -179,4 +191,10 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         startActivity(intent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+    }
 }

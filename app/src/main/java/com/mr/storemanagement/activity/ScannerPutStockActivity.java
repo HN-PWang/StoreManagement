@@ -25,11 +25,13 @@ import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnDetailBean;
+import com.mr.storemanagement.bean.AsnSaveBackBean;
 import com.mr.storemanagement.bean.FeedBoxBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
 import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.dialog.ConfirmDialog;
 import com.mr.storemanagement.dialog.PutStorageDetailDialog;
+import com.mr.storemanagement.eventbean.SaveAsnEvent;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AsnCloseOrderPresenter;
 import com.mr.storemanagement.presenter.AsnSaveDetailPresenter;
@@ -39,6 +41,9 @@ import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
 import com.mr.storemanagement.presenter.GetFeedBoxPresenter;
 import com.mr.storemanagement.util.DataUtil;
 import com.mr.storemanagement.util.NullUtils;
+import com.mr.storemanagement.util.ShowMsgDialogUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +55,11 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         , View.OnFocusChangeListener {
 
     public static final int REQUEST_SERIAL_CODE = 101;
+
+    public static final String PS_COMPLETE = "CompleteAsn";   //CompleteAsn 入库单完成
+    public static final String PS_CLOSE = "ContainerClose";   //ContainerClose 当前容器关闭
+
+    public static final int IS_SN_STATE = 1;
 
     private ConstraintLayout mConstraintLayout;
 
@@ -172,14 +182,17 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 String countStr = editable.toString();
                 if (currentStore == null) {
                     if (!TextUtils.isEmpty(countStr) && !"0".equals(countStr)) {
-                        ToastUtils.show("当前商品为空");
+//                        ToastUtils.show("当前商品为空");
+                        ShowMsgDialogUtil.show(ScannerPutStockActivity.this, "当前商品为空");
                         etCount.setText("0");
                     }
                 } else {
                     if (!TextUtils.isEmpty(countStr)) {
                         int count = Integer.parseInt(countStr);
                         if (count > getWaitingDeliveryCount()) {
-                            ToastUtils.show("商品数量不能超出待收数量");
+//                            ToastUtils.show("商品数量不能超出待收数量");
+                            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                                    , "商品数量不能超出待收数量");
                             etCount.setText(String.valueOf(currentStore.quantity));
                         }
                     }
@@ -252,7 +265,11 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             mContainerCodeByScanner = code;
             setContainerCodeToView();
 
-            mScannerInitiator = 3;
+            if (IS_SN == 1) {
+                mScannerInitiator = 3;
+            } else {
+                mScannerInitiator = 4;
+            }
             setInputViewState();
         }
     }
@@ -280,7 +297,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
      */
     private void checkScannerCodeByItemCode() {
         if (TextUtils.isEmpty(mCurrentItemCode)) {
-            ToastUtils.show("请填写测序号");
+//            ToastUtils.show("请填写测序号");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "请填写测序号");
             return;
         }
 
@@ -301,28 +320,38 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
                 if ("1".equals(currentStore.status)) {
                     isCompleteDelivery = true;
-                    ToastUtils.show("该商品已经完成收货");
-                    finish();
+                    ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                            , "该商品已经完成收货");
+//                    ToastUtils.show("该商品已经完成收货");
+                    remake();
                     return;
                 }
 
                 mScannerInitiator = 2;
                 setInputViewState();
             } else {
-                ToastUtils.show("无效商品");
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , "无效商品");
+//                ToastUtils.show("无效商品");
             }
         } else {
-            ToastUtils.show("无可操作商品");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "无可操作商品");
+//            ToastUtils.show("无可操作商品");
         }
     }
 
     private void checkScannerCodeByItemCodeAndPB() {
         if (TextUtils.isEmpty(mCurrentItemCode)) {
-            ToastUtils.show("请填写测序号");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "请填写测序号");
+//            ToastUtils.show("请填写测序号");
             return;
         }
         if (TextUtils.isEmpty(mCurrentProductBatch)) {
-            ToastUtils.show("请填写序列号");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "请填写序列号");
+//            ToastUtils.show("请填写序列号");
             return;
         }
 
@@ -342,15 +371,21 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
                 if ("1".equals(currentStore.status)) {
                     isCompleteDelivery = true;
-                    ToastUtils.show("该商品已经完成收货");
-                    finish();
+//                    ToastUtils.show("该商品已经完成收货");
+                    ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                            , "该商品已经完成收货");
+                    remake();
                     return;
                 }
             } else {
-                ToastUtils.show("无效商品");
+//                ToastUtils.show("无效商品");
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , "无效商品");
             }
         } else {
-            ToastUtils.show("无可操作商品");
+//            ToastUtils.show("无可操作商品");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "无可操作商品");
         }
     }
 
@@ -373,7 +408,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         if (currentStore != null) {
             etItemCode.setText(currentStore.item_Code);
 
-            if ("1".equals(currentStore.is_SN)) {
+            if (IS_SN_STATE == DataUtil.getInt(currentStore.is_SN)) {
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
                 ivProductBatch.setEnabled(true);
@@ -434,7 +469,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                     storeInfoBeans.clear();
                     storeInfoBeans.addAll(beans);
                 } else {
-                    ToastUtils.show("没有获取到校验数据");
+//                    ToastUtils.show("没有获取到校验数据");
+                    ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                            , "没有获取到校验数据");
                     finish();
                 }
             }
@@ -470,7 +507,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
             @Override
             public void loadFailure(SMException exception) {
-                ToastUtils.show(exception.getErrorMsg());
+                //                ToastUtils.show(exception.getErrorMsg());
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -485,7 +524,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         });
 
         if (currentStore == null) {
-            TextUtils.isEmpty("当前没有可操作商品");
+//            TextUtils.isEmpty("当前没有可操作商品");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "当前没有可操作商品");
             return;
         }
 
@@ -496,18 +537,24 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     /**
      * 强制完成收货
      */
-    private void forceCompleteDelivery() {
+    private void forceCompleteDelivery(String state) {
         AsnCloseOrderPresenter presenter = new AsnCloseOrderPresenter(this
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
                 ToastUtils.show("收货完成");
-                finish();
+                if (PS_COMPLETE.equals(state)) {
+                    finish();
+                } else {
+                    remake();
+                }
             }
 
             @Override
             public void loadFailure(SMException exception) {
-                ToastUtils.show(exception.getErrorMsg());
+//                ToastUtils.show(exception.getErrorMsg());
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -525,20 +572,27 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private void saveDeliveryState(boolean isForceComplete) {
         AsnSaveDetailPresenter presenter = new AsnSaveDetailPresenter(this
-                , new NetResultListener() {
+                , new NetResultListener<AsnSaveBackBean>() {
             @Override
-            public void loadSuccess(Object o) {
+            public void loadSuccess(AsnSaveBackBean bean) {
                 if (isForceComplete) {
-                    forceCompleteDelivery();
+                    forceCompleteDelivery(bean.ProcessStatus);
                 } else {
                     ToastUtils.show("保存成功");
-                    remake();
+                    if (bean != null && PS_COMPLETE.equals(bean.ProcessStatus)) {
+                        finish();
+                    } else {
+                        remake();
+                    }
                 }
+                EventBus.getDefault().post(new SaveAsnEvent());
             }
 
             @Override
             public void loadFailure(SMException exception) {
-                ToastUtils.show(exception.getErrorMsg());
+                //                ToastUtils.show(exception.getErrorMsg());
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -553,17 +607,23 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         });
 
         if (currentStore == null) {
-            TextUtils.isEmpty("当前没有可操作商品");
+//            TextUtils.isEmpty("当前没有可操作商品");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "当前没有可操作商品");
             return;
         }
 
         if (getCount() == 0) {
-            TextUtils.isEmpty("商品数量为0");
+//            TextUtils.isEmpty("商品数量为0");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "商品数量为0");
             return;
         }
 
         if (TextUtils.isEmpty(mContainerCodeByScanner)) {
-            TextUtils.isEmpty("还没有呼叫容器号");
+//            TextUtils.isEmpty("还没有呼叫容器号");
+            ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                    , "还没有呼叫容器号");
             return;
         }
 
@@ -583,7 +643,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
             @Override
             public void loadFailure(SMException exception) {
-                ToastUtils.show(exception.getErrorMsg());
+                //                ToastUtils.show(exception.getErrorMsg());
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -613,7 +675,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
             @Override
             public void loadFailure(SMException exception) {
-                ToastUtils.show(exception.getErrorMsg());
+                //                ToastUtils.show(exception.getErrorMsg());
+                ShowMsgDialogUtil.show(ScannerPutStockActivity.this
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override

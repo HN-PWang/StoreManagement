@@ -20,6 +20,7 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.UserInfoBean;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.BindLocationPresenter;
+import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 /**
  * 库位绑定界面
@@ -119,12 +120,16 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
         UserInfoBean bean = AccountManger.getInstance().getAccount();
 
         if (TextUtils.isEmpty(mLocationCode)) {
-            ToastUtils.show("未扫描库位");
+//            ToastUtils.show("未扫描库位");
+            ShowMsgDialogUtil.show(WarehouseBindActivity.this
+                    , "未扫描库位");
             return;
         }
 
         if (TextUtils.isEmpty(mRfid)) {
-            ToastUtils.show("未读取RFID");
+//            ToastUtils.show("未读取RFID");
+            ShowMsgDialogUtil.show(WarehouseBindActivity.this
+                    , "未读取RFID");
             return;
         }
 

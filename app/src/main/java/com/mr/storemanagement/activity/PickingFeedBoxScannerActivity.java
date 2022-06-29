@@ -22,6 +22,7 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.presenter.CheckContainerPresenter;
 import com.mr.storemanagement.util.NullUtils;
+import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +108,9 @@ public class PickingFeedBoxScannerActivity extends BaseScannerActivity implement
 
     private void toScannerGoods() {
         if (NullUtils.isEmpty(mDataList)) {
-            ToastUtils.show("料箱返回数据为空");
+//            ToastUtils.show("料箱返回数据为空");
+            ShowMsgDialogUtil.show(PickingFeedBoxScannerActivity.this
+                    , "料箱返回数据为空");
             return;
         }
 

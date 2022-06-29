@@ -31,6 +31,7 @@ import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.OutStockConfirmPresenter;
 import com.mr.storemanagement.util.NullUtils;
+import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +105,9 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                         if (currentGoodsBean != null) {
                             setGoodsInfoToView(currentGoodsBean);
                         } else {
-                            ToastUtils.show("容器中没有找到该商品");
+//                            ToastUtils.show("容器中没有找到该商品");
+                            ShowMsgDialogUtil.show(ScannerOutStockActivity.this
+                                    , "容器中没有找到该商品");
                         }
                     }
                 }
@@ -120,7 +123,9 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                     if (currentGoodsBean != null) {
                         setGoodsInfoToView(currentGoodsBean);
                     } else {
-                        ToastUtils.show("容器中没有找到该商品");
+//                        ToastUtils.show("容器中没有找到该商品");
+                        ShowMsgDialogUtil.show(ScannerOutStockActivity.this
+                                , "容器中没有找到该商品");
                     }
                 }
             }
