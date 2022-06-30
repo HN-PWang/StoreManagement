@@ -216,26 +216,26 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             }
         });
 
-        setOnRfIdListener(new OnRfIdListener() {
-            @Override
-            public void onRFIdDataBack(String message) {
-                if (!TextUtils.isEmpty(message)) {
-                    tvProductBatch.setText(message);
-
-                    snCodeList.clear();
-                    snCodeList.add(message);
-
-                    setAwaitCount(snCodeList.size());
-
-                    if (IS_SN == 0) {
-                        mScannerInitiator = 4;
-                    } else {
-                        mScannerInitiator = -1;
-                    }
-                    setInputViewState();
-                }
-            }
-        });
+//        setOnRfIdListener(new OnRfIdListener() {
+//            @Override
+//            public void onRFIdDataBack(String message) {
+//                if (!TextUtils.isEmpty(message)) {
+//                    tvProductBatch.setText(message);
+//
+//                    snCodeList.clear();
+//                    snCodeList.add(message);
+//
+//                    setAwaitCount(snCodeList.size());
+//
+//                    if (IS_SN == 0) {
+//                        mScannerInitiator = 4;
+//                    } else {
+//                        mScannerInitiator = -1;
+//                    }
+//                    setInputViewState();
+//                }
+//            }
+//        });
 
         setBaseDataToView();
 
@@ -277,12 +277,14 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private void writeProductBatch(String code) {
         if (!TextUtils.isEmpty(code)) {
             mCurrentProductBatch = code;
-            snCodeList.clear();
-            snCodeList.add(code);
+//            snCodeList.clear();
+            if (!snCodeList.contains(code)) {
+                snCodeList.add(code);
+            }
 
             checkScannerCodeByItemCodeAndPB();
 
-            setAwaitCount(snCodeList.size());
+            setAwaitCount(getCount());
             if (IS_SN == 0) {
                 mScannerInitiator = 4;
             } else {
@@ -702,7 +704,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 snData = TextUtils.isEmpty(snData) ? "" : snData;
                 snCodeList = JSONObject.parseArray(snData, String.class);
 
-                setAwaitCount(snCodeList.size());
+                setAwaitCount(getCount());
             }
         }
     }
@@ -765,7 +767,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 showConfirmDialog();
                 break;
             case R.id.iv_scan_rfid:
-                readMactchData();
+//                readMactchData();
+                toSnScanner();
                 break;
         }
     }
@@ -795,9 +798,15 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     private int getCount() {
-        String str = etCount.getText().toString();
+        int count = 0;
+        if (IS_SN == 1) {
+            count = snCodeList.size();
+        } else {
+            String str = etCount.getText().toString();
+            count = DataUtil.getInt(str);
+        }
 
-        return DataUtil.getInt(str);
+        return count;
     }
 
     private int getWaitingDeliveryCount() {
