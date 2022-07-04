@@ -16,6 +16,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    lintOptions {
+        disable "ResourceType"
+        disable "SpUsage"
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "MAIN_SERVER_URL", '"http://39.98.151.192:7010/"')
