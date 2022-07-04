@@ -61,7 +61,7 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
         taskAdapter = new GetTaskAdapter(this, mDataList);
         rvTask.setAdapter(taskAdapter);
 
-        siteChooseHelper = new SiteChooseHelper(this, true);
+        siteChooseHelper = new SiteChooseHelper(this, 1);
         siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
             @Override
             public void onClick(SiteBean site) {

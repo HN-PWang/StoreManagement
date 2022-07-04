@@ -358,7 +358,8 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
 
         registerReceiver(mScanDataReceiver, intentFilter);
 
-        initScanner();
+        //先不用初始胡这里,暂时使用广播返回的数据,更快更精准
+//        initScanner();
 
         initRf();
     }

@@ -7,7 +7,8 @@ import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.SiteSearchDialog;
-import com.mr.storemanagement.presenter.GetSitePresenter;
+import com.mr.storemanagement.presenter.GetSiteOutPresenter;
+import com.mr.storemanagement.presenter.GetSitePutPresenter;
 import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class SiteChooseHelper {
 
     private OnSiteEventListener siteClickListener;
 
-    private boolean mIsOutStock;
+    private int mAction; //0:ru
 
     private List<SiteBean> mSiteBeans = new ArrayList<>();
 
@@ -35,15 +36,20 @@ public class SiteChooseHelper {
         this.siteClickListener = siteClickListener;
     }
 
-    public SiteChooseHelper(Context context, boolean isOutStock) {
+    /**
+     * @param context
+     * @param action
+     */
+    public SiteChooseHelper(Context context, int action) {
         this.mContext = context;
-        this.mIsOutStock = isOutStock;
+        this.mAction = action;
 
-        getSite(false);
+        getSite();
     }
 
-    private void getSite(boolean isClickGet) {
-        GetSitePresenter presenter = new GetSitePresenter(null
+    //动作来源
+    private void getSite() {
+        GetSitePutPresenter presenter = new GetSitePutPresenter(null
                 , new NetResultListener<List<SiteBean>>() {
             @Override
             public void loadSuccess(List<SiteBean> beans) {
@@ -64,7 +70,7 @@ public class SiteChooseHelper {
             }
         }, null);
 
-        GetSitePresenter outPresenter = new GetSitePresenter(null
+        GetSiteOutPresenter outPresenter = new GetSiteOutPresenter(null
                 , new NetResultListener<List<SiteBean>>() {
             @Override
             public void loadSuccess(List<SiteBean> beans) {
@@ -85,10 +91,33 @@ public class SiteChooseHelper {
             }
         }, null);
 
-        if (mIsOutStock){
-            outPresenter.getSite();
-        }else {
+        GetSiteOutPresenter invPresenter = new GetSiteOutPresenter(null
+                , new NetResultListener<List<SiteBean>>() {
+            @Override
+            public void loadSuccess(List<SiteBean> beans) {
+                if (NullUtils.isNotEmpty(beans)) {
+                    mSiteBeans.clear();
+                    mSiteBeans.addAll(beans);
+                    if (siteClickListener != null) {
+                        siteClickListener.onFirst(beans.get(0));
+                    }
+                } else {
+                    ToastUtils.show("站点信息为空");
+                }
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ToastUtils.show(exception.getErrorMsg());
+            }
+        }, null);
+
+        if (mAction == 0) {
             presenter.getSite();
+        } else if (mAction == 1) {
+            outPresenter.getSite();
+        } else if (mAction == 2) {
+            invPresenter.getSite();
         }
     }
 
@@ -96,7 +125,7 @@ public class SiteChooseHelper {
         if (NullUtils.isNotEmpty(mSiteBeans)) {
             showSiteDialog();
         } else {
-            getSite(true);
+            getSite();
         }
     }
 

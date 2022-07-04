@@ -9,9 +9,9 @@ import com.mr.storemanagement.bean.SiteBean;
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 
-public class GetSitePresenter extends SMBasePresenter<SiteBean> {
+public class GetSiteOutPresenter extends SMBasePresenter<SiteBean> {
 
-    public GetSitePresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
+    public GetSiteOutPresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
@@ -22,7 +22,7 @@ public class GetSitePresenter extends SMBasePresenter<SiteBean> {
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getSiteList();
+        return netModel.getOutSiteList();
     }
 
     @Override

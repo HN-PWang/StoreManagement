@@ -141,4 +141,22 @@ public interface ApiService {
             , @Path("site_code") String siteCode, @Path("usercode") String usercode
             , @Body RequestBody body);
 
+    /**
+     * 获取盘点站点信息
+     */
+    @GET("api/Mobile/GetInvSiteList")
+    Observable<ResponseBody> getSiteListByInv(@HeaderMap Map<String, String> header);
+
+    /**
+     * 获取单号信息
+     */
+    @GET("api/Mobile/GetInvList")
+    Observable<ResponseBody> getInvList(@HeaderMap Map<String, String> header);
+
+    /**
+     * 校验盘点单号,并获取集合
+     */
+    @GET("api/Mobile/GetInvCheck/{InvCode}/{UserCode}")
+    Observable<ResponseBody> getInvCheck(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode, @Path("UserCode") String UserCode);
 }

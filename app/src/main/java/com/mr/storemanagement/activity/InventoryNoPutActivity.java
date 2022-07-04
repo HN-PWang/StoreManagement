@@ -11,37 +11,39 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mr.lib_base.AfterTextChangedListener;
-import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
+import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
-import com.mr.storemanagement.bean.AsnCodeBean;
+import com.mr.storemanagement.bean.InvCheckBackBean;
+import com.mr.storemanagement.bean.InvCodeBean;
 import com.mr.storemanagement.bean.SiteBean;
-import com.mr.storemanagement.dialog.AsnSelectDialog;
-import com.mr.storemanagement.eventbean.SaveAsnEvent;
+import com.mr.storemanagement.dialog.InvSelectDialog;
 import com.mr.storemanagement.helper.SiteChooseHelper;
-import com.mr.storemanagement.presenter.GetAsnPresenter;
+import com.mr.storemanagement.manger.AccountManger;
+import com.mr.storemanagement.presenter.GetInvCheckPresenter;
+import com.mr.storemanagement.presenter.GetInvPresenter;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 入库界面
+ * 盘点单号输入界面
  */
-public class WarehousingActivity extends BaseScannerActivity implements View.OnClickListener {
+public class InventoryNoPutActivity extends BaseScannerActivity implements View.OnClickListener {
 
     private TextView tvSearchSite;
 
     private EditText tvSearchAsn;
 
-    private List<AsnCodeBean> mAsnCodeBeans = new ArrayList<>();
+    private List<InvCodeBean> mAsnCodeBeans = new ArrayList<>();
 
-    private AsnSelectDialog asnSelectDialog;
+    private InvSelectDialog asnSelectDialog;
 
     private SiteBean currentSiteBean = null;
 
@@ -52,7 +54,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_warehousing);
+        setContentView(R.layout.activity_inventory_no_put);
 
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
@@ -66,7 +68,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
-        siteChooseHelper = new SiteChooseHelper(this, 0);
+        siteChooseHelper = new SiteChooseHelper(this, 3);
         siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
             @Override
             public void onClick(SiteBean site) {
@@ -111,10 +113,10 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
     }
 
     private void getAsn() {
-        GetAsnPresenter presenter = new GetAsnPresenter(this
-                , new NetResultListener<List<AsnCodeBean>>() {
+        GetInvPresenter presenter = new GetInvPresenter(this
+                , new NetResultListener<List<InvCodeBean>>() {
             @Override
-            public void loadSuccess(List<AsnCodeBean> beans) {
+            public void loadSuccess(List<InvCodeBean> beans) {
                 if (beans != null) {
                     mAsnCodeBeans.clear();
                     mAsnCodeBeans.addAll(beans);
@@ -129,18 +131,39 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         presenter.getAsn();
     }
 
-    @Subscribe
-    public void onEventMainThread(SaveAsnEvent event) {
-        getAsn();
+    private void checkInv() {
+        GetInvCheckPresenter presenter = new GetInvCheckPresenter(this
+                , new NetResultListener<InvCheckBackBean>() {
+            @Override
+            public void loadSuccess(InvCheckBackBean bean) {
+
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+        presenter.check(mAsnCode, AccountManger.getInstance().getUserCode());
     }
 
     private void showAsnSelectDialog() {
         if (asnSelectDialog == null || !asnSelectDialog.isShowing()) {
-            asnSelectDialog = new AsnSelectDialog(this, mAsnCodeBeans);
-            asnSelectDialog.setOrderSelectListener(new AsnSelectDialog.OnOrderSelectListener() {
+            asnSelectDialog = new InvSelectDialog(this, mAsnCodeBeans);
+            asnSelectDialog.setOrderSelectListener(new InvSelectDialog.OnOrderSelectListener() {
                 @Override
-                public void onSelect(AsnCodeBean asnCodeBean) {
-                    mAsnCode = asnCodeBean.asn_code;
+                public void onSelect(InvCodeBean asnCodeBean) {
+                    mAsnCode = asnCodeBean.inventory_code;
                     setOrderInfo();
                 }
             });
@@ -171,7 +194,8 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
                 showAsnSelectDialog();
                 break;
             case R.id.tv_next:
-                intoScanning();
+//                intoScanning();
+                checkInv();
                 break;
         }
     }
@@ -185,9 +209,9 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
             ToastUtils.show("单号信息不能为空");
             return;
         }
-        Intent intent = new Intent(this, ScannerPutStockActivity.class);
-        intent.putExtra("site_key", currentSiteBean.site_code);
-        intent.putExtra("ans_key", mAsnCode);
+        Intent intent = new Intent(this, InventoryActivity.class);
+        intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
+        intent.putExtra(Constants.ASN_DATA_KEY, mAsnCode);
         startActivity(intent);
     }
 

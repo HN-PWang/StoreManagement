@@ -26,6 +26,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppDefaultTheme">
+        <activity android:name=".activity.InvSGVActivity"></activity>
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait">
@@ -68,6 +69,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.GetTaskActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.InventoryNoPutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.InventoryActivity"
             android:screenOrientation="portrait" />
     </application>
 

@@ -11,7 +11,7 @@
         android:layout_height="49dp"
         android:background="@drawable/re_f5f5f5_radius_12dp"
         android:gravity="center_vertical"
-        android:hint="输入入库单号查询"
+        android:hint="输入盘点单号查询"
         android:paddingHorizontal="16dp"
         android:singleLine="true"
         android:textSize="15dp"

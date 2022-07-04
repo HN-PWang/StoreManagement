@@ -157,4 +157,28 @@ public class AppNetModel extends BaseModel {
         return service.checkConfirm(getHeader(), SiteCode, usercode, body);
     }
 
+    /**
+     * 获取站点列表
+     */
+    public Observable<ResponseBody> getSiteListByInv() {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getSiteListByInv(getHeader());
+    }
+
+    /**
+     * 获取盘点单号列表
+     */
+    public Observable<ResponseBody> getInvList() {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getInvList(getHeader());
+    }
+
+    /**
+     * 获取单号列表
+     */
+    public Observable<ResponseBody> getInvCheck(String asnCode, String userCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getInvCheck(getHeader(), asnCode, userCode);
+    }
+
 }

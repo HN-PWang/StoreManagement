@@ -41,9 +41,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(new Intent(this, WarehousingActivity.class));
                 break;
             case R.id.tv_back_stack:
-                //回库  去扫描界面扫描后跳转
-//                StandardScanningActivity.actionIntent(this, WarehouseBackActivity.class,
-//                        "请扫描 容器/料箱 码");
+                //回库
                 startActivity(new Intent(this, WarehouseBackActivity.class));
                 break;
             case R.id.tv_out_stack:
@@ -52,7 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.tv_inventory:
                 //盘点
-                //TODO 暂时不做
+                startActivity(new Intent(this, InventoryNoPutActivity.class));
                 break;
             case R.id.tv_bind_stack:
                 //绑定RFID
