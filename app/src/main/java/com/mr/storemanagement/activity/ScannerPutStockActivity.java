@@ -118,7 +118,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 //        setInputViewState();
     }
 
-    private void initView () {
+    private void initView() {
         site_code = getIntent().getStringExtra("site_key");
         asn_code = getIntent().getStringExtra("ans_key");
 
@@ -148,7 +148,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         findViewById(R.id.tv_back).setOnClickListener(this);
     }
 
-    private void initListener () {
+    private void initListener() {
         //测序号输入完毕
         etItemCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -369,8 +369,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
         if (NullUtils.isNotEmpty(storeInfoBeans)) {
             for (StoreInfoBean bean : storeInfoBeans) {
-                if (mCurrentItemCode.equals(bean.item_Code)){
-                        //&& mCurrentProductBatch.equals(bean.product_batch)) {
+                if (mCurrentItemCode.equals(bean.item_Code)) {
+                    //&& mCurrentProductBatch.equals(bean.product_batch)) {
                     currentStore = bean;
                 }
             }
