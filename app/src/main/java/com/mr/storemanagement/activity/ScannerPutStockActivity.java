@@ -115,7 +115,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         setBaseDataToView();
         initListener();
         checkAsn();
-//        setInputViewState();
+        setInputViewState();
     }
 
     private void initView() {
