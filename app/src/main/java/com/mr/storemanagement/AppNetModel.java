@@ -119,9 +119,9 @@ public class AppNetModel extends BaseModel {
      * 保存数据并关闭当前容器。如果所有货都收完则会结束订单。 保存数据接口
      */
     public Observable<ResponseBody> asnSaveDetail(String AsnCode, String ContainerCode
-            , String UserCode, String KeyId, String Qty, RequestBody body) {
+            , String UserCode, String Qty, RequestBody body) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.asnSaveDetail(getHeader(), AsnCode, ContainerCode, UserCode, KeyId, Qty, body);
+        return service.asnSaveDetail(getHeader(), AsnCode, ContainerCode, UserCode, Qty, body);
     }
 
     /**

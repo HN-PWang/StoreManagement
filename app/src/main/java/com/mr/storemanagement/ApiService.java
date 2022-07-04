@@ -107,11 +107,10 @@ public interface ApiService {
     /**
      * 保存数据并关闭当前容器。如果所有货都收完则会结束订单。 保存数据接口
      */
-    @POST("api/Mobile/AsnSaveDetail/{AsnCode}/{ContainerCode}/{UserCode}/{KeyId}/{Qty}")
+    @POST("api/Mobile/AsnSaveDetail2/{AsnCode}/{ContainerCode}/{UserCode}/{Qty}")
     Observable<ResponseBody> asnSaveDetail(@HeaderMap Map<String, String> header
             , @Path("AsnCode") String AsnCode, @Path("ContainerCode") String ContainerCode
-            , @Path("UserCode") String UserCode, @Path("KeyId") String KeyId
-            , @Path("Qty") String Qty, @Body RequestBody body);
+            , @Path("UserCode") String UserCode, @Path("Qty") String Qty, @Body RequestBody body);
 
     /**
      * 领取任务列表
