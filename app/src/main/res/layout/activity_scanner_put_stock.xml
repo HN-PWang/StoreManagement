@@ -232,9 +232,28 @@
         android:gravity="center"
         android:text="收货完成"
         android:textColor="@color/white"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintBottom_toTopOf="@id/tv_back"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tv_scan_rfid"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:background="#3296FA"
+        android:gravity="center"
+        android:text="扫描序列号"
+        android:textColor="@color/white"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/tv_complete"
+        app:layout_constraintBottom_toTopOf="@id/tv_back"
+        app:layout_constraintWidth_percent="0.5"
+        />
+
+
 
     <TextView
         android:id="@+id/tv_back"

@@ -74,6 +74,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView tvProductBatchTag;//序列号可扫描标记
     private TextView etCount;//数量
     private TextView tvCollectedCount;//待收数量
+    private TextView tvRfidScan;//扫描RFID
 
     private PutStorageDetailDialog mPutStorageDetailDialog;
 
@@ -110,7 +111,14 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner_put_stock);
+        initView();
+        setBaseDataToView();
+        initListener();
+        checkAsn();
+//        setInputViewState();
+    }
 
+    private void initView () {
         site_code = getIntent().getStringExtra("site_key");
         asn_code = getIntent().getStringExtra("ans_key");
 
@@ -125,6 +133,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         tvProductBatchTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
         tvCollectedCount = findViewById(R.id.tv_collected_count);
+        tvRfidScan = findViewById(R.id.tv_scan_rfid);
 
         ivProductBatch.setEnabled(false);
 
@@ -137,7 +146,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
+    }
 
+    private void initListener () {
         //测序号输入完毕
         etItemCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -237,11 +248,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 //            }
 //        });
 
-        setBaseDataToView();
 
-        checkAsn();
-
-        setInputViewState();
     }
 
     /**
@@ -362,8 +369,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
         if (NullUtils.isNotEmpty(storeInfoBeans)) {
             for (StoreInfoBean bean : storeInfoBeans) {
-                if (mCurrentItemCode.equals(bean.item_Code)
-                        && mCurrentProductBatch.equals(bean.product_batch)) {
+                if (mCurrentItemCode.equals(bean.item_Code)){
+                        //&& mCurrentProductBatch.equals(bean.product_batch)) {
                     currentStore = bean;
                 }
             }
@@ -618,7 +625,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         if (getCount() == 0) {
 //            TextUtils.isEmpty("商品数量为0");
             ShowMsgDialogUtil.show(ScannerPutStockActivity.this
-                    , "商品数量为0");
+                    , "商品数量为0，不能保存");
             return;
         }
 
@@ -628,9 +635,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                     , "还没有呼叫容器号");
             return;
         }
-
+        //TODO: keyid输入
         presenter.save(asn_code, mContainerCodeByScanner, AccountManger.getInstance().getUserCode()
-                , currentStore.keyid, String.valueOf(getCount()), snCodeList);
+                , String.valueOf(getCount()), snCodeList);
     }
 
     private void getPutStorageDetail() {
@@ -767,6 +774,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 showConfirmDialog();
                 break;
             case R.id.iv_scan_rfid:
+            case R.id.tv_scan_rfid:
 //                readMactchData();
                 toSnScanner();
                 break;

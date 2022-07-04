@@ -26,7 +26,6 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<String> {
     private String mAsnCode;
     private String mContainerCode;
     private String mUserCode;
-    private String mKeyId;
     private String mQty;
 
     public List<String> mItems;
@@ -38,12 +37,11 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<String> {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void save(String AsnCode, String ContainerCode, String UserCode, String KeyId, String Qty
+    public void save(String AsnCode, String ContainerCode, String UserCode, String Qty
             , List<String> list) {
         mAsnCode = AsnCode;
         mContainerCode = ContainerCode;
         mUserCode = UserCode;
-        mKeyId = KeyId;
         mQty = Qty;
         mItems = list;
 
@@ -61,7 +59,7 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<String> {
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.asnSaveDetail(mAsnCode, mContainerCode, mUserCode, mKeyId, mQty, mRequestBody);
+        return netModel.asnSaveDetail(mAsnCode, mContainerCode, mUserCode, mQty, mRequestBody);
     }
 
     @Override
