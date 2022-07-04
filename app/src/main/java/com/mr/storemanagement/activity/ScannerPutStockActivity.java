@@ -637,7 +637,23 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         }
         //TODO: keyid输入
         presenter.save(asn_code, mContainerCodeByScanner, AccountManger.getInstance().getUserCode()
-                , String.valueOf(getCount()), snCodeList);
+                , String.valueOf(getCount()), buildSenList());
+    }
+
+    private List<StoreInfoBean.SenNum> buildSenList() {
+        List<StoreInfoBean.SenNum> senNumList = new ArrayList<>();
+        if (currentStore != null && NullUtils.isNotEmpty(currentStore.sns)
+                && NullUtils.isNotEmpty(snCodeList)) {
+            for (int i = 0; i < currentStore.sns.size(); i++) {
+                StoreInfoBean.SenNum sn = currentStore.sns.get(i);
+                for (String code : snCodeList) {
+                    if (code.equals(sn.SN)) {
+                        senNumList.add(sn);
+                    }
+                }
+            }
+        }
+        return senNumList;
     }
 
     private void getPutStorageDetail() {

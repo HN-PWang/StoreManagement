@@ -1,14 +1,15 @@
 package com.mr.storemanagement.presenter;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
 import com.mr.storemanagement.bean.AsnSaveBackBean;
+import com.mr.storemanagement.bean.StoreInfoBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
     private String mUserCode;
     private String mQty;
 
-    public List<String> mItems;
+    public List<StoreInfoBean.SenNum> mItems;
 
     private RequestBody mRequestBody;
 
@@ -39,7 +40,7 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
     }
 
     public void save(String AsnCode, String ContainerCode, String UserCode, String Qty
-            , List<String> list) {
+            , List<StoreInfoBean.SenNum> list) {
         mAsnCode = AsnCode;
         mContainerCode = ContainerCode;
         mUserCode = UserCode;
@@ -48,8 +49,11 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
 
         JSONArray array = new JSONArray();
         if (mItems != null) {
-            for (String item : mItems) {
-                array.put(item);
+            for (StoreInfoBean.SenNum item : mItems) {
+                JSONObject ob = new JSONObject();
+                ob.put("SN", item.SN);
+                ob.put("keyid", item.keyid);
+                array.put(ob);
             }
         }
 
