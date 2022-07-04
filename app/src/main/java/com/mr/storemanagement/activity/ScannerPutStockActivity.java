@@ -136,6 +136,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         tvRfidScan = findViewById(R.id.tv_scan_rfid);
 
         ivProductBatch.setEnabled(false);
+        tvProductBatch.setEnabled(false);
 
         etItemCode.setOnFocusChangeListener(this);
         etContainerCode.setOnFocusChangeListener(this);
@@ -146,6 +147,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
+        findViewById(R.id.tv_scan_rfid).setOnClickListener(this);
     }
 
     private void initListener() {
@@ -421,11 +423,13 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
                 ivProductBatch.setEnabled(true);
+                tvProductBatch.setEnabled(true);
                 IS_SN = 1;
             } else {
                 tvProductBatchTag.setSelected(false);
                 etCount.setEnabled(true);
                 ivProductBatch.setEnabled(false);
+                tvProductBatch.setEnabled(false);
                 IS_SN = 0;
             }
 
@@ -635,7 +639,6 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                     , "还没有呼叫容器号");
             return;
         }
-        //TODO: keyid输入
         presenter.save(asn_code, mContainerCodeByScanner, AccountManger.getInstance().getUserCode()
                 , String.valueOf(getCount()), buildSenList());
     }
@@ -857,7 +860,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         tvCollectedCount.setText("");
         etCount.setEnabled(false);
         ivProductBatch.setEnabled(false);
-
+        tvProductBatch.setEnabled(false);
         mScannerInitiator = 1;
         setInputViewState();
     }
