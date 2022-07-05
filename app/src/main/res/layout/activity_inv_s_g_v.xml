@@ -4,8 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activity.InvSGVActivity">
 
+    <TextView
+        android:id="@+id/tv_agv_auto_inv"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="80dp"
+        android:background="#3296FA"
+        android:gravity="center"
+        android:text="AGV自动盘点"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_task_unsubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        android:drawableRight="@drawable/ic_check_box_selector"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:text="AGV盘点任务未提交"
+        android:textColor="#333333"
+        android:textSize="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_agv_auto_inv" />
+
+    <TextView
+        android:id="@+id/tv_scanner_inv"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="80dp"
+        android:background="#3296FA"
+        android:gravity="center"
+        android:text="非AGV扫描盘点"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_task_unsubmit" />
+
+    <TextView
+        android:id="@+id/tv_back"
+        android:layout_width="0dp"
+        android:layout_height="49dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:text="返回"
+        android:textColor="#333333"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

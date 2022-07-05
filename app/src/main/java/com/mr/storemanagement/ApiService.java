@@ -159,4 +159,20 @@ public interface ApiService {
     @GET("api/Mobile/GetInvCheck/{InvCode}/{UserCode}")
     Observable<ResponseBody> getInvCheck(@HeaderMap Map<String, String> header
             , @Path("InvCode") String InvCode, @Path("UserCode") String UserCode);
+
+    /**
+     * 自动盘点
+     */
+    @GET("api/Inventory/SetInvAgvTask/{InvCode}/{SiteCode}/{UserCode}")
+    Observable<ResponseBody> setInvAgvTask(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode, @Path("SiteCode") String SiteCode
+            , @Path("UserCode") String UserCode);
+
+    /**
+     * 获取盘点任务
+     */
+    @GET("api/Inventory/SetInvNonAgvTask/{InvCode}/{SiteCode}/{UserCode}")
+    Observable<ResponseBody> setInvNonAgvTask(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode, @Path("SiteCode") String SiteCode
+            , @Path("UserCode") String UserCode);
 }

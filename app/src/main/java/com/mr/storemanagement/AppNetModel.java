@@ -181,4 +181,20 @@ public class AppNetModel extends BaseModel {
         return service.getInvCheck(getHeader(), asnCode, userCode);
     }
 
+    /**
+     * 自动盘点
+     */
+    public Observable<ResponseBody> setInvAgvTask(String asnCode, String siteCode, String userCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.setInvAgvTask(getHeader(), asnCode, siteCode, userCode);
+    }
+
+    /**
+     * 获取盘点任务
+     */
+    public Observable<ResponseBody> setInvNonAgvTask(String asnCode, String siteCode, String userCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.setInvNonAgvTask(getHeader(), asnCode, siteCode, userCode);
+    }
+
 }

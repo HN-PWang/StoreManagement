@@ -26,6 +26,7 @@ import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.GetInvCheckPresenter;
 import com.mr.storemanagement.presenter.GetInvPresenter;
+import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -136,12 +137,13 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
                 , new NetResultListener<InvCheckBackBean>() {
             @Override
             public void loadSuccess(InvCheckBackBean bean) {
-
+                handlerInvCheckBack(bean);
             }
 
             @Override
             public void loadFailure(SMException exception) {
-
+                ShowMsgDialogUtil.show(InventoryNoPutActivity.this
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -155,6 +157,15 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             }
         });
         presenter.check(mAsnCode, AccountManger.getInstance().getUserCode());
+    }
+
+    private void handlerInvCheckBack(InvCheckBackBean bean) {
+        if (bean == null || !bean.HasAgv) {
+            ShowMsgDialogUtil.show(InventoryNoPutActivity.this
+                    , "没有盘点任务");
+        } else {
+            intoScanning(bean);
+        }
     }
 
     private void showAsnSelectDialog() {
@@ -200,7 +211,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         }
     }
 
-    private void intoScanning() {
+    private void intoScanning(InvCheckBackBean bean) {
         if (currentSiteBean == null) {
             ToastUtils.show("站点信息不能为空");
             return;
@@ -209,9 +220,11 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             ToastUtils.show("单号信息不能为空");
             return;
         }
-        Intent intent = new Intent(this, InventoryActivity.class);
+        Intent intent = new Intent(this, InvSGVActivity.class);
         intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
-        intent.putExtra(Constants.ASN_DATA_KEY, mAsnCode);
+        intent.putExtra(Constants.HAS_TASK_KEY, mAsnCode);
+        intent.putExtra(Constants.ASN_DATA_KEY, bean.HasTask);
+        intent.putExtra(Constants.HAS_NON_AGV_KEY, bean.HasNonAgv);
         startActivity(intent);
     }
 
