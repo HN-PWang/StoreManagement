@@ -184,17 +184,43 @@ public class AppNetModel extends BaseModel {
     /**
      * 自动盘点
      */
-    public Observable<ResponseBody> setInvAgvTask(String asnCode, String siteCode, String userCode) {
+    public Observable<ResponseBody> getInvSetAgvTask(String asnCode, String siteCode, String userCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.setInvAgvTask(getHeader(), asnCode, siteCode, userCode);
+        return service.getInvSetAgvTask(getHeader(), siteCode, asnCode, userCode);
     }
 
     /**
-     * 获取盘点任务
+     * 非自动盘点
      */
-    public Observable<ResponseBody> setInvNonAgvTask(String asnCode, String siteCode, String userCode) {
+    public Observable<ResponseBody> getInvSetNonAgvTask(String asnCode, String siteCode, String userCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.setInvNonAgvTask(getHeader(), asnCode, siteCode, userCode);
+        return service.getInvSetNonAgvTask(getHeader(), siteCode, asnCode, userCode);
+    }
+
+    /**
+     * 获取盘点单号详情
+     */
+    public Observable<ResponseBody> getInvDetails(String invCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getInvDetails(getHeader(), invCode);
+    }
+
+    /**
+     * 强制盘点单号完成
+     */
+    public Observable<ResponseBody> setInvComplete(String invCode, String userCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.setInvComplete(getHeader(), invCode, userCode);
+    }
+
+    /**
+     * 保存盘点单号
+     */
+    public Observable<ResponseBody> saveInvDetail(String InvCode, String UserCode
+            , String DetailID, String ContainerCode, String CheckQty, RequestBody body) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.saveInvDetail(getHeader(), InvCode, UserCode, DetailID, ContainerCode
+                , CheckQty, body);
     }
 
 }

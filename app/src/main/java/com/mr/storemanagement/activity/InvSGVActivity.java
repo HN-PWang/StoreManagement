@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
@@ -13,10 +14,15 @@ import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
-import com.mr.storemanagement.bean.InvCheckBackBean;
+import com.mr.storemanagement.bean.InvDetailsBean;
 import com.mr.storemanagement.manger.AccountManger;
-import com.mr.storemanagement.presenter.SetInvAGVTaskPresenter;
+import com.mr.storemanagement.presenter.GetInvDetailsPresenter;
+import com.mr.storemanagement.presenter.GetInvSetAgvTaskPresenter;
+import com.mr.storemanagement.presenter.GetInvSetNonAgvTaskPresenter;
+import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
+
+import java.util.List;
 
 public class InvSGVActivity extends BaseActivity implements View.OnClickListener {
 
@@ -61,13 +67,13 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
                 autoInv();
                 break;
             case R.id.tv_scanner_inv:
-                intoScanning();
+                scannerInv();
                 break;
         }
     }
 
     private void autoInv() {
-        SetInvAGVTaskPresenter presenter = new SetInvAGVTaskPresenter(this
+        GetInvSetAgvTaskPresenter presenter = new GetInvSetAgvTaskPresenter(this
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
@@ -90,10 +96,69 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
                 dismissLoadingDialog();
             }
         });
-        presenter.set(mAsnCode, mSiteCode, AccountManger.getInstance().getUserCode());
+        presenter.get(mAsnCode, mSiteCode, AccountManger.getInstance().getUserCode());
     }
 
-    private void intoScanning() {
+    private void scannerInv() {
+        GetInvSetNonAgvTaskPresenter presenter = new GetInvSetNonAgvTaskPresenter(this
+                , new NetResultListener() {
+            @Override
+            public void loadSuccess(Object o) {
+
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ShowMsgDialogUtil.show(InvSGVActivity.this
+                        , exception.getErrorMsg());
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+        presenter.get(mAsnCode, mSiteCode, AccountManger.getInstance().getUserCode());
+    }
+
+    private void getInvDetails(String invCode) {
+        GetInvDetailsPresenter presenter = new GetInvDetailsPresenter(this
+                , new NetResultListener<List<InvDetailsBean>>() {
+            @Override
+            public void loadSuccess(List<InvDetailsBean> beans) {
+                if (NullUtils.isNotEmpty(beans)) {
+                    intoScanning(beans);
+                } else {
+                    ShowMsgDialogUtil.show(InvSGVActivity.this
+                            , "没有获取到盘点任务详情信息");
+                }
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ShowMsgDialogUtil.show(InvSGVActivity.this
+                        , exception.getErrorMsg());
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+        presenter.get(invCode);
+    }
+
+    private void intoScanning(List<InvDetailsBean> beans) {
         if (TextUtils.isEmpty(mSiteCode)) {
             ToastUtils.show("站点信息不能为空");
             return;
@@ -105,6 +170,7 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
         Intent intent = new Intent(this, InventoryActivity.class);
         intent.putExtra(Constants.SITE_CODE_KEY, mSiteCode);
         intent.putExtra(Constants.HAS_TASK_KEY, mAsnCode);
+        intent.putExtra(Constants.INV_DETAILS_DATA_KEY, JSONObject.toJSONString(beans));
         startActivity(intent);
     }
 

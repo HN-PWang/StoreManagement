@@ -154,7 +154,7 @@ public interface ApiService {
     Observable<ResponseBody> getInvList(@HeaderMap Map<String, String> header);
 
     /**
-     * 校验盘点单号,并获取集合
+     * 校验盘点单号
      */
     @GET("api/Mobile/GetInvCheck/{InvCode}/{UserCode}")
     Observable<ResponseBody> getInvCheck(@HeaderMap Map<String, String> header
@@ -163,16 +163,39 @@ public interface ApiService {
     /**
      * 自动盘点
      */
-    @GET("api/Inventory/SetInvAgvTask/{InvCode}/{SiteCode}/{UserCode}")
-    Observable<ResponseBody> setInvAgvTask(@HeaderMap Map<String, String> header
-            , @Path("InvCode") String InvCode, @Path("SiteCode") String SiteCode
+    @GET("api/Mobile/GetInvSetAgvTask/{SiteCode}/{InvCode}/{UserCode}")
+    Observable<ResponseBody> getInvSetAgvTask(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode, @Path("InvCode") String InvCode
             , @Path("UserCode") String UserCode);
 
     /**
-     * 获取盘点任务
+     * 非自动盘点
      */
-    @GET("api/Inventory/SetInvNonAgvTask/{InvCode}/{SiteCode}/{UserCode}")
-    Observable<ResponseBody> setInvNonAgvTask(@HeaderMap Map<String, String> header
-            , @Path("InvCode") String InvCode, @Path("SiteCode") String SiteCode
+    @GET("api/Mobile/GetInvSetNonAgvTask/{SiteCode}/{InvCode}/{UserCode}")
+    Observable<ResponseBody> getInvSetNonAgvTask(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode, @Path("InvCode") String InvCode
             , @Path("UserCode") String UserCode);
+
+    /**
+     * 获取盘点单号详情
+     */
+    @GET("api/Mobile/GetinvDetails/{InvCode}")
+    Observable<ResponseBody> getInvDetails(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode);
+
+    /**
+     * 强制盘点单号完成
+     */
+    @GET("api/Mobile/SetInvComplete/{InvCode}/{UserCode}")
+    Observable<ResponseBody> setInvComplete(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode, @Path("UserCode") String UserCode);
+
+    /**
+     * 保存盘点单号
+     */
+    @POST("api/Mobile/SaveInvDetail/{InvCode}/{UserCode}/{DetailID}/{ContainerCode}/{CheckQty}")
+    Observable<ResponseBody> saveInvDetail(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode, @Path("UserCode") String UserCode
+            , @Path("DetailID") String DetailID, @Path("ContainerCode") String ContainerCode
+            , @Path("CheckQty") String CheckQty, @Body RequestBody body);
 }

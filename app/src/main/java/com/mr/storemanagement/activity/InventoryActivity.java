@@ -27,9 +27,11 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.AsnSaveBackBean;
 import com.mr.storemanagement.bean.FeedBoxBean;
+import com.mr.storemanagement.bean.InvDetailsBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
 import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.dialog.ConfirmDialog;
+import com.mr.storemanagement.dialog.InvDetailDialog;
 import com.mr.storemanagement.dialog.PutStorageDetailDialog;
 import com.mr.storemanagement.eventbean.SaveAsnEvent;
 import com.mr.storemanagement.manger.AccountManger;
@@ -39,6 +41,9 @@ import com.mr.storemanagement.presenter.GetAsnCheckPresenter;
 import com.mr.storemanagement.presenter.GetAsnDetailPresenter;
 import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
 import com.mr.storemanagement.presenter.GetFeedBoxPresenter;
+import com.mr.storemanagement.presenter.GetInvDetailsPresenter;
+import com.mr.storemanagement.presenter.InvSaveDetailPresenter;
+import com.mr.storemanagement.presenter.SetInvCompletePresenter;
 import com.mr.storemanagement.util.DataUtil;
 import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
@@ -69,25 +74,19 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     private EditText etItemCode;//册序号
     private TextView tvCalled;//已呼叫的料箱标签
     private EditText etContainerCode;//料箱
-    private EditText tvProductBatch;//序列号点击图标
-    private ImageView ivProductBatch;//序列号输入框
     private TextView tvProductBatchTag;//序列号可扫描标记
     private TextView etCount;//数量
-    private TextView tvCollectedCount;//待收数量
-    private TextView tvRfidScan;//扫描RFID
 
-    private PutStorageDetailDialog mPutStorageDetailDialog;
+    private InvDetailDialog mInvDetailDialog;
 
     private CheckSnDialog mCheckSnDialog;
 
     private ConfirmDialog mConfirmDialog;
 
-    private String site_code;
-    private String asn_code;
+    private String mSiteCode;
+    private String mInvCode;
 
-    private StoreInfoBean currentStore;
-
-    private String mContainerCodeByGet;
+    private InvDetailsBean currentInvDetails;
 
     private String mContainerCodeByScanner;
 
@@ -99,11 +98,9 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private List<String> snCodeList = new ArrayList<>();
 
-    private List<StoreInfoBean> storeInfoBeans = new ArrayList<>();
+    private List<InvDetailsBean> mInvDetailsList = new ArrayList<>();
 
     private int mScannerInitiator = 1; //1:测序号 2:料箱号 3:序列号 4:数量
-
-    private boolean isCompleteDelivery = false;
 
     private int IS_SN = 0;
 
@@ -114,13 +111,16 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         initView();
         setBaseDataToView();
         initListener();
-        checkAsn();
         setInputViewState();
     }
 
     private void initView() {
-        site_code = getIntent().getStringExtra("site_key");
-        asn_code = getIntent().getStringExtra("ans_key");
+        mSiteCode = getIntent().getStringExtra(Constants.SITE_CODE_KEY);
+        mInvCode = getIntent().getStringExtra(Constants.HAS_TASK_KEY);
+        String data = getIntent().getStringExtra(Constants.INV_DETAILS_DATA_KEY);
+        if (!TextUtils.isEmpty(data)) {
+            mInvDetailsList = JSONObject.parseArray(data, InvDetailsBean.class);
+        }
 
         mConstraintLayout = findViewById(R.id.constraint_layout);
         tvSite = findViewById(R.id.tv_search_site);
@@ -128,26 +128,17 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         etItemCode = findViewById(R.id.et_cx_no);
         tvCalled = findViewById(R.id.tv_called);
         etContainerCode = findViewById(R.id.et_feed_box_no);
-        tvProductBatch = findViewById(R.id.tv_scan_serial);
-        ivProductBatch = findViewById(R.id.iv_scan_rfid);
         tvProductBatchTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
-        tvCollectedCount = findViewById(R.id.tv_collected_count);
-        tvRfidScan = findViewById(R.id.tv_scan_rfid);
-
-        ivProductBatch.setEnabled(false);
-        tvProductBatch.setEnabled(false);
 
         etItemCode.setOnFocusChangeListener(this);
         etContainerCode.setOnFocusChangeListener(this);
-        tvProductBatch.setOnFocusChangeListener(this);
 
-        findViewById(R.id.iv_scan_rfid).setOnClickListener(this);
-        findViewById(R.id.tv_detail_list).setOnClickListener(this);
+        findViewById(R.id.tv_to_scanner).setOnClickListener(this);
+        findViewById(R.id.tv_inv_detail).setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
-        findViewById(R.id.tv_scan_rfid).setOnClickListener(this);
     }
 
     private void initListener() {
@@ -175,25 +166,11 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             }
         });
 
-        /**
-         * 序列号输入完毕
-         */
-        tvProductBatch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
-                        || i == EditorInfo.IME_ACTION_NEXT) {
-                    writeProductBatch(textView.getText().toString().trim());
-                }
-                return false;
-            }
-        });
-
         etCount.addTextChangedListener(new AfterTextChangedListener() {
             @Override
             public void afterChanged(Editable editable) {
                 String countStr = editable.toString();
-                if (currentStore == null) {
+                if (currentInvDetails == null) {
                     if (!TextUtils.isEmpty(countStr) && !"0".equals(countStr)) {
 //                        ToastUtils.show("当前商品为空");
                         ShowMsgDialogUtil.show(InventoryActivity.this, "当前商品为空");
@@ -206,7 +183,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 //                            ToastUtils.show("商品数量不能超出待收数量");
                             ShowMsgDialogUtil.show(InventoryActivity.this
                                     , "商品数量不能超出待收数量");
-                            etCount.setText(String.valueOf(currentStore.quantity));
+                            etCount.setText(String.valueOf(currentInvDetails.quantity));
                         }
                     }
                 }
@@ -228,27 +205,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 }
             }
         });
-
-//        setOnRfIdListener(new OnRfIdListener() {
-//            @Override
-//            public void onRFIdDataBack(String message) {
-//                if (!TextUtils.isEmpty(message)) {
-//                    tvProductBatch.setText(message);
-//
-//                    snCodeList.clear();
-//                    snCodeList.add(message);
-//
-//                    setAwaitCount(snCodeList.size());
-//
-//                    if (IS_SN == 0) {
-//                        mScannerInitiator = 4;
-//                    } else {
-//                        mScannerInitiator = -1;
-//                    }
-//                    setInputViewState();
-//                }
-//            }
-//        });
     }
 
     /**
@@ -313,22 +269,18 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         }
 
         IS_SN = 0;
-        currentStore = null;
-        isCompleteDelivery = false;
-        if (NullUtils.isNotEmpty(storeInfoBeans)) {
-            for (StoreInfoBean bean : storeInfoBeans) {
+        currentInvDetails = null;
+        if (NullUtils.isNotEmpty(mInvDetailsList)) {
+            for (InvDetailsBean bean : mInvDetailsList) {
                 if (mCurrentItemCode.equals(bean.item_Code)) {
-                    currentStore = bean;
+                    currentInvDetails = bean;
                 }
             }
-            if (currentStore != null) {
+            if (currentInvDetails != null) {
                 setCurrentStoreInfo();
                 setAwaitCount(0);
 
-                getContainerCode();
-
-                if ("1".equals(currentStore.status)) {
-                    isCompleteDelivery = true;
+                if ("1".equals(currentInvDetails.status)) {
                     ShowMsgDialogUtil.show(InventoryActivity.this
                             , "该商品已经完成收货");
 //                    ToastUtils.show("该商品已经完成收货");
@@ -364,22 +316,20 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             return;
         }
 
-        currentStore = null;
-        isCompleteDelivery = false;
+        currentInvDetails = null;
 
-        if (NullUtils.isNotEmpty(storeInfoBeans)) {
-            for (StoreInfoBean bean : storeInfoBeans) {
+        if (NullUtils.isNotEmpty(mInvDetailsList)) {
+            for (InvDetailsBean bean : mInvDetailsList) {
                 if (mCurrentItemCode.equals(bean.item_Code)) {
                     //&& mCurrentProductBatch.equals(bean.product_batch)) {
-                    currentStore = bean;
+                    currentInvDetails = bean;
                 }
             }
-            if (currentStore != null) {
+            if (currentInvDetails != null) {
                 setCurrentStoreInfo();
                 setAwaitCount(0);
 
-                if ("1".equals(currentStore.status)) {
-                    isCompleteDelivery = true;
+                if ("1".equals(currentInvDetails.status)) {
 //                    ToastUtils.show("该商品已经完成收货");
                     ShowMsgDialogUtil.show(InventoryActivity.this
                             , "该商品已经完成收货");
@@ -399,8 +349,8 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     }
 
     private void setBaseDataToView() {
-        tvSite.setText(site_code);
-        tvOrder.setText(asn_code);
+        tvSite.setText(mSiteCode);
+        tvOrder.setText(mInvCode);
     }
 
     private void setContainerCodeToView() {
@@ -414,20 +364,16 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
      * 设置当前入库单信息
      */
     private void setCurrentStoreInfo() {
-        if (currentStore != null) {
-            etItemCode.setText(currentStore.item_Code);
+        if (currentInvDetails != null) {
+            etItemCode.setText(currentInvDetails.item_Code);
 
-            if (IS_SN_STATE == DataUtil.getInt(currentStore.is_SN)) {
+            if (IS_SN_STATE == DataUtil.getInt(currentInvDetails.is_SN)) {
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
-                ivProductBatch.setEnabled(true);
-                tvProductBatch.setEnabled(true);
                 IS_SN = 1;
             } else {
                 tvProductBatchTag.setSelected(false);
                 etCount.setEnabled(true);
-                ivProductBatch.setEnabled(false);
-                tvProductBatch.setEnabled(false);
                 IS_SN = 0;
             }
 
@@ -438,7 +384,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     private void setInputViewState() {
         etItemCode.setSelected(mScannerInitiator == 1);
         etContainerCode.setSelected(mScannerInitiator == 2);
-        tvProductBatch.setSelected(mScannerInitiator == 3);
         etCount.setSelected(mScannerInitiator == 4);
 
         if (mScannerInitiator == 1) {
@@ -450,9 +395,9 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 etContainerCode.requestFocus();
             }
         } else if (mScannerInitiator == 3) {
-            if (!tvProductBatch.isFocused()) {
-                tvProductBatch.requestFocus();
-            }
+//            if (!tvProductBatch.isFocused()) {
+//                tvProductBatch.requestFocus();
+//            }
         } else if (mScannerInitiator == 4) {
             if (!etCount.isFocused()) {
                 etCount.requestFocus();
@@ -471,85 +416,11 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         tvCollectedCount.setText(String.valueOf(getWaitingDeliveryCount()));
     }
 
-    private void checkAsn() {
-        GetAsnCheckPresenter presenter = new GetAsnCheckPresenter(this
-                , new NetResultListener<List<StoreInfoBean>>() {
-            @Override
-            public void loadSuccess(List<StoreInfoBean> beans) {
-                if (NullUtils.isNotEmpty(beans)) {
-                    storeInfoBeans.clear();
-                    storeInfoBeans.addAll(beans);
-                } else {
-//                    ToastUtils.show("没有获取到校验数据");
-                    ShowMsgDialogUtil.show(InventoryActivity.this
-                            , "没有获取到校验数据");
-                    finish();
-                }
-            }
-
-            @Override
-            public void loadFailure(SMException exception) {
-                ToastUtils.show(exception.getErrorMsg());
-                finish();
-            }
-        }, new NetLoadingListener() {
-            @Override
-            public void startLoading() {
-                showLoadingDialog("请稍后", false);
-            }
-
-            @Override
-            public void finishLoading() {
-                dismissLoadingDialog();
-            }
-        });
-        presenter.check(asn_code);
-    }
-
-    private void getContainerCode() {
-        GetFeedBoxPresenter presenter = new GetFeedBoxPresenter(this
-                , new NetResultListener<FeedBoxBean>() {
-            @Override
-            public void loadSuccess(FeedBoxBean boxBean) {
-                if (boxBean != null) {
-                    mContainerCodeByGet = boxBean.ContainerCode;
-                }
-            }
-
-            @Override
-            public void loadFailure(SMException exception) {
-                //                ToastUtils.show(exception.getErrorMsg());
-                ShowMsgDialogUtil.show(InventoryActivity.this
-                        , exception.getErrorMsg());
-            }
-        }, new NetLoadingListener() {
-            @Override
-            public void startLoading() {
-                showLoadingDialog("请稍后", false);
-            }
-
-            @Override
-            public void finishLoading() {
-                dismissLoadingDialog();
-            }
-        });
-
-        if (currentStore == null) {
-//            TextUtils.isEmpty("当前没有可操作商品");
-            ShowMsgDialogUtil.show(InventoryActivity.this
-                    , "当前没有可操作商品");
-            return;
-        }
-
-        String userCode = AccountManger.getInstance().getUserCode();
-        presenter.getFeedBox(site_code, asn_code, currentStore.item_Code, userCode);
-    }
-
     /**
      * 强制完成收货
      */
     private void forceCompleteDelivery(String state) {
-        AsnCloseOrderPresenter presenter = new AsnCloseOrderPresenter(this
+        SetInvCompletePresenter presenter = new SetInvCompletePresenter(this
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
@@ -578,14 +449,14 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 dismissLoadingDialog();
             }
         });
-        presenter.close(asn_code, AccountManger.getInstance().getUserCode());
+        presenter.close(mInvCode, AccountManger.getInstance().getUserCode());
     }
 
     private void saveDeliveryState(boolean isForceComplete) {
-        AsnSaveDetailPresenter presenter = new AsnSaveDetailPresenter(this
-                , new NetResultListener<AsnSaveBackBean>() {
+        InvSaveDetailPresenter presenter = new InvSaveDetailPresenter(this
+                , new NetResultListener<Object>() {
             @Override
-            public void loadSuccess(AsnSaveBackBean bean) {
+            public void loadSuccess(Object bean) {
                 if (isForceComplete) {
                     forceCompleteDelivery(bean.ProcessStatus);
                 } else {
@@ -617,7 +488,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             }
         });
 
-        if (currentStore == null) {
+        if (currentInvDetails == null) {
 //            TextUtils.isEmpty("当前没有可操作商品");
             ShowMsgDialogUtil.show(InventoryActivity.this
                     , "当前没有可操作商品");
@@ -637,31 +508,16 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                     , "还没有呼叫容器号");
             return;
         }
-        presenter.save(asn_code, mContainerCodeByScanner, AccountManger.getInstance().getUserCode()
-                , String.valueOf(getCount()), buildSenList());
+        presenter.save(mInvCode, mContainerCodeByScanner, AccountManger.getInstance().getUserCode()
+                , String.valueOf(getCount()), currentInvDetails.uid, snCodeList);
     }
 
-    private List<StoreInfoBean.SenNum> buildSenList() {
-        List<StoreInfoBean.SenNum> senNumList = new ArrayList<>();
-        if (currentStore != null && NullUtils.isNotEmpty(currentStore.sns)
-                && NullUtils.isNotEmpty(snCodeList)) {
-            for (int i = 0; i < currentStore.sns.size(); i++) {
-                StoreInfoBean.SenNum sn = currentStore.sns.get(i);
-                for (String code : snCodeList) {
-                    if (code.equals(sn.SN)) {
-                        senNumList.add(sn);
-                    }
-                }
-            }
-        }
-        return senNumList;
-    }
 
-    private void getPutStorageDetail() {
-        GetAsnDetailPresenter presenter = new GetAsnDetailPresenter(this
-                , new NetResultListener<List<AsnDetailBean>>() {
+    private void getInvDetailsShowDialog() {
+        GetInvDetailsPresenter presenter = new GetInvDetailsPresenter(this
+                , new NetResultListener<List<InvDetailsBean>>() {
             @Override
-            public void loadSuccess(List<AsnDetailBean> beans) {
+            public void loadSuccess(List<InvDetailsBean> beans) {
                 if (NullUtils.isNotEmpty(beans)) {
                     showPutStorageDetailDialog(beans);
                 }
@@ -684,7 +540,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 dismissLoadingDialog();
             }
         });
-        presenter.getData(asn_code);
+        presenter.get(mInvCode);
     }
 
     private void getSnData(String asnCode, String keyId) {
@@ -740,16 +596,16 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         }
     }
 
-    private void showPutStorageDetailDialog(List<AsnDetailBean> beans) {
-        if (mPutStorageDetailDialog == null || !mPutStorageDetailDialog.isShowing()) {
-            mPutStorageDetailDialog = new PutStorageDetailDialog(this, beans);
-            mPutStorageDetailDialog.setSnClickListener(new PutStorageDetailDialog.OnSnClickListener() {
+    private void showPutStorageDetailDialog(List<InvDetailsBean> beans) {
+        if (mInvDetailDialog == null || !mInvDetailDialog.isShowing()) {
+            mInvDetailDialog = new InvDetailDialog(this, beans);
+            mInvDetailDialog.setSnClickListener(new InvDetailDialog.OnSnClickListener() {
                 @Override
-                public void OnSnClick(AsnDetailBean bean) {
+                public void OnSnClick(InvDetailsBean bean) {
                     getSnData(bean.asn_code, bean.keyid);
                 }
             });
-            mPutStorageDetailDialog.show();
+            mInvDetailDialog.show();
         }
     }
 
@@ -784,7 +640,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 break;
             case R.id.tv_detail_list:
                 //收货明细列表
-                getPutStorageDetail();
+                getInvDetailsShowDialog();
                 break;
             case R.id.tv_complete:
                 //强制完成收货,先进行二次确认,然后调用保存接口
@@ -835,15 +691,14 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     }
 
     private int getWaitingDeliveryCount() {
-        if (currentStore != null)
-            return DataUtil.getInt(currentStore.quantity)
-                    - DataUtil.getInt(currentStore.finish_qty);
+        if (currentInvDetails != null)
+            return DataUtil.getInt(currentInvDetails.quantity)
+                    - DataUtil.getInt(currentInvDetails.finish_qty);
         return 0;
     }
 
     private void remake() {
-        currentStore = null;
-        mContainerCodeByGet = "";
+        currentInvDetails = null;
         mContainerCodeByScanner = "";
         mCurrentItemCode = "";
         mCurrentProductBatch = "";
@@ -852,13 +707,9 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
         etItemCode.setText("");
         etContainerCode.setText("");
-        tvProductBatch.setText("");
         tvProductBatchTag.setSelected(false);
         etCount.setText("");
-        tvCollectedCount.setText("");
         etCount.setEnabled(false);
-        ivProductBatch.setEnabled(false);
-        tvProductBatch.setEnabled(false);
         mScannerInitiator = 1;
         setInputViewState();
     }
