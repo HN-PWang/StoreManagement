@@ -171,7 +171,7 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
      * 初始化Rf模块
      */
     protected void initRf() {
-        if (mOnRfIdListener != null) {
+        if (mOnRfIdListener != null && Adapt.getPropertiesInstance().support("UHF")) {
             usingBackBattery = canUsingBackBattery();
             log = this;
             if (!UHF_Init(usingBackBattery, log)) { // 打开模块电源失败
@@ -257,7 +257,7 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
      * 清理Rf模块
      */
     protected void closeRf() {
-        if (mOnRfIdListener != null) {
+        if (mOnRfIdListener != null && Adapt.getPropertiesInstance().support("UHF")) {
             if (isFfModelOpen) {
                 UHFReader._Config.CloseConnect();
                 isFfModelOpen = false;

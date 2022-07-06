@@ -28,7 +28,7 @@
         app:layout_constraintRight_toLeftOf="@id/tv_rdid_read"
         app:layout_constraintTop_toTopOf="@id/tv_rdid_read" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_rdid_read"
         android:layout_width="0dp"
         android:layout_height="40dp"

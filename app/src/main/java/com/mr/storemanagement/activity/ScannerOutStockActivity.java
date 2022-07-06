@@ -22,6 +22,7 @@ import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.OutStockGoodsAdapter;
@@ -48,7 +49,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
 
     private TextView tvCxNo;
 
-    private EditText etOutCount;
+    private SMEditText etOutCount;
 
     private TextView tvScanSerialTag;
 

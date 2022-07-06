@@ -41,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_container_no" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_cx_no"
         android:layout_width="match_parent"
         android:layout_height="30dp"
@@ -81,7 +81,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_scan_serial_tag" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/et_out_count"
         android:layout_width="match_parent"
         android:layout_height="30dp"

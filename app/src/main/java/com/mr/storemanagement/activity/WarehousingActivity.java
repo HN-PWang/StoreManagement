@@ -15,6 +15,7 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnCodeBean;
@@ -37,7 +38,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
 
     private TextView tvSearchSite;
 
-    private EditText tvSearchAsn;
+    private SMEditText tvSearchAsn;
 
     private List<AsnCodeBean> mAsnCodeBeans = new ArrayList<>();
 

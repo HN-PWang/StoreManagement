@@ -21,6 +21,7 @@ import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
@@ -66,10 +67,10 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView tvSite;
     private TextView tvOrder;
 
-    private EditText etItemCode;//册序号
+    private SMEditText etItemCode;//册序号
     private TextView tvCalled;//已呼叫的料箱标签
-    private EditText etContainerCode;//料箱
-    private EditText tvProductBatch;//序列号点击图标
+    private SMEditText etContainerCode;//料箱
+    private SMEditText tvProductBatch;//序列号点击图标
     private ImageView ivProductBatch;//序列号输入框
     private TextView tvProductBatchTag;//序列号可扫描标记
     private TextView etCount;//数量
@@ -206,7 +207,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 //                            ToastUtils.show("商品数量不能超出待收数量");
                             ShowMsgDialogUtil.show(ScannerPutStockActivity.this
                                     , "商品数量不能超出待收数量");
-                            etCount.setText(String.valueOf(currentStore.quantity));
+                            etCount.setText(String.valueOf(DataUtil.getInt(currentStore.quantity)));
                         }
                     }
                 }
@@ -250,7 +251,6 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 //            }
 //        });
 
-
     }
 
     /**
@@ -261,8 +261,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             mCurrentItemCode = code;
             checkScannerCodeByItemCode();
 
-            mScannerInitiator = 2;
-            setInputViewState();
+//            mScannerInitiator = 2;
+//            setInputViewState();
         }
     }
 

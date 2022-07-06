@@ -19,7 +19,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_location"
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -47,7 +47,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_location" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_rfid"
         android:layout_width="match_parent"
         android:layout_height="80dp"

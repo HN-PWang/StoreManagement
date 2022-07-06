@@ -75,7 +75,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_site_info" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/et_cx_no"
         android:layout_width="match_parent"
         android:layout_height="36dp"
@@ -111,7 +111,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_feed_box_title" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/et_feed_box_no"
         android:layout_width="match_parent"
         android:layout_height="36dp"
@@ -156,7 +156,7 @@
         app:layout_constraintRight_toLeftOf="@id/tv_scan_serial"
         app:layout_constraintTop_toTopOf="@id/tv_scan_serial" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_scan_serial"
         android:layout_width="0dp"
         android:layout_height="36dp"
@@ -185,7 +185,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_scan_serial" />
 
-    <EditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/et_count"
         android:layout_width="match_parent"
         android:layout_height="36dp"

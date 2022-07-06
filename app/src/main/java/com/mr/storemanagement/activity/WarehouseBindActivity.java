@@ -15,6 +15,7 @@ import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
+import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.UserInfoBean;
@@ -27,9 +28,9 @@ import com.mr.storemanagement.util.ShowMsgDialogUtil;
  */
 public class WarehouseBindActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private EditText tvLocation;
+    private SMEditText tvLocation;
 
-    private EditText tvRfid;
+    private SMEditText tvRfid;
 
     private String mLocationCode;
 

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.SerialNumAdapter;
@@ -33,7 +34,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
     private TextView tvCount;
 
-    private EditText tvRdidRead;
+    private SMEditText tvRdidRead;
 
     private RecyclerView rvSerialNum;
 

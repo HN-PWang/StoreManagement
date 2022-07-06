@@ -22,18 +22,18 @@ public class SMEditText extends androidx.appcompat.widget.AppCompatEditText {
 
     public SMEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        selectAll();
     }
 
     @Override
     protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
 
-    }
 
-    public void allIn() {
-
+        if (focused) {
+            setSelection(0, getText().length());
+            setSelectAllOnFocus(true);
+            selectAll();
+        }
     }
 
 }
