@@ -77,7 +77,10 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
-
+                ShowMsgDialogUtil.show(InvSGVActivity.this
+                        , "自动盘点成功");
+                tvTaskUnsubmit.setSelected(false);
+                tvAgvAutoInv.setEnabled(false);
             }
 
             @Override

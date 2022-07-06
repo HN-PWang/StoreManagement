@@ -4,6 +4,7 @@ import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.storemanagement.base.SMBasePresenter;
+import com.mr.storemanagement.bean.AsnSaveBackBean;
 
 import org.json.JSONArray;
 
@@ -19,7 +20,7 @@ import okhttp3.ResponseBody;
  * @date: 2022/6/19
  * @description: 盘点单号保存
  */
-public class InvSaveDetailPresenter extends SMBasePresenter<String> {
+public class InvSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
 
     private String mInvCode;
     private String mContainerCode;
@@ -67,7 +68,7 @@ public class InvSaveDetailPresenter extends SMBasePresenter<String> {
     }
 
     @Override
-    protected Class<String> getEntityClass() {
-        return null;
+    protected Class<AsnSaveBackBean> getEntityClass() {
+        return AsnSaveBackBean.class;
     }
 }

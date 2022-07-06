@@ -53,7 +53,7 @@ public class InvDetailAdapter extends RecyclerView.Adapter<InvDetailAdapter.Stac
         InvDetailsBean item = mDataList.get(position);
 
         holder.tvNo.setText(item.item_Code);
-        holder.tvCount.setText(DataUtil.getIntStr(item.finish_qty) + "/" + item.quantity);
+//        holder.tvCount.setText(DataUtil.getIntStr(item.finish_qty) + "/" + item.quantity);
         holder.tvSerialCode.setText(item.product_batch);
     }
 

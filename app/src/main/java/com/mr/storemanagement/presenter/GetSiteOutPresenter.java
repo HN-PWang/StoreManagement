@@ -11,7 +11,8 @@ import okhttp3.ResponseBody;
 
 public class GetSiteOutPresenter extends SMBasePresenter<SiteBean> {
 
-    public GetSiteOutPresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
+    public GetSiteOutPresenter(BaseActivity baseActivity, NetResultListener resultListener
+            , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
@@ -22,7 +23,7 @@ public class GetSiteOutPresenter extends SMBasePresenter<SiteBean> {
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getOutSiteList();
+        return netModel.getSiteListByInv();
     }
 
     @Override

@@ -22,6 +22,8 @@ import com.mr.storemanagement.bean.InvCheckBackBean;
 import com.mr.storemanagement.bean.InvCodeBean;
 import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.InvSelectDialog;
+import com.mr.storemanagement.eventbean.SaveAsnEvent;
+import com.mr.storemanagement.eventbean.SaveInvEvent;
 import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.GetInvCheckPresenter;
@@ -29,6 +31,7 @@ import com.mr.storemanagement.presenter.GetInvPresenter;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +72,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
-        siteChooseHelper = new SiteChooseHelper(this, 3);
+        siteChooseHelper = new SiteChooseHelper(this, 2);
         siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
             @Override
             public void onClick(SiteBean site) {
@@ -157,6 +160,11 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             }
         });
         presenter.check(mAsnCode, AccountManger.getInstance().getUserCode());
+    }
+
+    @Subscribe
+    public void onEventMainThread(SaveInvEvent event) {
+        getAsn();
     }
 
     private void handlerInvCheckBack(InvCheckBackBean bean) {

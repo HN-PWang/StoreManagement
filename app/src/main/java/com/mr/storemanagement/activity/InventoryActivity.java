@@ -183,7 +183,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 //                            ToastUtils.show("商品数量不能超出待收数量");
                             ShowMsgDialogUtil.show(InventoryActivity.this
                                     , "商品数量不能超出待收数量");
-                            etCount.setText(String.valueOf(currentInvDetails.quantity));
+                            etCount.setText(String.valueOf(currentInvDetails.available_qty));
                         }
                     }
                 }
@@ -413,7 +413,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     }
 
     private void calculateAwaitCount() {
-        tvCollectedCount.setText(String.valueOf(getWaitingDeliveryCount()));
+//        tvCollectedCount.setText(String.valueOf(getWaitingDeliveryCount()));
     }
 
     /**
@@ -454,9 +454,9 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private void saveDeliveryState(boolean isForceComplete) {
         InvSaveDetailPresenter presenter = new InvSaveDetailPresenter(this
-                , new NetResultListener<Object>() {
+                , new NetResultListener<AsnSaveBackBean>() {
             @Override
-            public void loadSuccess(Object bean) {
+            public void loadSuccess(AsnSaveBackBean bean) {
                 if (isForceComplete) {
                     forceCompleteDelivery(bean.ProcessStatus);
                 } else {
@@ -543,38 +543,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         presenter.get(mInvCode);
     }
 
-    private void getSnData(String asnCode, String keyId) {
-        GetAsnDetailSnListPresenter presenter = new GetAsnDetailSnListPresenter(null
-                , new NetResultListener<List<String>>() {
-            @Override
-            public void loadSuccess(List<String> list) {
-                if (NullUtils.isNotEmpty(list)) {
-                    showCheckSnDialog(list, asnCode);
-                } else {
-                    ToastUtils.show("没有数据");
-                }
-            }
-
-            @Override
-            public void loadFailure(SMException exception) {
-                //                ToastUtils.show(exception.getErrorMsg());
-                ShowMsgDialogUtil.show(InventoryActivity.this
-                        , exception.getErrorMsg());
-            }
-        }, new NetLoadingListener() {
-            @Override
-            public void startLoading() {
-                showLoadingDialog("请稍后", false);
-            }
-
-            @Override
-            public void finishLoading() {
-                dismissLoadingDialog();
-            }
-        });
-        presenter.getData(asnCode, keyId);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -602,7 +570,8 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             mInvDetailDialog.setSnClickListener(new InvDetailDialog.OnSnClickListener() {
                 @Override
                 public void OnSnClick(InvDetailsBean bean) {
-                    getSnData(bean.asn_code, bean.keyid);
+//                    getSnData(bean.asn_code, bean.keyid);
+                    showCheckSnDialog(bean.sn_list.SnList, mInvCode);
                 }
             });
             mInvDetailDialog.show();
@@ -691,9 +660,9 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     }
 
     private int getWaitingDeliveryCount() {
-        if (currentInvDetails != null)
-            return DataUtil.getInt(currentInvDetails.quantity)
-                    - DataUtil.getInt(currentInvDetails.finish_qty);
+//        if (currentInvDetails != null)
+//            return DataUtil.getInt(currentInvDetails.quantity)
+//                    - DataUtil.getInt(currentInvDetails.finish_qty);
         return 0;
     }
 
