@@ -381,9 +381,9 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private void saveDeliveryState(boolean isForceComplete) {
         InvSaveDetailPresenter presenter = new InvSaveDetailPresenter(this
-                , new NetResultListener<Object>() {
+                , new NetResultListener() {
             @Override
-            public void loadSuccess(Object bean) {
+            public void loadSuccess(Object o) {
                 if (isForceComplete) {
 //                    forceCompleteDelivery(bean.ProcessStatus);
                     forceCompleteDelivery(null);
