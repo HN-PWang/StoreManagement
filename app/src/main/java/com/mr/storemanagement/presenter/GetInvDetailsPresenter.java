@@ -25,6 +25,8 @@ public class GetInvDetailsPresenter extends SMBasePresenter<InvDetailsBean> {
 
     public void get(String invCode) {
         this.mInvCode = invCode;
+
+        executeRequest();
     }
 
     @Override

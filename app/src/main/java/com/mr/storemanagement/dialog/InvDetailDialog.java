@@ -85,13 +85,13 @@ public class InvDetailDialog extends Dialog implements View.OnClickListener {
     private int getFinishQuantity() {
         int finishQuantity = 0;
         if (NullUtils.isNotEmpty(mDataList)) {
-//            for (InvDetailsBean bean : mDataList) {
-//                int q = bean.quantity;
-//                int fq = DataUtil.getInt(bean.finish_qty);
-//                if (q != 0 && q == fq) {
-//                    finishQuantity++;
-//                }
-//            }
+            for (InvDetailsBean bean : mDataList) {
+                int q = DataUtil.getInt(bean.available_qty);
+                int fq = DataUtil.getInt(bean.check_qty);
+                if (q != 0 && q == fq) {
+                    finishQuantity++;
+                }
+            }
         }
         return finishQuantity;
     }

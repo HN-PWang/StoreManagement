@@ -42,6 +42,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
     private List<String> mDataList = new ArrayList<>();
 
+    private List<String> mCheckDataList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,12 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
         findViewById(R.id.iv_rfid).setOnClickListener(this);
         findViewById(R.id.tv_clear).setOnClickListener(this);
+
+        String checkSns = getIntent().getStringExtra(Constants.SN_CODE_CHECK_DATA_KEY);
+        checkSns = TextUtils.isEmpty(checkSns) ? "" : checkSns;
+        mCheckDataList = JSONObject.parseArray(checkSns, String.class);
+        if (mCheckDataList == null)
+            mCheckDataList = new ArrayList<>();
 
         String sns = getIntent().getStringExtra(Constants.SN_CODE_DATA_KEY);
         sns = TextUtils.isEmpty(sns) ? "" : sns;
@@ -73,6 +81,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
                         || i == EditorInfo.IME_ACTION_NEXT) {
                     addCode(tvRdidRead.getText().toString());
+                    tvRdidRead.setText("");
                 }
                 return false;
             }
@@ -94,7 +103,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
     }
 
     private void addCode(String data) {
-        if (!TextUtils.isEmpty(data) && !mDataList.contains(data)) {
+        if (!TextUtils.isEmpty(data) && !mDataList.contains(data) && mCheckDataList.contains(data)) {
             mDataList.add(data);
             serialNumAdapter.notifyDataSetChanged();
             setCount();

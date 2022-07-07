@@ -30,8 +30,8 @@ public class SMEditText extends androidx.appcompat.widget.AppCompatEditText {
 
 
         if (focused) {
-            setSelection(0, getText().length());
-            setSelectAllOnFocus(true);
+//            setSelection(0, getText().length());
+//            setSelectAllOnFocus(true);
             selectAll();
         }
     }

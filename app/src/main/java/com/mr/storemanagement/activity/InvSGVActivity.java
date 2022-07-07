@@ -31,7 +31,7 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
     private TextView tvScannerInv;
 
     private String mSiteCode;
-    private String mAsnCode;
+    private String mInvCode;
     private boolean mHasTask;
     private boolean mHasNonAgv;
 
@@ -41,7 +41,7 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
         setContentView(R.layout.activity_inv_s_g_v);
 
         mSiteCode = getIntent().getStringExtra(Constants.SITE_CODE_KEY);
-        mAsnCode = getIntent().getStringExtra(Constants.HAS_TASK_KEY);
+        mInvCode = getIntent().getStringExtra(Constants.HAS_TASK_KEY);
         mHasTask = getIntent().getBooleanExtra(Constants.ASN_DATA_KEY, false);
         mHasNonAgv = getIntent().getBooleanExtra(Constants.HAS_NON_AGV_KEY, false);
 
@@ -99,7 +99,7 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
                 dismissLoadingDialog();
             }
         });
-        presenter.get(mAsnCode, mSiteCode, AccountManger.getInstance().getUserCode());
+        presenter.get(mInvCode, mSiteCode, AccountManger.getInstance().getUserCode());
     }
 
     private void scannerInv() {
@@ -107,7 +107,7 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
-
+                getInvDetails(mInvCode);
             }
 
             @Override
@@ -126,7 +126,7 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
                 dismissLoadingDialog();
             }
         });
-        presenter.get(mAsnCode, mSiteCode, AccountManger.getInstance().getUserCode());
+        presenter.get(mInvCode, mSiteCode, AccountManger.getInstance().getUserCode());
     }
 
     private void getInvDetails(String invCode) {
@@ -166,13 +166,13 @@ public class InvSGVActivity extends BaseActivity implements View.OnClickListener
             ToastUtils.show("站点信息不能为空");
             return;
         }
-        if (TextUtils.isEmpty(mAsnCode)) {
+        if (TextUtils.isEmpty(mInvCode)) {
             ToastUtils.show("单号信息不能为空");
             return;
         }
         Intent intent = new Intent(this, InventoryActivity.class);
         intent.putExtra(Constants.SITE_CODE_KEY, mSiteCode);
-        intent.putExtra(Constants.HAS_TASK_KEY, mAsnCode);
+        intent.putExtra(Constants.HAS_TASK_KEY, mInvCode);
         intent.putExtra(Constants.INV_DETAILS_DATA_KEY, JSONObject.toJSONString(beans));
         startActivity(intent);
     }

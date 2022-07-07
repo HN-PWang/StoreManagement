@@ -771,7 +771,18 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private void toSnScanner() {
         Intent intent = new Intent(this, SerialNumScannerActivity.class);
         intent.putExtra(Constants.SN_CODE_DATA_KEY, JSONObject.toJSONString(snCodeList));
+        intent.putExtra(Constants.SN_CODE_CHECK_DATA_KEY, checkData());
         startActivityForResult(intent, REQUEST_SERIAL_CODE);
+    }
+
+    private String checkData() {
+        List<String> checkList = new ArrayList<>();
+        if (currentStore != null && NullUtils.isNotEmpty(currentStore.sns)) {
+            for (StoreInfoBean.SenNum senNum : currentStore.sns) {
+                checkList.add(senNum.SN);
+            }
+        }
+        return JSONObject.toJSONString(checkList);
     }
 
     @Override
@@ -801,8 +812,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     @Override
-    public void onFocusChange(View view, boolean b) {
-        if (b)
+    public void onFocusChange(View view, boolean isFocus) {
+        if (isFocus && !view.isFocused())
             switch (view.getId()) {
                 case R.id.et_cx_no:
                     mScannerInitiator = 1;

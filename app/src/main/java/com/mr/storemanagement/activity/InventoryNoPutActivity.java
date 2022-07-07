@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
@@ -20,6 +21,7 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.InvCheckBackBean;
 import com.mr.storemanagement.bean.InvCodeBean;
+import com.mr.storemanagement.bean.InvDetailsBean;
 import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.InvSelectDialog;
 import com.mr.storemanagement.eventbean.SaveAsnEvent;
@@ -27,7 +29,9 @@ import com.mr.storemanagement.eventbean.SaveInvEvent;
 import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.GetInvCheckPresenter;
+import com.mr.storemanagement.presenter.GetInvDetailsPresenter;
 import com.mr.storemanagement.presenter.GetInvPresenter;
+import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,13 +49,13 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
 
     private EditText tvSearchAsn;
 
-    private List<InvCodeBean> mAsnCodeBeans = new ArrayList<>();
+    private List<InvCodeBean> mInvCodeBeans = new ArrayList<>();
 
     private InvSelectDialog asnSelectDialog;
 
     private SiteBean currentSiteBean = null;
 
-    private String mAsnCode;
+    private String mInvCode;
 
     private SiteChooseHelper siteChooseHelper;
 
@@ -90,7 +94,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
             @Override
             public void afterChanged(Editable editable) {
-                mAsnCode = tvSearchAsn.getText().toString();
+                mInvCode = tvSearchAsn.getText().toString();
             }
         });
 
@@ -122,8 +126,8 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             @Override
             public void loadSuccess(List<InvCodeBean> beans) {
                 if (beans != null) {
-                    mAsnCodeBeans.clear();
-                    mAsnCodeBeans.addAll(beans);
+                    mInvCodeBeans.clear();
+                    mInvCodeBeans.addAll(beans);
                 }
             }
 
@@ -159,7 +163,13 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
                 dismissLoadingDialog();
             }
         });
-        presenter.check(mAsnCode, AccountManger.getInstance().getUserCode());
+
+        if (TextUtils.isEmpty(mInvCode)) {
+            ShowMsgDialogUtil.show(this, "请输入盘点单号");
+            return;
+        }
+
+        presenter.check(mInvCode, AccountManger.getInstance().getUserCode());
     }
 
     @Subscribe
@@ -169,20 +179,19 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
 
     private void handlerInvCheckBack(InvCheckBackBean bean) {
         if (bean == null || !bean.HasAgv) {
-            ShowMsgDialogUtil.show(InventoryNoPutActivity.this
-                    , "没有盘点任务");
+            getInvDetails();
         } else {
-            intoScanning(bean);
+            intoAGV(bean);
         }
     }
 
     private void showAsnSelectDialog() {
         if (asnSelectDialog == null || !asnSelectDialog.isShowing()) {
-            asnSelectDialog = new InvSelectDialog(this, mAsnCodeBeans);
+            asnSelectDialog = new InvSelectDialog(this, mInvCodeBeans);
             asnSelectDialog.setOrderSelectListener(new InvSelectDialog.OnOrderSelectListener() {
                 @Override
                 public void onSelect(InvCodeBean asnCodeBean) {
-                    mAsnCode = asnCodeBean.inventory_code;
+                    mInvCode = asnCodeBean.inventory_code;
                     setOrderInfo();
                 }
             });
@@ -197,7 +206,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
     }
 
     private void setOrderInfo() {
-        tvSearchAsn.setText(mAsnCode);
+        tvSearchAsn.setText(mInvCode);
     }
 
     @Override
@@ -219,20 +228,74 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         }
     }
 
-    private void intoScanning(InvCheckBackBean bean) {
+    private void intoAGV(InvCheckBackBean bean) {
         if (currentSiteBean == null) {
             ToastUtils.show("站点信息不能为空");
             return;
         }
-        if (TextUtils.isEmpty(mAsnCode)) {
+        if (TextUtils.isEmpty(mInvCode)) {
             ToastUtils.show("单号信息不能为空");
             return;
         }
         Intent intent = new Intent(this, InvSGVActivity.class);
         intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
-        intent.putExtra(Constants.HAS_TASK_KEY, mAsnCode);
+        intent.putExtra(Constants.HAS_TASK_KEY, mInvCode);
         intent.putExtra(Constants.ASN_DATA_KEY, bean.HasTask);
         intent.putExtra(Constants.HAS_NON_AGV_KEY, bean.HasNonAgv);
+        startActivity(intent);
+    }
+
+    private void getInvDetails() {
+        GetInvDetailsPresenter presenter = new GetInvDetailsPresenter(this
+                , new NetResultListener<List<InvDetailsBean>>() {
+            @Override
+            public void loadSuccess(List<InvDetailsBean> beans) {
+                if (NullUtils.isNotEmpty(beans)) {
+                    intoScanning(beans);
+                } else {
+                    ShowMsgDialogUtil.show(InventoryNoPutActivity.this
+                            , "没有获取到盘点任务详情信息");
+                }
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+                ShowMsgDialogUtil.show(InventoryNoPutActivity.this
+                        , exception.getErrorMsg());
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+                showLoadingDialog("请稍后", false);
+            }
+
+            @Override
+            public void finishLoading() {
+                dismissLoadingDialog();
+            }
+        });
+
+        if (TextUtils.isEmpty(mInvCode)) {
+            ShowMsgDialogUtil.show(this, "请输入盘点单号");
+            return;
+        }
+
+        presenter.get(mInvCode);
+    }
+
+    private void intoScanning(List<InvDetailsBean> beans) {
+        if (currentSiteBean == null) {
+            ToastUtils.show("站点信息不能为空");
+            return;
+        }
+        if (TextUtils.isEmpty(mInvCode)) {
+            ToastUtils.show("单号信息不能为空");
+            return;
+        }
+        Intent intent = new Intent(this, InventoryActivity.class);
+        intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
+        intent.putExtra(Constants.HAS_TASK_KEY, mInvCode);
+        intent.putExtra(Constants.INV_DETAILS_DATA_KEY, JSONObject.toJSONString(beans));
         startActivity(intent);
     }
 

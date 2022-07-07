@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
  * @date: 2022/6/19
  * @description: 盘点单号保存
  */
-public class InvSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
+public class InvSaveDetailPresenter extends SMBasePresenter<String> {
 
     private String mInvCode;
     private String mContainerCode;
@@ -68,7 +68,7 @@ public class InvSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
     }
 
     @Override
-    protected Class<AsnSaveBackBean> getEntityClass() {
-        return AsnSaveBackBean.class;
+    protected Class<String> getEntityClass() {
+        return null;
     }
 }
