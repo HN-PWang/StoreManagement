@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.bean.StackBean;
+import com.mr.storemanagement.util.DataUtil;
 
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
     public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
         StackBean item = mDataList.get(position);
 
-        holder.tvNo.setText(item.item_Code);
-        holder.tvCount.setText(item.available_qty + "/" + item.real_qty);
+        holder.tvNo.setText(item.container_code + " / " + item.item_Code);
+        holder.tvCount.setText(DataUtil.getInt(item.available_qty) + "/" + DataUtil.getInt(item.real_qty));
         holder.tvSerialCode.setText(item.product_batch);
     }
 

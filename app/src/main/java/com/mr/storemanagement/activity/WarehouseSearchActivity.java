@@ -55,6 +55,7 @@ public class WarehouseSearchActivity extends BaseActivity
 
         etSearch.setOnEditorActionListener(this);
         findViewById(R.id.tv_search).setOnClickListener(this);
+        findViewById(R.id.tv_back).setOnClickListener(this);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -78,7 +78,7 @@ public class InvDetailDialog extends Dialog implements View.OnClickListener {
             }
         });
 
-        String countStr = "入库明细：[" + getFinishQuantity() + "/" + mDataList.size() + "]";
+        String countStr = "盘点明细：[" + getFinishQuantity() + "/" + mDataList.size() + "]";
         tvStackCount.setText(countStr);
     }
 
