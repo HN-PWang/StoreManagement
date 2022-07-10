@@ -17,116 +17,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/ll_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_menu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="60dp"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_init_stack"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:background="@drawable/bg_main_icon"
-            android:drawableTop="@drawable/ic_baseline_shopping_cart_24"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:text="入库扫描"
-            android:textColor="#3296FA"
-            android:textSize="14dp" />
-
-        <TextView
-            android:id="@+id/tv_back_stack"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginLeft="16dp"
-            android:background="@drawable/bg_main_icon"
-            android:drawableTop="@drawable/ic_baseline_settings_backup_restore_24"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:text="回库扫描"
-            android:textColor="#3296FA"
-            android:textSize="14dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_1">
-
-        <TextView
-            android:id="@+id/tv_out_stack"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:background="@drawable/bg_main_icon"
-            android:drawableTop="@drawable/ic_baseline_add_shopping_cart_24"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:text="出库挑拣"
-            android:textColor="#3296FA"
-            android:textSize="14dp" />
-
-        <TextView
-            android:id="@+id/tv_inventory"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginLeft="16dp"
-            android:background="@drawable/bg_main_icon"
-            android:drawableTop="@drawable/ic_baseline_edit_24"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:text="盘点"
-            android:textColor="#3296FA"
-            android:textSize="14dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_2">
-
-        <TextView
-            android:id="@+id/tv_bind_stack"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:background="@drawable/bg_main_icon"
-            android:drawableTop="@drawable/ic_baseline_loyalty_24"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:text="库位绑定RFID"
-            android:textColor="#3296FA"
-            android:textSize="14dp" />
-
-        <TextView
-            android:id="@+id/tv_search_stack"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginLeft="16dp"
-            android:background="@drawable/bg_main_icon"
-            android:drawableTop="@drawable/ic_baseline_search_24"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:text="库存查询"
-            android:textColor="#3296FA"
-            android:textSize="14dp" />
-
-    </LinearLayout>
+        android:paddingHorizontal="16dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_back"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_back"
@@ -139,15 +37,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_station" />
-
-    <TextView
-        android:id="@+id/tv_station"
-        android:layout_width="0dp"
-        android:layout_height="49dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/tv_back"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintWidth_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
