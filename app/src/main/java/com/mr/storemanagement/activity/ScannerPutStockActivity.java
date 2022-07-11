@@ -315,10 +315,12 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             if (IS_SN_STATE == DataUtil.getInt(currentStore.is_SN)) {
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
+                tvRfidScan.setEnabled(true);
                 IS_SN = 1;
             } else {
                 tvProductBatchTag.setSelected(false);
                 etCount.setEnabled(true);
+                etCount.setEnabled(false);
                 IS_SN = 0;
             }
 
@@ -736,6 +738,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         etCount.setText("");
         tvCollectedCount.setText("");
         etCount.setEnabled(false);
+        tvRfidScan.setEnabled(false);
         mScannerInitiator = 1;
         setInputViewState();
     }
