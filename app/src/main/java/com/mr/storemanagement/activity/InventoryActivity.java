@@ -174,7 +174,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 String countStr = editable.toString();
                 if (currentInvDetails == null) {
                     if (!TextUtils.isEmpty(countStr) && !"0".equals(countStr)) {
-//                        ToastUtils.show("当前商品为空");
                         ShowMsgDialogUtil.show(InventoryActivity.this, "当前商品为空");
                         etCount.setText("0");
                     }
@@ -182,7 +181,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                     if (!TextUtils.isEmpty(countStr)) {
                         int count = Integer.parseInt(countStr);
                         if (count > getWaitingDeliveryCount()) {
-//                            ToastUtils.show("商品数量不能超出待收数量");
                             ShowMsgDialogUtil.show(InventoryActivity.this
                                     , "商品数量不能超出待收数量");
                             etCount.setText(String.valueOf(DataUtil.getInt(currentInvDetails.available_qty)));
@@ -244,11 +242,31 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         IS_SN = 0;
         currentInvDetails = null;
         if (NullUtils.isNotEmpty(mInvDetailsList)) {
+            List<InvDetailsBean> sameItemCodeList = new ArrayList();
             for (InvDetailsBean bean : mInvDetailsList) {
                 if (mCurrentItemCode.equals(bean.item_Code)) {
                     currentInvDetails = bean;
                 }
             }
+
+            //这里为了处理有的数据item code相同
+            //先拿出相同的集合,在去寻找到第一个不为全部收货的数据,如果找不到就是全部收货
+            if (NullUtils.isNotEmpty(sameItemCodeList)) {
+                int indexByState = -1;
+                for (int i = 0; i < sameItemCodeList.size(); i++) {
+                    InvDetailsBean item = mInvDetailsList.get(i);
+                    if (!"1".equals(item.status)) {
+                        indexByState = i;
+                        break;
+                    }
+                }
+                if (indexByState < 0) {
+                    currentInvDetails = sameItemCodeList.get(0);
+                } else {
+                    currentInvDetails = sameItemCodeList.get(indexByState);
+                }
+            }
+
             if (currentInvDetails != null) {
                 setCurrentStoreInfo();
 
@@ -269,12 +287,10 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             } else {
                 ShowMsgDialogUtil.show(InventoryActivity.this
                         , "无效商品");
-//                ToastUtils.show("无效商品");
             }
         } else {
             ShowMsgDialogUtil.show(InventoryActivity.this
                     , "无可操作商品");
-//            ToastUtils.show("无可操作商品");
         }
     }
 
@@ -295,8 +311,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
      */
     private void setCurrentStoreInfo() {
         if (currentInvDetails != null) {
-//            etItemCode.setText(currentInvDetails.item_Code);
-
             if (IS_SN_STATE == DataUtil.getInt(currentInvDetails.is_SN)) {
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
@@ -361,7 +375,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
             @Override
             public void loadFailure(SMException exception) {
-//                ToastUtils.show(exception.getErrorMsg());
                 ShowMsgDialogUtil.show(InventoryActivity.this
                         , exception.getErrorMsg());
             }
@@ -418,21 +431,18 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         });
 
         if (currentInvDetails == null) {
-//            TextUtils.isEmpty("当前没有可操作商品");
             ShowMsgDialogUtil.show(InventoryActivity.this
                     , "当前没有可操作商品");
             return;
         }
 
         if (getCount() == 0) {
-//            TextUtils.isEmpty("商品数量为0");
             ShowMsgDialogUtil.show(InventoryActivity.this
                     , "商品数量为0，不能保存");
             return;
         }
 
         if (TextUtils.isEmpty(mContainerCodeByScanner)) {
-//            TextUtils.isEmpty("还没有呼叫容器号");
             ShowMsgDialogUtil.show(InventoryActivity.this
                     , "还没有呼叫容器号");
             return;
@@ -454,7 +464,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
             @Override
             public void loadFailure(SMException exception) {
-                //                ToastUtils.show(exception.getErrorMsg());
                 ShowMsgDialogUtil.show(InventoryActivity.this
                         , exception.getErrorMsg());
             }
@@ -499,7 +508,6 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             mInvDetailDialog.setSnClickListener(new InvDetailDialog.OnSnClickListener() {
                 @Override
                 public void OnSnClick(InvDetailsBean bean) {
-//                    getSnData(bean.asn_code, bean.keyid);
                     showCheckSnDialog(bean.sn_list.SnList, mInvCode);
                 }
             });

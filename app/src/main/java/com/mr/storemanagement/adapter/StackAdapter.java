@@ -29,7 +29,7 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
     @NonNull
     @Override
     public StackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_stack_details_layout,
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_common_stock_detail_layout,
                 parent, false);
         return new StackViewHolder(view);
     }
@@ -38,7 +38,9 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
     public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
         StackBean item = mDataList.get(position);
 
-        holder.tvNo.setText(item.container_code + " / " + item.item_Code);
+        holder.tvItemCode.setText("册序号："+item.item_Code);
+        holder.tvContainerNo.setText("容器号："+item.container_code);
+        holder.tvCountTag.setText("可用数/系统数：");
         holder.tvCount.setText(DataUtil.getInt(item.available_qty) + "/" + DataUtil.getInt(item.real_qty));
         holder.tvSerialCode.setText(item.product_batch);
     }
@@ -50,14 +52,18 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
 
     public class StackViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvNo;
+        public TextView tvItemCode;
+        public TextView tvContainerNo;
+        public TextView tvCountTag;
         public TextView tvCount;
         public TextView tvSerialCode;
 
         public StackViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvNo = itemView.findViewById(R.id.tv_no);
+            tvItemCode = itemView.findViewById(R.id.tv_item_code);
+            tvContainerNo = itemView.findViewById(R.id.tv_container_no);
+            tvCountTag = itemView.findViewById(R.id.tv_count_tag);
             tvCount = itemView.findViewById(R.id.tv_count);
             tvSerialCode = itemView.findViewById(R.id.tv_serial_code);
         }

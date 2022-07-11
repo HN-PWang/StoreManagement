@@ -223,4 +223,31 @@ public class AppNetModel extends BaseModel {
                 , CheckQty, body);
     }
 
+    /**
+     * 获取料箱绑定的详情
+     */
+    public Observable<ResponseBody> getCombindFeedBox(String SiteCode, String ContainerCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getCombindFeedBox(getHeader(), SiteCode, ContainerCode);
+    }
+
+    /**
+     * 获取料箱绑定的详情
+     */
+    public Observable<ResponseBody> combindCheckItem(String containerCode, String itemId) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.combindCheckItem(getHeader(), containerCode, itemId);
+    }
+
+    /**
+     * 保存合并信息
+     */
+    public Observable<ResponseBody> combindSave(String siteCode, String containerFrom
+            , String containerTo, String itemCode, String stockInfoId, String moveQty
+            , String userCode, String sn) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.combindSave(getHeader(), siteCode, containerFrom, containerTo, itemCode
+                , stockInfoId, moveQty, userCode, sn);
+    }
+
 }

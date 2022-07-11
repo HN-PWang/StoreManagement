@@ -198,4 +198,28 @@ public interface ApiService {
             , @Path("InvCode") String InvCode, @Path("UserCode") String UserCode
             , @Path("DetailID") String DetailID, @Path("ContainerCode") String ContainerCode
             , @Path("CheckQty") String CheckQty, @Body RequestBody body);
+
+    /**
+     * 获取绑定的料箱信息
+     */
+    @GET("api/Mobile/GetCombindFeedBox/{SiteCode}/{ContainerCode}")
+    Observable<ResponseBody> getCombindFeedBox(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode, @Path("ContainerCode") String ContainerCode);
+
+    /**
+     * 校验商品册序号信息
+     */
+    @GET("api/Mobile/CombindCheckItem/{ContainerCode}/{ItemId}")
+    Observable<ResponseBody> combindCheckItem(@HeaderMap Map<String, String> header
+            , @Path("ContainerCode") String ContainerCode, @Path("ItemId") String ItemId);
+
+    /**
+     * 保存合并信息
+     */
+    @GET("api/Mobile/CombindSave/{SiteCode}/{ContainerFrom}/{ContainerTo}/{ItemCode}/{StockInfoId}/{MoveQty}/{UserCode}/{SN}")
+    Observable<ResponseBody> combindSave(@HeaderMap Map<String, String> header
+            , @Path("SiteCode") String SiteCode, @Path("ContainerFrom") String ContainerFrom
+            , @Path("ContainerTo") String ContainerTo, @Path("ItemCode") String ItemCode
+            , @Path("StockInfoId") String StockInfoId, @Path("MoveQty") String MoveQty
+            , @Path("UserCode") String UserCode, @Path("SN") String SN);
 }

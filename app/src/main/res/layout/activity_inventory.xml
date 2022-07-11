@@ -185,14 +185,14 @@
         app:layout_constraintWidth_percent="0.5" />
 
     <TextView
-        android:id="@+id/tv_inv_detail"
+        android:id="@+id/tv_to_scanner"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginLeft="15dp"
         android:layout_marginBottom="20dp"
         android:background="#3296FA"
         android:gravity="center"
-        android:text="盘点明细列表"
+        android:text="扫描序列号列表"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/tv_back"
         app:layout_constraintHorizontal_weight="1"
@@ -209,15 +209,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_to_scanner" />
+        app:layout_constraintRight_toLeftOf="@id/tv_inv_detail" />
 
     <TextView
-        android:id="@+id/tv_to_scanner"
+        android:id="@+id/tv_inv_detail"
         android:layout_width="0dp"
         android:layout_height="49dp"
         android:background="#3296FA"
         android:gravity="center"
-        android:text="扫描序列号列表"
+        android:text="盘点明细列表"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
@@ -234,7 +234,7 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/tv_to_scanner"
+        app:layout_constraintLeft_toRightOf="@id/tv_inv_detail"
         app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
