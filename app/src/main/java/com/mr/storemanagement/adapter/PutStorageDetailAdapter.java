@@ -43,7 +43,7 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
     @NonNull
     @Override
     public StackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_put_storage_detail_layout,
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_common_stock_detail_layout,
                 parent, false);
         return new StackViewHolder(view);
     }
@@ -53,9 +53,15 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
         holder.itemView.setTag(position);
         AsnDetailBean item = mDataList.get(position);
 
-        holder.tvNo.setText(item.item_Code);
-        holder.tvCount.setText(DataUtil.getIntStr(item.finish_qty) + "/" + item.quantity);
+        holder.tvItemCode.setText("册序号："+item.item_Code);
+        holder.tvContainerNo.setText("容器号："+item.container_code);
+        holder.tvCountTag.setText("已收/总数：");
+        holder.tvCount.setText(DataUtil.getInt(item.finish_qty) + "/" + DataUtil.getInt(item.quantity));
         holder.tvSerialCode.setText(item.product_batch);
+
+//        holder.tvNo.setText(item.item_Code);
+//        holder.tvCount.setText(DataUtil.getIntStr(item.finish_qty) + "/" + item.quantity);
+//        holder.tvSerialCode.setText(item.product_batch);
     }
 
     @Override
@@ -65,14 +71,18 @@ public class PutStorageDetailAdapter extends RecyclerView.Adapter<PutStorageDeta
 
     public class StackViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvNo;
+        public TextView tvItemCode;
+        public TextView tvContainerNo;
+        public TextView tvCountTag;
         public TextView tvCount;
         public TextView tvSerialCode;
 
         public StackViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvNo = itemView.findViewById(R.id.tv_no);
+            tvItemCode = itemView.findViewById(R.id.tv_item_code);
+            tvContainerNo = itemView.findViewById(R.id.tv_container_no);
+            tvCountTag = itemView.findViewById(R.id.tv_count_tag);
             tvCount = itemView.findViewById(R.id.tv_count);
             tvSerialCode = itemView.findViewById(R.id.tv_serial_code);
 

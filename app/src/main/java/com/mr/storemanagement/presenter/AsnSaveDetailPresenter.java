@@ -57,7 +57,9 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
             }
         }
 
-        mRequestBody = RequestBody.create(MediaType.parse("application/json"), array.toString());
+        String bodyStr = array.toString();
+
+        mRequestBody = RequestBody.create(MediaType.parse("application/json"), bodyStr);
 
         executeRequest();
     }

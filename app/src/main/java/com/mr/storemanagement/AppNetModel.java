@@ -226,9 +226,10 @@ public class AppNetModel extends BaseModel {
     /**
      * 获取料箱绑定的详情
      */
-    public Observable<ResponseBody> getCombindFeedBox(String SiteCode, String ContainerCode) {
+    public Observable<ResponseBody> getCombindFeedBox(String SiteCode, String ContainerCode
+            , String UserCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.getCombindFeedBox(getHeader(), SiteCode, ContainerCode);
+        return service.getCombindFeedBox(getHeader(), ContainerCode, SiteCode, UserCode);
     }
 
     /**

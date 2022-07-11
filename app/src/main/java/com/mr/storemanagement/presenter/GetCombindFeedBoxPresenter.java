@@ -19,20 +19,23 @@ public class GetCombindFeedBoxPresenter extends SMBasePresenter {
 
     private String mContainerCode;
 
+    private String mUserCode;
+
     public GetCombindFeedBoxPresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void getData(String siteCode, String containerCode) {
+    public void getData(String siteCode, String containerCode,String userCode) {
         this.mSiteCode = siteCode;
         this.mContainerCode = containerCode;
+        this.mUserCode = containerCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.getCombindFeedBox(mSiteCode, mContainerCode);
+        return netModel.getCombindFeedBox(mSiteCode, mContainerCode,mUserCode);
     }
 
     @Override

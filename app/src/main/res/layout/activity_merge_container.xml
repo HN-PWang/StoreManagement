@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/constraint_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".activity.MergeContainerActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="10dp"
-        android:text="移除容器号"
+        android:text="移出容器"
         android:textColor="#333333"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_site_info" />
@@ -82,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="10dp"
-        android:text="目标容器号"
+        android:text="目标容器"
         android:textColor="#333333"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_old_container_no" />
@@ -141,6 +142,21 @@
         app:layout_constraintTop_toBottomOf="@id/tv_cx_no_title" />
 
     <TextView
+        android:id="@+id/tv_scan_serial_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        android:drawableRight="@drawable/ic_check_box_selector"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:text="扫描序列号"
+        android:textColor="#333333"
+        android:textSize="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_cx_no" />
+
+    <TextView
         android:id="@+id/tv_count_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -149,7 +165,7 @@
         android:text="数量"
         android:textColor="#333333"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_cx_no" />
+        app:layout_constraintTop_toBottomOf="@id/tv_scan_serial_tag" />
 
     <com.mr.lib_base.widget.SMEditText
         android:id="@+id/et_count"
@@ -186,7 +202,7 @@
         android:id="@+id/tv_to_scanner"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="1dp"
         android:layout_marginBottom="20dp"
         android:background="#3296FA"
         android:gravity="center"

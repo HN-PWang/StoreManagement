@@ -95,7 +95,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private List<StoreInfoBean> storeInfoBeans = new ArrayList<>();
 
-    private int mScannerInitiator = 1; //1:测序号 2:料箱号 3:序列号 4:数量
+    private int mScannerInitiator = 1; //1:测序号 2:料箱号 3:数量
 
     private int IS_SN = 0;
 
@@ -224,7 +224,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             if (IS_SN == 1) {
                 mScannerInitiator = 3;
             } else {
-                mScannerInitiator = 4;
+                mScannerInitiator = -1;
             }
             setInputViewState();
         }
@@ -329,7 +329,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private void setInputViewState() {
         etItemCode.setSelected(mScannerInitiator == 1);
         etContainerCode.setSelected(mScannerInitiator == 2);
-        etCount.setSelected(mScannerInitiator == 4);
+        etCount.setSelected(mScannerInitiator == 3);
 
         if (mScannerInitiator == 1) {
             if (!etItemCode.isFocused()) {
@@ -340,8 +340,6 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 etContainerCode.requestFocus();
             }
         } else if (mScannerInitiator == 3) {
-
-        } else if (mScannerInitiator == 4) {
             if (!etCount.isFocused()) {
                 etCount.requestFocus();
             }
@@ -698,15 +696,10 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                     mScannerInitiator = 2;
                     setInputViewState();
                     break;
-//                case R.id.tv_scan_serial:
-//                    mScannerInitiator = 3;
-//                    setInputViewState();
-//                    break;
                 case R.id.et_count:
-                    mScannerInitiator = 4;
+                    mScannerInitiator = 3;
                     setInputViewState();
                     break;
-
             }
     }
 

@@ -202,9 +202,10 @@ public interface ApiService {
     /**
      * 获取绑定的料箱信息
      */
-    @GET("api/Mobile/GetCombindFeedBox/{SiteCode}/{ContainerCode}")
+    @GET("api/Mobile/GetComBindFeedBox/{ContainerCode}/{SiteCode}/{UserCode}")
     Observable<ResponseBody> getCombindFeedBox(@HeaderMap Map<String, String> header
-            , @Path("SiteCode") String SiteCode, @Path("ContainerCode") String ContainerCode);
+            , @Path("SiteCode") String SiteCode, @Path("ContainerCode") String ContainerCode
+            , @Path("UserCode") String UserCode);
 
     /**
      * 校验商品册序号信息
