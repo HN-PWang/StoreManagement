@@ -231,6 +231,8 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     public void writeSnCode(String code) {
         if (!TextUtils.isEmpty(code)) {
             mSNCode = code;
+
+            combindSave();
         }
     }
 
@@ -355,7 +357,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             @Override
             public void loadFailure(SMException exception) {
                 ShowMsgDialogUtil.show(MergeContainerActivity.this
-                        , "请输入原料箱信息");
+                        , exception.getErrorMsg());
             }
         }, new NetLoadingListener() {
             @Override
@@ -405,15 +407,18 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                 @Override
                 public void onClick(boolean confirm) {
                     if (confirm) {
-                        presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
-                                , mCombindCheckBean.StockInfoId, "", AccountManger.getInstance().getUserCode(), mSNCode);
+                        presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo
+                                , mCombindCheckBean.item_Code
+                                , DataUtil.getInt(mCombindCheckBean.StockInfoId), getCount()
+                                , AccountManger.getInstance().getUserCode(), mSNCode);
                     }
                 }
             });
             mConfirmDialog.show();
         } else {
             presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
-                    , mCombindCheckBean.StockInfoId, "", AccountManger.getInstance().getUserCode(), mSNCode);
+                    , DataUtil.getInt(mCombindCheckBean.StockInfoId), getCount()
+                    , AccountManger.getInstance().getUserCode(), mSNCode);
         }
     }
 
@@ -508,14 +513,20 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             setContainerState(true);
 
             if (DataUtil.getInt(mCombindCheckBean.is_SN) == 1) {
+                IS_SN = 1;
                 tvScanSerialTag.setSelected(true);
                 ivScanRfId.setEnabled(true);
                 etCount.setEnabled(false);
+                mScannerInitiator = 4;
             } else {
+                IS_SN = 0;
                 tvScanSerialTag.setSelected(false);
                 ivScanRfId.setEnabled(false);
                 etCount.setEnabled(true);
+                mScannerInitiator = 5;
             }
+
+            setInputViewState();
         }
     }
 
@@ -567,10 +578,13 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 
     private void handlerSave() {
         mItemId = null;
+        mSNCode = null;
         mCombindCheckBean = null;
+        IS_SN = 0;
 
         etCxNo.setText("");
         etCount.setText("");
+        tvScanSerial.setText("");
 
         mScannerInitiator = 3;
         setInputViewState();
@@ -582,6 +596,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         mItemId = "";
         mSNCode = "";
         mCombindCheckBean = null;
+        IS_SN = 0;
 
         etOldContainerNo.setText("");
         etNewContainerNo.setText("");

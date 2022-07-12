@@ -243,12 +243,9 @@ public class AppNetModel extends BaseModel {
     /**
      * 保存合并信息
      */
-    public Observable<ResponseBody> combindSave(String siteCode, String containerFrom
-            , String containerTo, String itemCode, String stockInfoId, String moveQty
-            , String userCode, String sn) {
+    public Observable<ResponseBody> combindSave(@Body RequestBody body) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.combindSave(getHeader(), siteCode, containerFrom, containerTo, itemCode
-                , stockInfoId, moveQty, userCode, sn);
+        return service.combindSave(getHeader(), body);
     }
 
 }

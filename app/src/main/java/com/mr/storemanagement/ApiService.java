@@ -217,10 +217,7 @@ public interface ApiService {
     /**
      * 保存合并信息
      */
-    @GET("api/Mobile/CombindSave/{SiteCode}/{ContainerFrom}/{ContainerTo}/{ItemCode}/{StockInfoId}/{MoveQty}/{UserCode}/{SN}")
+    @POST("api/Mobile/CombindSave")
     Observable<ResponseBody> combindSave(@HeaderMap Map<String, String> header
-            , @Path("SiteCode") String SiteCode, @Path("ContainerFrom") String ContainerFrom
-            , @Path("ContainerTo") String ContainerTo, @Path("ItemCode") String ItemCode
-            , @Path("StockInfoId") String StockInfoId, @Path("MoveQty") String MoveQty
-            , @Path("UserCode") String UserCode, @Path("SN") String SN);
+            , @Body RequestBody body);
 }
