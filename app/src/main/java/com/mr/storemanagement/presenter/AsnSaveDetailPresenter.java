@@ -47,17 +47,17 @@ public class AsnSaveDetailPresenter extends SMBasePresenter<AsnSaveBackBean> {
         mQty = Qty;
         mItems = list;
 
-        JSONArray array = new JSONArray();
+        String bodyStr = "";
+//        JSONArray array = new JSONArray();
         if (mItems != null) {
-            for (StoreInfoBean.SenNum item : mItems) {
-                JSONObject ob = new JSONObject();
-                ob.put("SN", item.SN);
-                ob.put("keyid", item.keyid);
-                array.put(ob);
-            }
+            bodyStr = com.alibaba.fastjson.JSONArray.toJSONString(mItems);
+//            for (StoreInfoBean.SenNum item : mItems) {
+//                JSONObject ob = new JSONObject();
+//                ob.put("SN", item.SN);
+//                ob.put("keyid", item.keyid);
+//                array.put(ob);
+//            }
         }
-
-        String bodyStr = array.toString();
 
         mRequestBody = RequestBody.create(MediaType.parse("application/json"), bodyStr);
 
