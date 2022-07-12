@@ -170,7 +170,7 @@
         app:layout_constraintRight_toLeftOf="@id/tv_scan_serial"
         app:layout_constraintTop_toTopOf="@id/tv_scan_serial" />
 
-    <SMEditText
+    <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_scan_serial"
         android:layout_width="0dp"
         android:layout_height="36dp"
