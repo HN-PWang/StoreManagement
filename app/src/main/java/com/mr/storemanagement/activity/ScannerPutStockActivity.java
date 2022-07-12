@@ -638,7 +638,11 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             @Override
             public void onClick(boolean confirm) {
                 if (confirm) {
-                    saveDeliveryState(true);
+                    if (currentStore != null) {
+                        saveDeliveryState(true);
+                    } else {
+                        forceCompleteDelivery(PS_COMPLETE);
+                    }
                 }
             }
         });

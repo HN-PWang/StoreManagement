@@ -6,11 +6,11 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -21,18 +21,15 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.CombindCheckBean;
 import com.mr.storemanagement.bean.InvDetailsBean;
 import com.mr.storemanagement.bean.SiteBean;
-import com.mr.storemanagement.bean.StackBean;
+import com.mr.storemanagement.dialog.ConfirmDialog;
 import com.mr.storemanagement.dialog.SearchStockDetailDialog;
 import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.CombindCheckItemPresenter;
 import com.mr.storemanagement.presenter.CombindSavePresenter;
 import com.mr.storemanagement.presenter.GetCombindFeedBoxPresenter;
-import com.mr.storemanagement.presenter.GetInventoryListPresenter;
 import com.mr.storemanagement.util.DataUtil;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
-
-import java.util.List;
 
 public class MergeContainerActivity extends BaseScannerActivity implements View.OnClickListener
         , View.OnFocusChangeListener {
@@ -44,6 +41,8 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     private TextView tvNewCalled;
     private SMEditText etNewContainerNo;
     private SMEditText etCxNo;
+    private ImageView ivScanRfId;
+    private SMEditText tvScanSerial;
     private TextView tvScanSerialTag;
     private SMEditText etCount;
 
@@ -59,9 +58,13 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 
     private String mItemId;
 
+    private String mSNCode;
+
     private CombindCheckBean mCombindCheckBean;
 
-    private int mScannerInitiator = 1; //1:旧料箱 2:新料箱 3:册序号 4:数量
+    private int mScannerInitiator = 1; //1:旧料箱 2:新料箱 3:册序号 4:序列号 5:数量
+
+    private int IS_SN = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +78,12 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         tvNewCalled = findViewById(R.id.tv_new_called);
         etNewContainerNo = findViewById(R.id.et_new_container_no);
         etCxNo = findViewById(R.id.et_cx_no);
+        ivScanRfId = findViewById(R.id.iv_scan_rfid);
+        tvScanSerial = findViewById(R.id.tv_scan_serial);
         tvScanSerialTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
         tvSearchSite.setOnClickListener(this);
+        ivScanRfId.setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_to_scanner).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
@@ -141,6 +147,16 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             }
         });
 
+        tvScanSerial.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    writeSnCode(v.getText().toString().trim());
+                }
+                return false;
+            }
+        });
+
         etCount.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -163,6 +179,20 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                     writeNewContainer(message);
                 } else if (mScannerInitiator == 3) {
                     writeItemCode(message);
+                }
+            }
+        });
+
+        setOnRfIdListener(new OnRfIdListener() {
+            @Override
+            public void onRFIdDataBack(String message) {
+                if (TextUtils.isEmpty(message))
+                    return;
+
+                if (mScannerInitiator == 4) {
+                    writeSnCode(message);
+
+                    combindSave();
                 }
             }
         });
@@ -198,6 +228,12 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         }
     }
 
+    public void writeSnCode(String code) {
+        if (!TextUtils.isEmpty(code)) {
+            mSNCode = code;
+        }
+    }
+
     public void writeCount(String count) {
         mScannerInitiator = -1;
 
@@ -210,31 +246,16 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         }
     }
 
-    private void setInputViewState() {
-        etOldContainerNo.setSelected(mScannerInitiator == 1);
-        etNewContainerNo.setSelected(mScannerInitiator == 2);
-        etCxNo.setSelected(mScannerInitiator == 3);
-        etCount.setSelected(mScannerInitiator == 4);
-
-        if (mScannerInitiator == 1) {
-            if (!etOldContainerNo.isFocused()) {
-                etOldContainerNo.requestFocus();
-            }
-        } else if (mScannerInitiator == 2) {
-            if (!etNewContainerNo.isFocused()) {
-                etNewContainerNo.requestFocus();
-            }
-        } else if (mScannerInitiator == 3) {
-            if (!etCxNo.isFocused()) {
-                etCxNo.requestFocus();
-            }
-        } else if (mScannerInitiator == 4) {
-            if (!etCount.isFocused()) {
-                etCount.requestFocus();
-            }
+    private int getCount() {
+        int count = 0;
+        if (IS_SN == 1) {
+            count = TextUtils.isEmpty(mSNCode) ? 0 : 1;
         } else {
-            mConstraintLayout.requestFocus();
+            String str = etCount.getText().toString();
+            count = DataUtil.getInt(str);
         }
+
+        return count;
     }
 
     private void getCombindContainer(boolean old) {
@@ -372,8 +393,60 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             return;
         }
 
-        presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
-                , mCombindCheckBean.StockInfoId, "", AccountManger.getInstance().getUserCode(), "");
+        if (TextUtils.isEmpty(mSNCode)) {
+            ShowMsgDialogUtil.show(MergeContainerActivity.this
+                    , "没有SN码");
+            return;
+        }
+
+        if (getCount() == 0) {
+            ConfirmDialog mConfirmDialog = new ConfirmDialog(this, "当前合并的商品数目为零,确认继续合并吗？", "取消"
+                    , "确认", new ConfirmDialog.OnConfirmClickListener() {
+                @Override
+                public void onClick(boolean confirm) {
+                    if (confirm) {
+                        presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
+                                , mCombindCheckBean.StockInfoId, "", AccountManger.getInstance().getUserCode(), mSNCode);
+                    }
+                }
+            });
+            mConfirmDialog.show();
+        } else {
+            presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
+                    , mCombindCheckBean.StockInfoId, "", AccountManger.getInstance().getUserCode(), mSNCode);
+        }
+    }
+
+    private void setInputViewState() {
+        etOldContainerNo.setSelected(mScannerInitiator == 1);
+        etNewContainerNo.setSelected(mScannerInitiator == 2);
+        etCxNo.setSelected(mScannerInitiator == 3);
+        tvScanSerial.setSelected(mScannerInitiator == 4);
+        etCount.setSelected(mScannerInitiator == 5);
+
+        if (mScannerInitiator == 1) {
+            if (!etOldContainerNo.isFocused()) {
+                etOldContainerNo.requestFocus();
+            }
+        } else if (mScannerInitiator == 2) {
+            if (!etNewContainerNo.isFocused()) {
+                etNewContainerNo.requestFocus();
+            }
+        } else if (mScannerInitiator == 3) {
+            if (!etCxNo.isFocused()) {
+                etCxNo.requestFocus();
+            }
+        } else if (mScannerInitiator == 4) {
+            if (!tvScanSerial.isFocused()) {
+                tvScanSerial.requestFocus();
+            }
+        } else if (mScannerInitiator == 5) {
+            if (!etCount.isFocused()) {
+                etCount.requestFocus();
+            }
+        } else {
+            mConstraintLayout.requestFocus();
+        }
     }
 
     @Override
@@ -393,8 +466,12 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                     mScannerInitiator = 3;
                     setInputViewState();
                     break;
-                case R.id.et_count:
+                case R.id.tv_scan_serial:
                     mScannerInitiator = 4;
+                    setInputViewState();
+                    break;
+                case R.id.et_count:
+                    mScannerInitiator = 5;
                     setInputViewState();
                     break;
             }
@@ -432,12 +509,15 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 
             if (DataUtil.getInt(mCombindCheckBean.is_SN) == 1) {
                 tvScanSerialTag.setSelected(true);
+                ivScanRfId.setEnabled(true);
+                etCount.setEnabled(false);
             } else {
                 tvScanSerialTag.setSelected(false);
+                ivScanRfId.setEnabled(false);
+                etCount.setEnabled(true);
             }
         }
     }
-
 
     private void showStockDetailDialog() {
         if (mStockDetailDialog == null || !mStockDetailDialog.isShowing()) {
@@ -478,6 +558,10 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                 //保存
                 combindSave();
                 break;
+            case R.id.iv_scan_rfid:
+                //获取rfid
+                readMactchData();
+                break;
         }
     }
 
@@ -496,12 +580,18 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         mOldContainerNo = "";
         mNewContainerNo = "";
         mItemId = "";
+        mSNCode = "";
         mCombindCheckBean = null;
 
         etOldContainerNo.setText("");
         etNewContainerNo.setText("");
         etCxNo.setText("");
+        tvScanSerial.setText("");
         etCount.setText("");
+
+        tvScanSerialTag.setSelected(false);
+        ivScanRfId.setEnabled(false);
+        etCount.setEnabled(false);
     }
 
 }

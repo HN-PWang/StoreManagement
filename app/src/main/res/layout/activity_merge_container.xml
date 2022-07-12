@@ -156,6 +156,38 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_cx_no" />
 
+    <ImageView
+        android:id="@+id/iv_scan_rfid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:adjustViewBounds="true"
+        android:enabled="false"
+        android:paddingVertical="4dp"
+        android:src="@drawable/ic_baseline_cast_connected_24"
+        app:layout_constraintBottom_toBottomOf="@id/tv_scan_serial"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_scan_serial"
+        app:layout_constraintTop_toTopOf="@id/tv_scan_serial" />
+
+    <SMEditText
+        android:id="@+id/tv_scan_serial"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/bg_scanner_text_selector"
+        android:gravity="center_vertical"
+        android:imeOptions="actionDone"
+        android:paddingHorizontal="12dp"
+        android:singleLine="true"
+        android:textColor="#333333"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/iv_scan_rfid"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_scan_serial_tag" />
+
     <TextView
         android:id="@+id/tv_count_title"
         android:layout_width="wrap_content"
@@ -165,7 +197,7 @@
         android:text="数量"
         android:textColor="#333333"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_scan_serial_tag" />
+        app:layout_constraintTop_toBottomOf="@id/tv_scan_serial" />
 
     <com.mr.lib_base.widget.SMEditText
         android:id="@+id/et_count"
@@ -208,6 +240,7 @@
         android:gravity="center"
         android:text="扫描序列号列表"
         android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/tv_back"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toRightOf="@id/tv_complete"
