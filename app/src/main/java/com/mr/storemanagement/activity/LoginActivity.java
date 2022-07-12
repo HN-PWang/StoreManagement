@@ -53,7 +53,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         findViewById(R.id.tv_login).setOnClickListener(this);
         findViewById(R.id.tv_change_url).setOnClickListener(this);
 
-        tVersionName.setText(BuildConfig.VERSION_NAME);
+        tVersionName.setText("当前版本：" + BuildConfig.VERSION_NAME);
 
         if (AccountManger.getInstance().getAccount() != null) {
             toMainActivity();
@@ -68,7 +68,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 return false;
             }
         });
-
     }
 
     private void login() {

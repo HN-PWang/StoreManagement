@@ -30,6 +30,7 @@ import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.AsnSaveBackBean;
 import com.mr.storemanagement.bean.FeedBoxBean;
 import com.mr.storemanagement.bean.InvDetailsBean;
+import com.mr.storemanagement.bean.InvSaveBackBean;
 import com.mr.storemanagement.bean.StoreInfoBean;
 import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.dialog.ConfirmDialog;
@@ -64,8 +65,8 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     public static final int REQUEST_SERIAL_CODE = 101;
 
-    public static final String PS_COMPLETE = "CompleteAsn";   //CompleteAsn 入库单完成
-    public static final String PS_CLOSE = "ContainerClose";   //ContainerClose 当前容器关闭
+    public static final String PS_COMPLETE = "AllComplete";   // 所有非agv明细完成
+    public static final String PS_CLOSE = "ContainerComplete";   //当前容器完成
 
     public static final int IS_SN_STATE = 1;
 
@@ -366,11 +367,11 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             public void loadSuccess(Object o) {
                 ToastUtils.show("盘点完成");
                 finish();
-//                if (PS_COMPLETE.equals(state)) {
-//                    finish();
-//                } else {
-//                    remake();
-//                }
+                if (PS_COMPLETE.equals(state)) {
+                    finish();
+                } else {
+                    remake();
+                }
             }
 
             @Override
@@ -394,27 +395,24 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private void saveDeliveryState(boolean isForceComplete) {
         InvSaveDetailPresenter presenter = new InvSaveDetailPresenter(this
-                , new NetResultListener() {
+                , new NetResultListener<InvSaveBackBean>() {
             @Override
-            public void loadSuccess(Object o) {
+            public void loadSuccess(InvSaveBackBean bean) {
                 if (isForceComplete) {
-//                    forceCompleteDelivery(bean.ProcessStatus);
-                    forceCompleteDelivery(null);
+                    forceCompleteDelivery(bean.ProcessStatus);
                 } else {
                     ToastUtils.show("保存成功");
-                    finish();
-//                    if (bean != null && PS_COMPLETE.equals(bean.ProcessStatus)) {
-//                        finish();
-//                    } else {
-//                        remake();
-//                    }
+                    if (bean != null && PS_COMPLETE.equals(bean.ProcessStatus)) {
+                        finish();
+                    } else {
+                        remake();
+                    }
                 }
                 EventBus.getDefault().post(new SaveInvEvent());
             }
 
             @Override
             public void loadFailure(SMException exception) {
-                //                ToastUtils.show(exception.getErrorMsg());
                 ShowMsgDialogUtil.show(InventoryActivity.this
                         , exception.getErrorMsg());
             }
