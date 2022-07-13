@@ -322,6 +322,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
                 tvRfidScan.setEnabled(true);
+
+                toSnScanner();
             } else {
                 IS_SN = 0;
                 tvProductBatchTag.setSelected(false);
@@ -490,7 +492,6 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
             @Override
             public void loadFailure(SMException exception) {
-                //                ToastUtils.show(exception.getErrorMsg());
                 ShowMsgDialogUtil.show(ScannerPutStockActivity.this
                         , exception.getErrorMsg());
             }

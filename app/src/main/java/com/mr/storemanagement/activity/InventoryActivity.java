@@ -315,10 +315,12 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             if (IS_SN_STATE == DataUtil.getInt(currentInvDetails.is_SN)) {
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
+                tvToScanner.setEnabled(true);
                 IS_SN = 1;
             } else {
                 tvProductBatchTag.setSelected(false);
                 etCount.setEnabled(true);
+                tvToScanner.setEnabled(false);
                 IS_SN = 0;
             }
 

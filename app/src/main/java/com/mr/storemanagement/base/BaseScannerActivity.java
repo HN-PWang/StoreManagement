@@ -267,7 +267,7 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
 
     @Override
     public void OutPutEPC(EPCModel epcModel) {
-        sandMessage(MSG_RF_ID_WHAT, epcModel._TID);
+        sandMessage(MSG_RF_ID_WHAT, epcModel._EPC);
     }
 
     private void sandMessage(int what, String msg) {

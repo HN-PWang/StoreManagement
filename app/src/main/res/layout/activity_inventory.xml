@@ -190,7 +190,7 @@
         android:layout_height="40dp"
         android:layout_marginLeft="1dp"
         android:layout_marginBottom="20dp"
-        android:background="#3296FA"
+        android:background="@drawable/bg_function_button"
         android:gravity="center"
         android:text="扫描序列号列表"
         android:textColor="@color/white"
