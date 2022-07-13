@@ -70,7 +70,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView tvCalled;//已呼叫的料箱标签
     private SMEditText etContainerCode;//料箱
     private TextView tvProductBatchTag;//序列号可扫描标记
-    private TextView etCount;//数量
+    private SMEditText etCount;//数量
     private TextView tvCollectedCount;//待收数量
     private TextView tvRfidScan;//扫描RFID
     private EditText etGetFocus;//仅仅用来抢占焦点
@@ -130,6 +130,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
         etItemCode.setOnFocusChangeListener(this);
         etContainerCode.setOnFocusChangeListener(this);
+        etCount.setOnFocusChangeListener(this);
 
         findViewById(R.id.tv_detail_list).setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
@@ -225,9 +226,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             setContainerCodeToView();
 
             if (IS_SN == 1) {
-                mScannerInitiator = 3;
-            } else {
                 mScannerInitiator = -1;
+            } else {
+                mScannerInitiator = 3;
             }
             setInputViewState();
         }
@@ -273,6 +274,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
             if (currentStore != null) {
                 setCurrentStoreInfo();
+
                 setAwaitCount(0);
 
                 getContainerCode();
@@ -316,15 +318,15 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             etItemCode.setText(currentStore.item_Code);
 
             if (IS_SN_STATE == DataUtil.getInt(currentStore.is_SN)) {
+                IS_SN = 1;
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
                 tvRfidScan.setEnabled(true);
-                IS_SN = 1;
             } else {
+                IS_SN = 0;
                 tvProductBatchTag.setSelected(false);
                 etCount.setEnabled(true);
-                etCount.setEnabled(false);
-                IS_SN = 0;
+                tvRfidScan.setEnabled(false);
             }
 
             calculateAwaitCount();
@@ -695,7 +697,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     @Override
     public void onFocusChange(View view, boolean isFocus) {
-        if (isFocus && !view.isFocused())
+        if (isFocus)
             switch (view.getId()) {
                 case R.id.et_cx_no:
                     mScannerInitiator = 1;
