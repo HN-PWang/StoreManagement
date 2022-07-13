@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -72,6 +73,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private TextView etCount;//数量
     private TextView tvCollectedCount;//待收数量
     private TextView tvRfidScan;//扫描RFID
+    private EditText etGetFocus;//仅仅用来抢占焦点
 
     private PutStorageDetailDialog mPutStorageDetailDialog;
 
@@ -124,6 +126,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         etCount = findViewById(R.id.et_count);
         tvCollectedCount = findViewById(R.id.tv_collected_count);
         tvRfidScan = findViewById(R.id.tv_scan_rfid);
+        etGetFocus = findViewById(R.id.et_get_focus);
 
         etItemCode.setOnFocusChangeListener(this);
         etContainerCode.setOnFocusChangeListener(this);
@@ -346,7 +349,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 etCount.requestFocus();
             }
         } else {
-            mConstraintLayout.requestFocus();
+            etGetFocus.requestFocus();
         }
     }
 
