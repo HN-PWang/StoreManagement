@@ -246,7 +246,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             List<InvDetailsBean> sameItemCodeList = new ArrayList();
             for (InvDetailsBean bean : mInvDetailsList) {
                 if (mCurrentItemCode.equals(bean.item_Code)) {
-                    currentInvDetails = bean;
+                    sameItemCodeList.add(bean);
                 }
             }
 

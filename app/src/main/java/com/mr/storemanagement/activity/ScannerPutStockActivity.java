@@ -227,6 +227,8 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
             if (IS_SN == 1) {
                 mScannerInitiator = -1;
+
+                toSnScanner();
             } else {
                 mScannerInitiator = 3;
             }
@@ -322,8 +324,6 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 tvProductBatchTag.setSelected(true);
                 etCount.setEnabled(false);
                 tvRfidScan.setEnabled(true);
-
-                toSnScanner();
             } else {
                 IS_SN = 0;
                 tvProductBatchTag.setSelected(false);
@@ -530,17 +530,25 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private List<StoreInfoBean.SenNum> buildSenList() {
         List<StoreInfoBean.SenNum> senNumList = new ArrayList<>();
-        if (currentStore != null && NullUtils.isNotEmpty(currentStore.sns)
-                && NullUtils.isNotEmpty(snCodeList)) {
-            for (int i = 0; i < currentStore.sns.size(); i++) {
-                StoreInfoBean.SenNum sn = currentStore.sns.get(i);
-                for (String code : snCodeList) {
-                    if (code.equals(sn.SN)) {
-                        senNumList.add(sn);
+
+        if (IS_SN == 1) {
+            if (currentStore != null && NullUtils.isNotEmpty(currentStore.sns)
+                    && NullUtils.isNotEmpty(snCodeList)) {
+                for (int i = 0; i < currentStore.sns.size(); i++) {
+                    StoreInfoBean.SenNum sn = currentStore.sns.get(i);
+                    for (String code : snCodeList) {
+                        if (code.equals(sn.SN)) {
+                            senNumList.add(sn);
+                        }
                     }
                 }
             }
+        } else {
+            if (currentStore != null && NullUtils.isNotEmpty(currentStore.sns)) {
+                senNumList.addAll(currentStore.sns);
+            }
         }
+
         return senNumList;
     }
 
