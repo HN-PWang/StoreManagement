@@ -15,14 +15,19 @@ import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
+import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.bean.UserInfoBean;
+import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.SetContainerBackPresenter;
+import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 /**
  * 回库扫描页
  */
 public class WarehouseBackActivity extends BaseScannerActivity implements View.OnClickListener {
+
+    private TextView tvSearchSite;
 
     private EditText etContainer;
 
@@ -34,6 +39,10 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 
     private String[] datas;
 
+    private SiteChooseHelper siteChooseHelper;
+
+    private SiteBean currentSiteBean = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +50,7 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 
         mContainerCode = getIntent().getStringExtra(Constants.SCANNER_DATA_KEY);
 
+        tvSearchSite = findViewById(R.id.tv_search_site);
         etContainer = findViewById(R.id.et_container);
         tvShelfArea = findViewById(R.id.tv_shelf_area);
         tvShelfLocation = findViewById(R.id.tv_shelf_location);
@@ -52,6 +62,21 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             @Override
             public void onScannerDataBack(String message) {
                 writeContainerCode(message);
+            }
+        });
+
+        siteChooseHelper = new SiteChooseHelper(this, 0);
+        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
+            @Override
+            public void onClick(SiteBean site) {
+                currentSiteBean = site;
+                setSiteInfo();
+            }
+
+            @Override
+            public void onFirst(SiteBean site) {
+                currentSiteBean = site;
+                setSiteInfo();
             }
         });
 
@@ -87,6 +112,12 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             case R.id.tv_confirm:
                 //不知道出于什么想法
                 break;
+        }
+    }
+
+    private void setSiteInfo() {
+        if (currentSiteBean != null) {
+            tvSearchSite.setText(currentSiteBean.site_code);
         }
     }
 
@@ -131,9 +162,20 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             }
         });
 
+        if (currentSiteBean == null) {
+            ShowMsgDialogUtil.show(WarehouseBackActivity.this, "请选择站点");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mContainerCode)) {
+            ShowMsgDialogUtil.show(WarehouseBackActivity.this, "请输入料箱号");
+            return;
+        }
+
         UserInfoBean bean = AccountManger.getInstance().getAccount();
-        if (!TextUtils.isEmpty(mContainerCode) && bean != null) {
-            presenter.allocate(mContainerCode, AccountManger.getInstance().getUserCode());
+        if (bean != null) {
+            presenter.allocate(mContainerCode, AccountManger.getInstance().getUserCode()
+                    , currentSiteBean.site_code);
         }
     }
 

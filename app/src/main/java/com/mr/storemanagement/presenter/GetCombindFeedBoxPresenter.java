@@ -28,7 +28,7 @@ public class GetCombindFeedBoxPresenter extends SMBasePresenter {
     public void getData(String siteCode, String containerCode,String userCode) {
         this.mSiteCode = siteCode;
         this.mContainerCode = containerCode;
-        this.mUserCode = containerCode;
+        this.mUserCode = userCode;
 
         executeRequest();
     }

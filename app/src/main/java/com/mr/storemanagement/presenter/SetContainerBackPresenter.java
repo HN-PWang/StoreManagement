@@ -17,21 +17,24 @@ public class SetContainerBackPresenter extends SMBasePresenter<String> {
 
     private String mUserCode;
 
+    private String mSiteCode;
+
     public SetContainerBackPresenter(BaseActivity baseActivity, NetResultListener resultListener
             , NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void allocate(String containerCode, String userCode) {
+    public void allocate(String containerCode, String userCode,String siteCode) {
         mContainerCode = containerCode;
         mUserCode = userCode;
+        mSiteCode = userCode;
 
         executeRequest();
     }
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.setContainerBackToLocation(mContainerCode, mUserCode);
+        return netModel.setContainerBackToLocation(mContainerCode, mUserCode, mSiteCode);
     }
 
     @Override

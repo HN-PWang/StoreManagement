@@ -61,9 +61,10 @@ public class AppNetModel extends BaseModel {
     /**
      * 回库扫描
      */
-    public Observable<ResponseBody> setContainerBackToLocation(String containerCode, String userCode) {
+    public Observable<ResponseBody> setContainerBackToLocation(String containerCode, String userCode
+            , String siteCode) {
         ApiService service = RetrofitManager.create(ApiService.class);
-        return service.setContainerBackToLocation(getHeader(), containerCode, userCode);
+        return service.setContainerBackToLocation(getHeader(), containerCode, userCode, siteCode);
     }
 
     /**

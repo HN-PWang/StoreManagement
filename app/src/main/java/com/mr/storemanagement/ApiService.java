@@ -56,9 +56,10 @@ public interface ApiService {
     /**
      * 回库扫描
      */
-    @GET("api/Mobile/SetContainerBackToLocation/{ContainerCode}/{UserCode}")
+    @GET("api/Mobile/SetContainerBackToLocation/{ContainerCode}/{UserCode}/{SiteCode}")
     Observable<ResponseBody> setContainerBackToLocation(@HeaderMap Map<String, String> header
-            , @Path("ContainerCode") String ContainerCode, @Path("UserCode") String UserCode);
+            , @Path("ContainerCode") String ContainerCode, @Path("UserCode") String UserCode
+            , @Path("SiteCode") String SiteCode);
 
     /**
      * 绑定库位
@@ -204,7 +205,7 @@ public interface ApiService {
      */
     @GET("api/Mobile/GetComBindFeedBox/{ContainerCode}/{SiteCode}/{UserCode}")
     Observable<ResponseBody> getCombindFeedBox(@HeaderMap Map<String, String> header
-            , @Path("SiteCode") String SiteCode, @Path("ContainerCode") String ContainerCode
+            , @Path("ContainerCode") String ContainerCode, @Path("SiteCode") String SiteCode
             , @Path("UserCode") String UserCode);
 
     /**

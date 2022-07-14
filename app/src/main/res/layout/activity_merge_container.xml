@@ -223,7 +223,7 @@
         android:layout_marginBottom="20dp"
         android:background="#3296FA"
         android:gravity="center"
-        android:text="并箱完成"
+        android:text="清除内容"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/tv_back"
         app:layout_constraintHorizontal_weight="1"
