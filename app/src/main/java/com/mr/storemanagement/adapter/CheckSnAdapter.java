@@ -55,7 +55,7 @@ public class CheckSnAdapter extends RecyclerView.Adapter<CheckSnAdapter.SnCodeVi
         public SnCodeViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvSnCode = itemView.findViewById(R.id.tv_sn_code);
+            tvSnCode = itemView.findViewById(R.id.tv_serial_code);
         }
     }
 
