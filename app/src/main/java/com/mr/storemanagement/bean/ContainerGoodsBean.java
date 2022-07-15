@@ -33,7 +33,7 @@ public class ContainerGoodsBean {
     public Double checkQty;
     public String check_user;
     public Integer is_SN;
-    public Integer is_danger;
+    public String is_danger;
     public String is_fragile;
     public String isArrive;
     public List<String> snList;
