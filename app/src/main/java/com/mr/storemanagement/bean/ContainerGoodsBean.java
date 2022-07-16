@@ -23,7 +23,7 @@ public class ContainerGoodsBean {
     public String barcode;
     public String item_name;
     public String item_batch_id;
-    public Double request_Qty;
+    public Double Request_Qty;
     public String item_unit;
     public String product_batch;
     public Integer status;

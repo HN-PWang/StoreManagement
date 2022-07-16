@@ -3,12 +3,10 @@ package com.mr.storemanagement.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mr.lib_base.AfterTextChangedListener;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -27,7 +24,6 @@ import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.OutStockGoodsAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
-import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.OutStockConfirmPresenter;
@@ -35,7 +31,6 @@ import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -211,6 +206,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
     private void toSnScanner() {
         Intent intent = new Intent(this, SerialNumScannerActivity.class);
         intent.putExtra(Constants.SN_CODE_DATA_KEY, JSONObject.toJSONString(currentGoodsBean.snList));
+        intent.putExtra(Constants.SN_CODE_UN_NEED_CHECK, true);
         startActivityForResult(intent, REQUEST_SERIAL_CODE);
     }
 

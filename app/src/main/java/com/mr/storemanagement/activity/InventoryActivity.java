@@ -397,11 +397,11 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private void saveDeliveryState(boolean isForceComplete) {
         InvSaveDetailPresenter presenter = new InvSaveDetailPresenter(this
-                , new NetResultListener<String>() {
+                , new NetResultListener<InvSaveBackBean>() {
             @Override
-            public void loadSuccess(String bean) {
+            public void loadSuccess(InvSaveBackBean bean) {
                 if (isForceComplete) {
-                    forceCompleteDelivery(bean);
+                    forceCompleteDelivery(bean.ProcessStatus);
                 } else {
                     ToastUtils.show("保存成功");
                     if (bean != null && PS_COMPLETE.equals(bean)) {

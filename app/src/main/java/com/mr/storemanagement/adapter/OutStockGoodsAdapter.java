@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.storemanagement.R;
-import com.mr.storemanagement.bean.AsnDetailBean;
 import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.util.DataUtil;
 
@@ -53,7 +52,8 @@ public class OutStockGoodsAdapter extends RecyclerView.Adapter<OutStockGoodsAdap
         ContainerGoodsBean item = mDataList.get(position);
 
         holder.tvNo.setText(item.item_Code);
-        holder.tvCount.setText(DataUtil.getIntStr(item.checkQty) + "/" + item.request_Qty);
+        holder.tvCount.setText(DataUtil
+                .getIntStr(item.checkQty) + "/" + DataUtil.getIntStr(item.Request_Qty));
         holder.tvSerialCode.setText(item.product_batch);
     }
 

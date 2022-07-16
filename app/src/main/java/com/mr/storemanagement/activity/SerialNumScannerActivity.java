@@ -44,6 +44,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
     private List<String> mCheckDataList;
 
+    public boolean snCodeUnNeedCheck = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
         findViewById(R.id.iv_rfid).setOnClickListener(this);
         findViewById(R.id.tv_clear).setOnClickListener(this);
+
+        snCodeUnNeedCheck = getIntent().getBooleanExtra(Constants.SN_CODE_UN_NEED_CHECK, false);
 
         String checkSns = getIntent().getStringExtra(Constants.SN_CODE_CHECK_DATA_KEY);
         checkSns = TextUtils.isEmpty(checkSns) ? "" : checkSns;
@@ -103,10 +107,16 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
     }
 
     private void addCode(String data) {
-        if (!TextUtils.isEmpty(data) && !mDataList.contains(data) && mCheckDataList.contains(data)) {
+        if (snCodeUnNeedCheck) {
             mDataList.add(data);
             serialNumAdapter.notifyDataSetChanged();
             setCount();
+        } else {
+            if (!TextUtils.isEmpty(data) && !mDataList.contains(data) && mCheckDataList.contains(data)) {
+                mDataList.add(data);
+                serialNumAdapter.notifyDataSetChanged();
+                setCount();
+            }
         }
     }
 

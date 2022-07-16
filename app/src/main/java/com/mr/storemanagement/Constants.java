@@ -27,6 +27,8 @@ public class Constants {
 
     public static final String SN_CODE_CHECK_DATA_KEY = "sn_code_check_data_key";
 
+    public static final String SN_CODE_UN_NEED_CHECK = "sn_code_un_need_check";
+
     //asn码
     public static final String ASN_DATA_KEY = "asn_data_key";
 
