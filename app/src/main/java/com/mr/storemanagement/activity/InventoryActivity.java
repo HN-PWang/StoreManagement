@@ -521,7 +521,11 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             @Override
             public void onClick(boolean confirm) {
                 if (confirm) {
-                    saveDeliveryState(true);
+                    if (currentInvDetails == null) {
+                        forceCompleteDelivery(PS_COMPLETE);
+                    } else {
+                        saveDeliveryState(true);
+                    }
                 }
             }
         });

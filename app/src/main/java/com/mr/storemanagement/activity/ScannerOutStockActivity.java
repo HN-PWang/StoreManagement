@@ -27,6 +27,7 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.OutStockConfirmPresenter;
+import com.mr.storemanagement.util.DataUtil;
 import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
@@ -61,6 +62,10 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
     private List<ContainerGoodsBean> mContainerGoodsList;
 
     private List<ContainerGoodsBean> mDataList = new ArrayList<>();
+
+    private List<String> snCodeList = new ArrayList<>();
+
+    private int IS_SN = 0;
 
     private ContainerGoodsBean currentGoodsBean;
 
@@ -151,12 +156,17 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
     private void setGoodsInfoToView(ContainerGoodsBean goodsBean) {
         tvCxNo.setText(goodsBean.item_Code);
 
+        IS_SN = 0;
+
         if (1 == goodsBean.is_SN) {
+            IS_SN = 1;
             etOutCount.setEnabled(false);
             tvScanner.setEnabled(true);
             tvScanSerialTag.setSelected(true);
             toSnScanner();
+
         } else {
+            IS_SN = 0;
             etOutCount.setEnabled(true);
             tvScanner.setEnabled(false);
             tvScanSerialTag.setSelected(false);
@@ -174,17 +184,15 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                 if (currentGoodsBean != null)
                     currentGoodsBean.snList = snList;
 
+                snCodeList = snList;
+
                 setOutCount();
             }
         }
     }
 
     private void setOutCount() {
-        String count = "0";
-        if (currentGoodsBean != null && NullUtils.isNotEmpty(currentGoodsBean.snList)) {
-            count = String.valueOf(currentGoodsBean.snList.size());
-        }
-        etOutCount.setText(count);
+        etOutCount.setText(getCount());
     }
 
     @Override
@@ -201,6 +209,18 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                 confirm();
                 break;
         }
+    }
+
+    private int getCount() {
+        int count = 0;
+        if (IS_SN == 1) {
+            count = snCodeList.size();
+        } else {
+            String str = etOutCount.getText().toString();
+            count = DataUtil.getInt(str);
+        }
+
+        return count;
     }
 
     private void toSnScanner() {
@@ -234,12 +254,21 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                 dismissLoadingDialog();
             }
         });
+
+        if (getCount()==0){
+            ShowMsgDialogUtil.show(this,"数量不能为0");
+            return;
+        }
+
+
+
         presenter.save(mSiteCode, AccountManger.getInstance().getUserCode(), buildData());
     }
 
     private JSONObject buildData() {
         JSONObject object = null;
         if (currentGoodsBean != null) {
+            currentGoodsBean.checkQty = Double.valueOf(getCount());
             object = JSONObject.parseObject(JSONObject.toJSONString(currentGoodsBean));
 
             if (NullUtils.isNotEmpty(currentGoodsBean.snList)) {
