@@ -192,7 +192,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
     }
 
     private void setOutCount() {
-        etOutCount.setText(getCount());
+        etOutCount.setText(String.valueOf(getCount()));
     }
 
     @Override
@@ -255,11 +255,10 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
             }
         });
 
-        if (getCount()==0){
-            ShowMsgDialogUtil.show(this,"数量不能为0");
+        if (getCount() == 0) {
+            ShowMsgDialogUtil.show(this, "数量不能为0");
             return;
         }
-
 
 
         presenter.save(mSiteCode, AccountManger.getInstance().getUserCode(), buildData());
