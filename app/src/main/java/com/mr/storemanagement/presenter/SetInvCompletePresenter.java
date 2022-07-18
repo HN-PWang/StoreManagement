@@ -27,6 +27,8 @@ public class SetInvCompletePresenter extends SMBasePresenter<InvDetailsBean> {
     public void close(String invCode, String userCode) {
         this.mInvCode = invCode;
         this.mUserCode = userCode;
+
+        executeRequest();
     }
 
     @Override
