@@ -19,11 +19,16 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.GetTaskAdapter;
 import com.mr.storemanagement.bean.GetTaskBean;
 import com.mr.storemanagement.bean.SiteBean;
+import com.mr.storemanagement.eventbean.OutStockEvent;
+import com.mr.storemanagement.eventbean.SaveInvEvent;
 import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.GetPickWorkPresenter;
 import com.mr.storemanagement.presenter.GetTaskPresenter;
 import com.mr.storemanagement.util.NullUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +53,9 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_task);
+
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
 
         tvSearchSite = findViewById(R.id.tv_search_site);
         rvTask = findViewById(R.id.rv_task);
@@ -183,5 +191,17 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
         }
 
         presenter.getTask(currentSiteBean.site_code, AccountManger.getInstance().getUserCode());
+    }
+
+    @Subscribe
+    public void onEventMainThread(OutStockEvent event) {
+        getTask();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 }

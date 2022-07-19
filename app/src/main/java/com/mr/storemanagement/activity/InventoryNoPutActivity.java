@@ -125,8 +125,8 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
                 , new NetResultListener<List<InvCodeBean>>() {
             @Override
             public void loadSuccess(List<InvCodeBean> beans) {
+                mInvCodeBeans.clear();
                 if (beans != null) {
-                    mInvCodeBeans.clear();
                     mInvCodeBeans.addAll(beans);
                 }
             }

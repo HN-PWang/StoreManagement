@@ -25,11 +25,14 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.OutStockGoodsAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.ContainerGoodsBean;
+import com.mr.storemanagement.eventbean.OutStockEvent;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.OutStockConfirmPresenter;
 import com.mr.storemanagement.util.DataUtil;
 import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,6 +240,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
             public void loadSuccess(Object o) {
                 ToastUtils.show("拣货成功");
                 finish();
+                EventBus.getDefault().post(new OutStockEvent());
             }
 
             @Override
