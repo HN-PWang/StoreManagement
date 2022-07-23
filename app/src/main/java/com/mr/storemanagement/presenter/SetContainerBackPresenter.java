@@ -27,7 +27,7 @@ public class SetContainerBackPresenter extends SMBasePresenter<String> {
     public void allocate(String containerCode, String userCode,String siteCode) {
         mContainerCode = containerCode;
         mUserCode = userCode;
-        mSiteCode = userCode;
+        mSiteCode = siteCode;
 
         executeRequest();
     }
