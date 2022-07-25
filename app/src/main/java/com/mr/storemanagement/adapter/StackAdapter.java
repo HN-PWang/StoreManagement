@@ -21,6 +21,12 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
 
     private List<StackBean> mDataList;
 
+    private OnSnClickListener snClickListener;
+
+    public void setSnClickListener(OnSnClickListener snClickListener) {
+        this.snClickListener = snClickListener;
+    }
+
     public StackAdapter(Context context, List<StackBean> dataList) {
         this.mContext = context;
         this.mDataList = dataList;
@@ -38,8 +44,8 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
     public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
         StackBean item = mDataList.get(position);
 
-        holder.tvItemCode.setText("册序号："+item.item_Code);
-        holder.tvContainerNo.setText("容器号："+item.container_code);
+        holder.tvItemCode.setText("册序号：" + item.item_Code);
+        holder.tvContainerNo.setText("容器号：" + item.container_code);
         holder.tvCountTag.setText("可用数/系统数：");
         holder.tvCount.setText(DataUtil.getInt(item.available_qty) + "/" + DataUtil.getInt(item.real_qty));
         holder.tvSerialCode.setText(item.product_batch);
@@ -67,6 +73,9 @@ public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHol
             tvCount = itemView.findViewById(R.id.tv_count);
             tvSerialCode = itemView.findViewById(R.id.tv_serial_code);
         }
+    }
 
+    public interface OnSnClickListener {
+        void OnSnClick(StackBean bean);
     }
 }

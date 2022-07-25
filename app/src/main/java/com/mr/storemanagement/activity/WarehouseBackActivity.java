@@ -57,6 +57,7 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_confirm).setOnClickListener(this);
+        tvSearchSite.setOnClickListener(this);
 
         setOnScannerListener(new OnScannerListener() {
             @Override
@@ -111,6 +112,9 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
                 break;
             case R.id.tv_confirm:
                 //不知道出于什么想法
+                break;
+            case R.id.tv_search_site:
+                siteChooseHelper.selectSite();
                 break;
         }
     }

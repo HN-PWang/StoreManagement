@@ -53,6 +53,13 @@ public class WarehouseSearchActivity extends BaseActivity
         rvStack.setLayoutManager(new LinearLayoutManager(this));
         rvStack.setAdapter(stackAdapter);
 
+        stackAdapter.setSnClickListener(new StackAdapter.OnSnClickListener() {
+            @Override
+            public void OnSnClick(StackBean bean) {
+
+            }
+        });
+
         etSearch.setOnEditorActionListener(this);
         findViewById(R.id.tv_search).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);

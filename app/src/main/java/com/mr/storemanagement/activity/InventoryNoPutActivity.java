@@ -103,7 +103,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
                         || i == EditorInfo.IME_ACTION_NEXT) {
-                    getAsn();
+                    getAsn(false);
                 }
                 return false;
             }
@@ -117,10 +117,10 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             }
         });
 
-        getAsn();
+        getAsn(false);
     }
 
-    private void getAsn() {
+    private void getAsn(boolean showSelectDialog) {
         GetInvPresenter presenter = new GetInvPresenter(this
                 , new NetResultListener<List<InvCodeBean>>() {
             @Override
@@ -128,6 +128,9 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
                 mInvCodeBeans.clear();
                 if (beans != null) {
                     mInvCodeBeans.addAll(beans);
+                }
+                if (showSelectDialog) {
+                    showAsnSelectDialog();
                 }
             }
 
@@ -174,7 +177,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
 
     @Subscribe
     public void onEventMainThread(SaveInvEvent event) {
-        getAsn();
+        getAsn(false);
     }
 
     private void handlerInvCheckBack(InvCheckBackBean bean) {
@@ -219,10 +222,9 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
                 finish();
                 break;
             case R.id.tv_select:
-                showAsnSelectDialog();
+                getAsn(true);
                 break;
             case R.id.tv_next:
-//                intoScanning();
                 checkInv();
                 break;
         }

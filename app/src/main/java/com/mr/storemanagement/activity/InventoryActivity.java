@@ -255,7 +255,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             if (NullUtils.isNotEmpty(sameItemCodeList)) {
                 int indexByState = -1;
                 for (int i = 0; i < sameItemCodeList.size(); i++) {
-                    InvDetailsBean item = mInvDetailsList.get(i);
+                    InvDetailsBean item = sameItemCodeList.get(i);
                     if (!"1".equals(item.status)) {
                         indexByState = i;
                         break;
