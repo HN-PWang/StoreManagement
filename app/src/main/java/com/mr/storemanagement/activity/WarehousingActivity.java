@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mr.lib_base.AfterTextChangedListener;
-import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
@@ -19,10 +18,8 @@ import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.AsnCodeBean;
-import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.AsnSelectDialog;
 import com.mr.storemanagement.eventbean.SaveAsnEvent;
-import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.presenter.GetAsnPresenter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,7 +33,7 @@ import java.util.List;
  */
 public class WarehousingActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvSearchSite;
+    private EditText tvSearchSite;
 
     private SMEditText tvSearchAsn;
 
@@ -44,11 +41,11 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
 
     private AsnSelectDialog asnSelectDialog;
 
-    private SiteBean currentSiteBean = null;
+//    private SiteBean currentSiteBean = null;
 
     private String mAsnCode;
 
-    private SiteChooseHelper siteChooseHelper;
+//    private SiteChooseHelper siteChooseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,26 +58,26 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         tvSearchSite = findViewById(R.id.tv_search_site);
         tvSearchAsn = findViewById(R.id.tv_asn_code);
 
-        tvSearchSite.setOnClickListener(this);
+//        tvSearchSite.setOnClickListener(this);
         tvSearchAsn.setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
-        siteChooseHelper = new SiteChooseHelper(this, 0);
-        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
-            @Override
-            public void onClick(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-            }
-
-            @Override
-            public void onFirst(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-            }
-        });
+//        siteChooseHelper = new SiteChooseHelper(this, 0);
+//        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
+//            @Override
+//            public void onClick(SiteBean site) {
+//                currentSiteBean = site;
+//                setSiteInfo();
+//            }
+//
+//            @Override
+//            public void onFirst(SiteBean site) {
+//                currentSiteBean = site;
+//                setSiteInfo();
+//            }
+//        });
 
         tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
             @Override
@@ -149,11 +146,11 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         }
     }
 
-    private void setSiteInfo() {
-        if (currentSiteBean != null) {
-            tvSearchSite.setText(currentSiteBean.site_code);
-        }
-    }
+//    private void setSiteInfo() {
+//        if (currentSiteBean != null) {
+//            tvSearchSite.setText(currentSiteBean.site_code);
+//        }
+//    }
 
     private void setOrderInfo() {
         tvSearchAsn.setText(mAsnCode);
@@ -162,9 +159,9 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_search_site:
-                siteChooseHelper.selectSite();
-                break;
+//            case R.id.tv_search_site:
+//                siteChooseHelper.selectSite();
+//                break;
             case R.id.tv_back:
                 finish();
                 break;
@@ -178,7 +175,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
     }
 
     private void intoScanning() {
-        if (currentSiteBean == null) {
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
             ToastUtils.show("站点信息不能为空");
             return;
         }
@@ -187,7 +184,7 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
             return;
         }
         Intent intent = new Intent(this, ScannerPutStockActivity.class);
-        intent.putExtra("site_key", currentSiteBean.site_code);
+        intent.putExtra("site_key", tvSearchSite.getText().toString());
         intent.putExtra("ans_key", mAsnCode);
         startActivity(intent);
     }

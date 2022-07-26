@@ -32,9 +32,9 @@ public class SiteChooseHelper {
 
     private List<SiteBean> mSiteBeans = new ArrayList<>();
 
-    public void setSiteClickListener(OnSiteEventListener siteClickListener) {
-        this.siteClickListener = siteClickListener;
-    }
+//    public void setSiteClickListener(OnSiteEventListener siteClickListener) {
+//        this.siteClickListener = siteClickListener;
+//    }
 
     /**
      * @param context

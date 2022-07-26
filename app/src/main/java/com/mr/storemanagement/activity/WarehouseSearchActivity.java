@@ -19,7 +19,9 @@ import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.StackAdapter;
 import com.mr.storemanagement.bean.StackBean;
+import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.presenter.GetInventoryListPresenter;
+import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,8 @@ public class WarehouseSearchActivity extends BaseActivity
     private TextView tvStackCount;
 
     private StackAdapter stackAdapter;
+
+    private CheckSnDialog mCheckSnDialog;
 
     private List<StackBean> stackBeans = new ArrayList<>();
 
@@ -56,7 +60,9 @@ public class WarehouseSearchActivity extends BaseActivity
         stackAdapter.setSnClickListener(new StackAdapter.OnSnClickListener() {
             @Override
             public void OnSnClick(StackBean bean) {
-
+                if (NullUtils.isNotEmpty(bean.SnList)) {
+                    showCheckSnDialog(bean.SnList, bean.product_batch);
+                }
             }
         });
 
@@ -72,6 +78,13 @@ public class WarehouseSearchActivity extends BaseActivity
         });
 
         setStackCount();
+    }
+
+    private void showCheckSnDialog(List<String> dataList, String asnCode) {
+        if (mCheckSnDialog == null || !mCheckSnDialog.isShowing()) {
+            mCheckSnDialog = new CheckSnDialog(this, asnCode, dataList);
+            mCheckSnDialog.show();
+        }
     }
 
     private void setStackCount() {

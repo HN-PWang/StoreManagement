@@ -20,10 +20,8 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.CombindCheckBean;
 import com.mr.storemanagement.bean.InvDetailsBean;
-import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.ConfirmDialog;
 import com.mr.storemanagement.dialog.SearchStockDetailDialog;
-import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.CombindCheckItemPresenter;
 import com.mr.storemanagement.presenter.CombindSavePresenter;
@@ -46,11 +44,11 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     private TextView tvScanSerialTag;
     private SMEditText etCount;
 
-    private SiteChooseHelper siteChooseHelper;
+//    private SiteChooseHelper siteChooseHelper;
 
     private SearchStockDetailDialog mStockDetailDialog;
 
-    private SiteBean mSite = null;
+//    private SiteBean mSite = null;
 
     private String mOldContainerNo;
 
@@ -95,20 +93,20 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         etCxNo.setOnFocusChangeListener(this);
         etCount.setOnFocusChangeListener(this);
 
-        siteChooseHelper = new SiteChooseHelper(this, 2);
-        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
-            @Override
-            public void onClick(SiteBean site) {
-                mSite = site;
-                setSiteInfo();
-            }
-
-            @Override
-            public void onFirst(SiteBean site) {
-                mSite = site;
-                setSiteInfo();
-            }
-        });
+//        siteChooseHelper = new SiteChooseHelper(this, 2);
+//        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
+//            @Override
+//            public void onClick(SiteBean site) {
+//                mSite = site;
+//                setSiteInfo();
+//            }
+//
+//            @Override
+//            public void onFirst(SiteBean site) {
+//                mSite = site;
+//                setSiteInfo();
+//            }
+//        });
 
         setContainerText(true, "");
         setContainerText(false, "");
@@ -242,11 +240,11 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         setInputViewState();
     }
 
-    private void setSiteInfo() {
-        if (mSite != null) {
-            tvSearchSite.setText(mSite.site_code);
-        }
-    }
+//    private void setSiteInfo() {
+//        if (mSite != null) {
+//            tvSearchSite.setText(mSite.site_code);
+//        }
+//    }
 
     private int getCount() {
         int count = 0;
@@ -294,9 +292,9 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             }
         });
 
-        if (mSite == null) {
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
             ShowMsgDialogUtil.show(MergeContainerActivity.this
-                    , "请选择站点信息");
+                    , "站点信息不能为空");
             return;
         }
 
@@ -306,7 +304,8 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             return;
         }
 
-        presenter.getData(mSite.site_code, mOldContainerNo, AccountManger.getInstance().getUserCode());
+        presenter.getData(tvSearchSite.getText().toString(), mOldContainerNo
+                , AccountManger.getInstance().getUserCode());
     }
 
     private void combindCheckItem() {
@@ -371,7 +370,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             }
         });
 
-        if (mSite == null) {
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
             ShowMsgDialogUtil.show(MergeContainerActivity.this
                     , "请选择站点信息");
             return;
@@ -407,7 +406,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                 @Override
                 public void onClick(boolean confirm) {
                     if (confirm) {
-                        presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo
+                        presenter.save(tvSearchSite.getText().toString(), mOldContainerNo, mNewContainerNo
                                 , mCombindCheckBean.item_Code
                                 , DataUtil.getInt(mCombindCheckBean.StockInfoId), getCount()
                                 , AccountManger.getInstance().getUserCode(), mSNCode);
@@ -416,7 +415,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             });
             mConfirmDialog.show();
         } else {
-            presenter.save(mSite.site_code, mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
+            presenter.save(tvSearchSite.getText().toString(), mOldContainerNo, mNewContainerNo, mCombindCheckBean.item_Code
                     , DataUtil.getInt(mCombindCheckBean.StockInfoId), getCount()
                     , AccountManger.getInstance().getUserCode(), mSNCode);
         }
@@ -546,9 +545,9 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_search_site:
-                siteChooseHelper.selectSite();
-                break;
+//            case R.id.tv_search_site:
+//                siteChooseHelper.selectSite();
+//                break;
             case R.id.tv_complete:
                 //并箱完成
                 setContainerState(false);

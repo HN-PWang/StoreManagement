@@ -15,9 +15,7 @@ import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
-import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.bean.UserInfoBean;
-import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.SetContainerBackPresenter;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
@@ -39,9 +37,9 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 
     private String[] datas;
 
-    private SiteChooseHelper siteChooseHelper;
+//    private SiteChooseHelper siteChooseHelper;
 
-    private SiteBean currentSiteBean = null;
+//    private SiteBean currentSiteBean = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_confirm).setOnClickListener(this);
-        tvSearchSite.setOnClickListener(this);
+//        tvSearchSite.setOnClickListener(this);
 
         setOnScannerListener(new OnScannerListener() {
             @Override
@@ -66,20 +64,20 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             }
         });
 
-        siteChooseHelper = new SiteChooseHelper(this, 0);
-        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
-            @Override
-            public void onClick(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-            }
-
-            @Override
-            public void onFirst(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-            }
-        });
+//        siteChooseHelper = new SiteChooseHelper(this, 0);
+//        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
+//            @Override
+//            public void onClick(SiteBean site) {
+//                currentSiteBean = site;
+//                setSiteInfo();
+//            }
+//
+//            @Override
+//            public void onFirst(SiteBean site) {
+//                currentSiteBean = site;
+//                setSiteInfo();
+//            }
+//        });
 
         etContainer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -113,17 +111,17 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             case R.id.tv_confirm:
                 //不知道出于什么想法
                 break;
-            case R.id.tv_search_site:
-                siteChooseHelper.selectSite();
-                break;
+//            case R.id.tv_search_site:
+//                siteChooseHelper.selectSite();
+//                break;
         }
     }
 
-    private void setSiteInfo() {
-        if (currentSiteBean != null) {
-            tvSearchSite.setText(currentSiteBean.site_code);
-        }
-    }
+//    private void setSiteInfo() {
+//        if (currentSiteBean != null) {
+//            tvSearchSite.setText(currentSiteBean.site_code);
+//        }
+//    }
 
     private void setDataToView() {
         if (datas != null) {
@@ -166,7 +164,7 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
             }
         });
 
-        if (currentSiteBean == null) {
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
             ShowMsgDialogUtil.show(WarehouseBackActivity.this, "请选择站点");
             return;
         }
@@ -179,7 +177,7 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
         UserInfoBean bean = AccountManger.getInstance().getAccount();
         if (bean != null) {
             presenter.allocate(mContainerCode, AccountManger.getInstance().getUserCode()
-                    , currentSiteBean.site_code);
+                    , tvSearchSite.getText().toString());
         }
     }
 

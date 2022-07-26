@@ -2,8 +2,9 @@ package com.mr.storemanagement.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +19,7 @@ import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.GetTaskAdapter;
 import com.mr.storemanagement.bean.GetTaskBean;
-import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.eventbean.OutStockEvent;
-import com.mr.storemanagement.eventbean.SaveInvEvent;
-import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.GetPickWorkPresenter;
 import com.mr.storemanagement.presenter.GetTaskPresenter;
@@ -38,16 +36,14 @@ import java.util.List;
  */
 public class GetTaskActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tvSearchSite;
+    private EditText tvSearchSite;
     private RecyclerView rvTask;
 
     private GetTaskAdapter taskAdapter;
 
     private List<GetTaskBean> mDataList = new ArrayList<>();
 
-    private SiteBean currentSiteBean = null;
-
-    private SiteChooseHelper siteChooseHelper;
+//    private SiteBean currentSiteBean = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +56,6 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
         tvSearchSite = findViewById(R.id.tv_search_site);
         rvTask = findViewById(R.id.rv_task);
 
-        findViewById(R.id.tv_search_site).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_get_task).setOnClickListener(this);
         findViewById(R.id.tv_choose).setOnClickListener(this);
@@ -68,37 +63,11 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
         rvTask.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new GetTaskAdapter(this, mDataList);
         rvTask.setAdapter(taskAdapter);
-
-        siteChooseHelper = new SiteChooseHelper(this, 1);
-        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
-            @Override
-            public void onClick(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-                getPickWork();
-            }
-
-            @Override
-            public void onFirst(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-                getPickWork();
-            }
-        });
-    }
-
-    private void setSiteInfo() {
-        if (currentSiteBean != null) {
-            tvSearchSite.setText(currentSiteBean.site_code);
-        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_search_site:
-                siteChooseHelper.selectSite();
-                break;
             case R.id.tv_back:
                 finish();
                 break;
@@ -118,7 +87,7 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
         }
 
         Intent intent = new Intent(this, PickingFeedBoxScannerActivity.class);
-        intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
+        intent.putExtra(Constants.SITE_CODE_KEY, tvSearchSite.getText().toString());
         intent.putExtra(Constants.TASK_DATA_KEY, JSONObject.toJSONString(mDataList));
         startActivity(intent);
     }
@@ -153,12 +122,12 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
             }
         });
 
-        if (currentSiteBean == null) {
-            ToastUtils.show("请选择站点");
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
+            ToastUtils.show("站点信息不能为空");
             return;
         }
 
-        presenter.getPickWork(currentSiteBean.site_code);
+        presenter.getPickWork(tvSearchSite.getText().toString());
     }
 
     private void getTask() {
@@ -185,12 +154,12 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
             }
         });
 
-        if (currentSiteBean == null) {
-            ToastUtils.show("请选择站点");
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
+            ToastUtils.show("请输入站点");
             return;
         }
 
-        presenter.getTask(currentSiteBean.site_code, AccountManger.getInstance().getUserCode());
+        presenter.getTask(tvSearchSite.getText().toString(), AccountManger.getInstance().getUserCode());
     }
 
     @Subscribe

@@ -22,11 +22,8 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.InvCheckBackBean;
 import com.mr.storemanagement.bean.InvCodeBean;
 import com.mr.storemanagement.bean.InvDetailsBean;
-import com.mr.storemanagement.bean.SiteBean;
 import com.mr.storemanagement.dialog.InvSelectDialog;
-import com.mr.storemanagement.eventbean.SaveAsnEvent;
 import com.mr.storemanagement.eventbean.SaveInvEvent;
-import com.mr.storemanagement.helper.SiteChooseHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.GetInvCheckPresenter;
 import com.mr.storemanagement.presenter.GetInvDetailsPresenter;
@@ -53,11 +50,11 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
 
     private InvSelectDialog asnSelectDialog;
 
-    private SiteBean currentSiteBean = null;
+//    private SiteBean currentSiteBean = null;
 
     private String mInvCode;
 
-    private SiteChooseHelper siteChooseHelper;
+//    private SiteChooseHelper siteChooseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,20 +73,20 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         findViewById(R.id.tv_select).setOnClickListener(this);
         findViewById(R.id.tv_next).setOnClickListener(this);
 
-        siteChooseHelper = new SiteChooseHelper(this, 2);
-        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
-            @Override
-            public void onClick(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-            }
-
-            @Override
-            public void onFirst(SiteBean site) {
-                currentSiteBean = site;
-                setSiteInfo();
-            }
-        });
+//        siteChooseHelper = new SiteChooseHelper(this, 2);
+//        siteChooseHelper.setSiteClickListener(new SiteChooseHelper.OnSiteEventListener() {
+//            @Override
+//            public void onClick(SiteBean site) {
+//                currentSiteBean = site;
+//                setSiteInfo();
+//            }
+//
+//            @Override
+//            public void onFirst(SiteBean site) {
+//                currentSiteBean = site;
+//                setSiteInfo();
+//            }
+//        });
 
         tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
             @Override
@@ -202,11 +199,11 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         }
     }
 
-    private void setSiteInfo() {
-        if (currentSiteBean != null) {
-            tvSearchSite.setText(currentSiteBean.site_code);
-        }
-    }
+//    private void setSiteInfo() {
+//        if (currentSiteBean != null) {
+//            tvSearchSite.setText(currentSiteBean.site_code);
+//        }
+//    }
 
     private void setOrderInfo() {
         tvSearchAsn.setText(mInvCode);
@@ -215,9 +212,9 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_search_site:
-                siteChooseHelper.selectSite();
-                break;
+//            case R.id.tv_search_site:
+//                siteChooseHelper.selectSite();
+//                break;
             case R.id.tv_back:
                 finish();
                 break;
@@ -231,7 +228,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
     }
 
     private void intoAGV(InvCheckBackBean bean) {
-        if (currentSiteBean == null) {
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
             ToastUtils.show("站点信息不能为空");
             return;
         }
@@ -240,7 +237,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             return;
         }
         Intent intent = new Intent(this, InvSGVActivity.class);
-        intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
+        intent.putExtra(Constants.SITE_CODE_KEY, tvSearchSite.getText().toString());
         intent.putExtra(Constants.HAS_TASK_KEY, mInvCode);
         intent.putExtra(Constants.ASN_DATA_KEY, bean.HasTask);
         intent.putExtra(Constants.HAS_NON_AGV_KEY, bean.HasNonAgv);
@@ -286,7 +283,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
     }
 
     private void intoScanning(List<InvDetailsBean> beans) {
-        if (currentSiteBean == null) {
+        if (TextUtils.isEmpty(tvSearchSite.getText())) {
             ToastUtils.show("站点信息不能为空");
             return;
         }
@@ -295,7 +292,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
             return;
         }
         Intent intent = new Intent(this, InventoryActivity.class);
-        intent.putExtra(Constants.SITE_CODE_KEY, currentSiteBean.site_code);
+        intent.putExtra(Constants.SITE_CODE_KEY, tvSearchSite.getText().toString());
         intent.putExtra(Constants.HAS_TASK_KEY, mInvCode);
         intent.putExtra(Constants.INV_DETAILS_DATA_KEY, JSONObject.toJSONString(beans));
         startActivity(intent);
