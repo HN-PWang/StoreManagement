@@ -108,6 +108,15 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 //            }
 //        });
 
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (TextUtils.isEmpty(message)) {
+                    tvSearchSite.setText(message);
+                }
+            }
+        });
+
         setContainerText(true, "");
         setContainerText(false, "");
 

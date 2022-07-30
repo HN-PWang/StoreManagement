@@ -88,6 +88,15 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
 //            }
 //        });
 
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (TextUtils.isEmpty(message)) {
+                    tvSearchSite.setText(message);
+                }
+            }
+        });
+
         tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
             @Override
             public void afterChanged(Editable editable) {

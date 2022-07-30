@@ -79,6 +79,15 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 //            }
 //        });
 
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (TextUtils.isEmpty(message)) {
+                    tvSearchSite.setText(message);
+                }
+            }
+        });
+
         etContainer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
