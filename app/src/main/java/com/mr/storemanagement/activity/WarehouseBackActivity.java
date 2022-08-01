@@ -57,10 +57,17 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
         findViewById(R.id.tv_confirm).setOnClickListener(this);
 //        tvSearchSite.setOnClickListener(this);
 
+        tvSearchSite.requestFocus();
+
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                writeContainerCode(message);
+                if (tvSearchSite.isFocused()) {
+                    tvSearchSite.setText(message);
+                    etContainer.requestFocus();
+                } else {
+                    writeContainerCode(message);
+                }
             }
         });
 
@@ -78,15 +85,6 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
 //                setSiteInfo();
 //            }
 //        });
-
-        setOnScannerListener(new OnScannerListener() {
-            @Override
-            public void onScannerDataBack(String message) {
-                if (TextUtils.isEmpty(message)) {
-                    tvSearchSite.setText(message);
-                }
-            }
-        });
 
         etContainer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

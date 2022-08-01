@@ -1,6 +1,7 @@
 package com.mr.storemanagement.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,6 +19,7 @@ import com.mr.lib_base.network.listener.NetResultListener;
 import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.StackAdapter;
+import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.StackBean;
 import com.mr.storemanagement.dialog.CheckSnDialog;
 import com.mr.storemanagement.presenter.GetInventoryListPresenter;
@@ -26,7 +28,7 @@ import com.mr.storemanagement.util.NullUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarehouseSearchActivity extends BaseActivity
+public class WarehouseSearchActivity extends BaseScannerActivity
         implements TextView.OnEditorActionListener, View.OnClickListener {
 
     private EditText etSearch;
@@ -62,6 +64,15 @@ public class WarehouseSearchActivity extends BaseActivity
             public void OnSnClick(StackBean bean) {
                 if (NullUtils.isNotEmpty(bean.SnList)) {
                     showCheckSnDialog(bean.SnList, bean.product_batch);
+                }
+            }
+        });
+
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (TextUtils.isEmpty(message)) {
+                    etSearch.setText(message);
                 }
             }
         });

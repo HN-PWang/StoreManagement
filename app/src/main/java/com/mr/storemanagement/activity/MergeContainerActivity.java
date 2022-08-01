@@ -60,7 +60,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 
     private CombindCheckBean mCombindCheckBean;
 
-    private int mScannerInitiator = 1; //1:旧料箱 2:新料箱 3:册序号 4:序列号 5:数量
+    private int mScannerInitiator = 0; //0:站点 1:旧料箱 2:新料箱 3:册序号 4:序列号 5:数量
 
     private int IS_SN = 0;
 
@@ -107,15 +107,6 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 //                setSiteInfo();
 //            }
 //        });
-
-        setOnScannerListener(new OnScannerListener() {
-            @Override
-            public void onScannerDataBack(String message) {
-                if (TextUtils.isEmpty(message)) {
-                    tvSearchSite.setText(message);
-                }
-            }
-        });
 
         setContainerText(true, "");
         setContainerText(false, "");
@@ -179,8 +170,9 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
             public void onScannerDataBack(String message) {
                 if (TextUtils.isEmpty(message))
                     return;
-
-                if (mScannerInitiator == 1) {
+                if (mScannerInitiator == 0) {
+                    writeSiteCode(message);
+                } else if (mScannerInitiator == 1) {
                     writeOldContainer(message);
                 } else if (mScannerInitiator == 2) {
                     writeNewContainer(message);
@@ -203,6 +195,16 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                 }
             }
         });
+    }
+
+    private void writeSiteCode(String code) {
+        if (!TextUtils.isEmpty(code)) {
+            tvSearchSite.setText(code);
+
+            mScannerInitiator = 1;
+
+            setInputViewState();
+        }
     }
 
     private void writeOldContainer(String code) {

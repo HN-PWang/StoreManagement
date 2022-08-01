@@ -58,6 +58,8 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         tvSearchSite = findViewById(R.id.tv_search_site);
         tvSearchAsn = findViewById(R.id.tv_asn_code);
 
+        tvSearchSite.requestFocus();
+
 //        tvSearchSite.setOnClickListener(this);
         tvSearchAsn.setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
@@ -78,15 +80,6 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
 //                setSiteInfo();
 //            }
 //        });
-
-        setOnScannerListener(new OnScannerListener() {
-            @Override
-            public void onScannerDataBack(String message) {
-                if (TextUtils.isEmpty(message)) {
-                    tvSearchSite.setText(message);
-                }
-            }
-        });
 
         tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
             @Override
@@ -109,8 +102,12 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                if (TextUtils.isEmpty(message))
+                if (tvSearchSite.isFocused()) {
+                    tvSearchSite.setText(message);
+                    tvSearchAsn.requestFocus();
+                } else if (tvSearchAsn.isFocused()) {
                     tvSearchAsn.setText(message);
+                }
             }
         });
 
