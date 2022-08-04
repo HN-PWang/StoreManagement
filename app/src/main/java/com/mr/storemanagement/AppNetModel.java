@@ -249,4 +249,13 @@ public class AppNetModel extends BaseModel {
         return service.combindSave(getHeader(), body);
     }
 
+    /**
+     * 保存合并信息
+     */
+    public Observable<ResponseBody> getInvFeedBox(String InvCode, String SiteCode
+            , String ContainerCode, String UserCode) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.getInvFeedBox(getHeader(), InvCode, SiteCode, ContainerCode, UserCode);
+    }
+
 }

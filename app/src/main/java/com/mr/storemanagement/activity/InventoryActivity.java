@@ -46,6 +46,7 @@ import com.mr.storemanagement.presenter.GetAsnDetailPresenter;
 import com.mr.storemanagement.presenter.GetAsnDetailSnListPresenter;
 import com.mr.storemanagement.presenter.GetFeedBoxPresenter;
 import com.mr.storemanagement.presenter.GetInvDetailsPresenter;
+import com.mr.storemanagement.presenter.GetInvFeedBoxPresenter;
 import com.mr.storemanagement.presenter.InvSaveDetailPresenter;
 import com.mr.storemanagement.presenter.SetInvCompletePresenter;
 import com.mr.storemanagement.util.DataUtil;
@@ -72,7 +73,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private ConstraintLayout mConstraintLayout;
 
-    private TextView tvSite;
+    private SMEditText tvSite;
     private TextView tvOrder;
 
     private SMEditText etItemCode;//册序号
@@ -102,7 +103,7 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private List<InvDetailsBean> mInvDetailsList = new ArrayList<>();
 
-    private int mScannerInitiator = 1; //1:料箱号 2:测序号 3:数量
+    private int mScannerInitiator = 1; //0:站点 1:料箱号 2:测序号 3:数量
 
     private int IS_SN = 0;
 
@@ -134,8 +135,10 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         etCount = findViewById(R.id.et_count);
         tvToScanner = findViewById(R.id.tv_to_scanner);
 
+        tvSite.setOnFocusChangeListener(this);
         etItemCode.setOnFocusChangeListener(this);
         etContainerCode.setOnFocusChangeListener(this);
+        etCount.setOnFocusChangeListener(this);
 
         findViewById(R.id.tv_to_scanner).setOnClickListener(this);
         findViewById(R.id.tv_inv_detail).setOnClickListener(this);
@@ -197,13 +200,25 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
                 if (TextUtils.isEmpty(message))
                     return;
 
-                if (mScannerInitiator == 2) {
+                if (mScannerInitiator == 0) {
+                    writeSiteCode(message);
+                } else if (mScannerInitiator == 2) {
                     writeItemCode(message);
                 } else if (mScannerInitiator == 1) {
                     writeContainerCode(message);
                 }
             }
         });
+    }
+
+    /**
+     * 写入站点号
+     */
+    private void writeSiteCode(String code) {
+        tvSite.setText(code);
+        mSiteCode = code;
+        mScannerInitiator = 1;
+        setInputViewState();
     }
 
     /**
@@ -227,7 +242,40 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
             mScannerInitiator = 2;
 
             setInputViewState();
+
+            callContainerCode(code);
         }
+    }
+
+    private void callContainerCode(String ContainerCode) {
+        GetInvFeedBoxPresenter presenter = new GetInvFeedBoxPresenter(this
+                , new NetResultListener() {
+            @Override
+            public void loadSuccess(Object o) {
+
+            }
+
+            @Override
+            public void loadFailure(SMException exception) {
+
+            }
+        }, new NetLoadingListener() {
+            @Override
+            public void startLoading() {
+
+            }
+
+            @Override
+            public void finishLoading() {
+
+            }
+        });
+        if (TextUtils.isEmpty(mSiteCode)) {
+            TextUtils.isEmpty("请输入站点信息");
+            return;
+        }
+        presenter.getContainerCode(mInvCode, mSiteCode, ContainerCode
+                , AccountManger.getInstance().getUserCode());
     }
 
     /**
@@ -329,11 +377,16 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     }
 
     private void setInputViewState() {
+        tvSite.setSelected(mScannerInitiator == 0);
         etContainerCode.setSelected(mScannerInitiator == 1);
         etItemCode.setSelected(mScannerInitiator == 2);
         etCount.setSelected(mScannerInitiator == 3);
 
-        if (mScannerInitiator == 1) {
+        if (mScannerInitiator == 0) {
+            if (!tvSite.isFocused()) {
+                tvSite.requestFocus();
+            }
+        } else if (mScannerInitiator == 1) {
             if (!etContainerCode.isFocused()) {
                 etContainerCode.requestFocus();
             }
@@ -576,6 +629,10 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
     public void onFocusChange(View view, boolean isFocus) {
         if (isFocus && !view.isFocused()) {
             switch (view.getId()) {
+                case R.id.tv_search_site:
+                    mScannerInitiator = 0;
+                    setInputViewState();
+                    break;
                 case R.id.et_feed_box_no:
                     mScannerInitiator = 1;
                     setInputViewState();

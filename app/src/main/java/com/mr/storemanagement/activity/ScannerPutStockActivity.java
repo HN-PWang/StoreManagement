@@ -63,7 +63,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private ConstraintLayout mConstraintLayout;
 
-    private TextView tvSite;
+    private SMEditText tvSite;
     private TextView tvOrder;
 
     private SMEditText etItemCode;//册序号
@@ -97,7 +97,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
 
     private List<StoreInfoBean> storeInfoBeans = new ArrayList<>();
 
-    private int mScannerInitiator = 1; //1:测序号 2:料箱号 3:数量
+    private int mScannerInitiator = 1; //0:站点 1:测序号 2:料箱号 3:数量
 
     private int IS_SN = 0;
 
@@ -128,6 +128,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
         tvRfidScan = findViewById(R.id.tv_scan_rfid);
         etGetFocus = findViewById(R.id.et_get_focus);
 
+        tvSite.setOnFocusChangeListener(this);
         etItemCode.setOnFocusChangeListener(this);
         etContainerCode.setOnFocusChangeListener(this);
         etCount.setOnFocusChangeListener(this);
@@ -192,7 +193,9 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
                 if (TextUtils.isEmpty(message))
                     return;
 
-                if (mScannerInitiator == 1) {
+                if (mScannerInitiator == 0) {
+                    writeSiteCode(message);
+                } else if (mScannerInitiator == 1) {
                     writeItemCode(message);
                 } else if (mScannerInitiator == 2) {
                     writeContainerCode(message);
@@ -202,6 +205,16 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
             }
         });
 
+    }
+
+    /**
+     * 写入站点号
+     */
+    private void writeSiteCode(String code) {
+        tvSite.setText(code);
+        site_code = code;
+        mScannerInitiator = 1;
+        setInputViewState();
     }
 
     /**
@@ -336,11 +349,16 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     private void setInputViewState() {
+        tvSite.setSelected(mScannerInitiator == 0);
         etItemCode.setSelected(mScannerInitiator == 1);
         etContainerCode.setSelected(mScannerInitiator == 2);
         etCount.setSelected(mScannerInitiator == 3);
 
-        if (mScannerInitiator == 1) {
+        if (mScannerInitiator == 0) {
+            if (!tvSite.isFocused()) {
+                tvSite.requestFocus();
+            }
+        } else if (mScannerInitiator == 1) {
             if (!etItemCode.isFocused()) {
                 etItemCode.requestFocus();
             }
@@ -708,6 +726,10 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     public void onFocusChange(View view, boolean isFocus) {
         if (isFocus)
             switch (view.getId()) {
+                case R.id.tv_search_site:
+                    mScannerInitiator = 0;
+                    setInputViewState();
+                    break;
                 case R.id.et_cx_no:
                     mScannerInitiator = 1;
                     setInputViewState();

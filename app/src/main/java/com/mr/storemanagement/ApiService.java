@@ -221,4 +221,12 @@ public interface ApiService {
     @POST("api/Mobile/CombindSave")
     Observable<ResponseBody> combindSave(@HeaderMap Map<String, String> header
             , @Body RequestBody body);
+
+    /**
+     * 保存合并信息
+     */
+    @GET("api/Mobile/GetInvFeedBox/{InvCode}/{SiteCode}/{ContainerCode}/{UserCode}")
+    Observable<ResponseBody> getInvFeedBox(@HeaderMap Map<String, String> header
+            , @Path("InvCode") String InvCode, @Path("SiteCode") String SiteCode
+            , @Path("ContainerCode") String ContainerCode, @Path("UserCode") String UserCode);
 }
