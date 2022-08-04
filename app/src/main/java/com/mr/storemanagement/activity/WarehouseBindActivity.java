@@ -19,14 +19,21 @@ import com.mr.lib_base.widget.SMEditText;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.UserInfoBean;
+import com.mr.storemanagement.dialog.BindTypeDialog;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.BindLocationPresenter;
+import com.mr.storemanagement.presenter.BindRfIdSavePresenter;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 库位绑定界面
  */
 public class WarehouseBindActivity extends BaseScannerActivity implements View.OnClickListener {
+
+    private TextView tvBindType;
 
     private SMEditText tvLocation;
 
@@ -36,14 +43,18 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
 
     private String mRfid;
 
+    private List<String> typeList = Arrays.asList(new String[]{"库位", "容器号", "序列号"});
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warehouse_bind);
 
+        tvBindType = findViewById(R.id.tv_bind_type);
         tvLocation = findViewById(R.id.tv_location);
         tvRfid = findViewById(R.id.tv_rfid);
 
+        findViewById(R.id.tv_bind_type).setOnClickListener(this);
         findViewById(R.id.tv_get_rfid).setOnClickListener(this);
         findViewById(R.id.tv_back).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
@@ -88,10 +99,22 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
             }
         });
 
+        tvBindType.setText(typeList.get(0));
+    }
+
+    private void showTypeSelectDialog() {
+        BindTypeDialog dialog = new BindTypeDialog(this, typeList);
+        dialog.setSelectTypeListener(new BindTypeDialog.OnSelectTypeListener() {
+            @Override
+            public void onSelect(String type) {
+                tvBindType.setText(type);
+            }
+        });
+        dialog.show();
     }
 
     private void bindLocation() {
-        BindLocationPresenter presenter = new BindLocationPresenter(this
+        BindRfIdSavePresenter presenter = new BindRfIdSavePresenter(this
                 , new NetResultListener() {
             @Override
             public void loadSuccess(Object o) {
@@ -121,9 +144,8 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
         UserInfoBean bean = AccountManger.getInstance().getAccount();
 
         if (TextUtils.isEmpty(mLocationCode)) {
-//            ToastUtils.show("未扫描库位");
             ShowMsgDialogUtil.show(WarehouseBindActivity.this
-                    , "未扫描库位");
+                    , "未绑定信息");
             return;
         }
 
@@ -135,7 +157,8 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
         }
 
         if (bean != null) {
-            presenter.bind(mLocationCode, mRfid, AccountManger.getInstance().getUserCode());
+            presenter.bind(mRfid, mLocationCode, tvBindType.getText().toString()
+                    , AccountManger.getInstance().getUserCode());
         }
     }
 
@@ -150,6 +173,9 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
                 break;
             case R.id.tv_get_rfid:
                 readMactchData();
+                break;
+            case R.id.tv_bind_type:
+                showTypeSelectDialog();
                 break;
         }
     }

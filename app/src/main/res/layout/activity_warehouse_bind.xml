@@ -8,16 +8,41 @@
     tools:context=".activity.WarehouseBindActivity">
 
     <TextView
-        android:id="@+id/tv_location_title"
+        android:id="@+id/tv_bind_type_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="100dp"
-        android:text="库位"
+        android:layout_marginTop="60dp"
+        android:text="绑定类型"
         android:textColor="#333333"
         android:textSize="15dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_bind_type"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/re_f5f5f5_radius_12dp"
+        android:drawableRight="@drawable/ic_baseline_receipt_24"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:textColor="#333333"
+        app:layout_constraintTop_toBottomOf="@id/tv_bind_type_title" />
+
+    <TextView
+        android:id="@+id/tv_location_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:text="要绑定的值"
+        android:textColor="#333333"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_bind_type" />
 
     <com.mr.lib_base.widget.SMEditText
         android:id="@+id/tv_location"

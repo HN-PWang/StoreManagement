@@ -141,6 +141,18 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     }
 
     private void initListener() {
+        //站点
+        tvSite.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
+                        || i == EditorInfo.IME_ACTION_NEXT) {
+                    writeSiteCode(textView.getText().toString().trim());
+                }
+                return false;
+            }
+        });
+
         //测序号输入完毕
         etItemCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

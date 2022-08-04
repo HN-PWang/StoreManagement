@@ -229,4 +229,17 @@ public interface ApiService {
     Observable<ResponseBody> getInvFeedBox(@HeaderMap Map<String, String> header
             , @Path("InvCode") String InvCode, @Path("SiteCode") String SiteCode
             , @Path("ContainerCode") String ContainerCode, @Path("UserCode") String UserCode);
+
+    /**
+     * 绑定
+     */
+    @POST("api/Mobile/SaveRfidBind")
+    Observable<ResponseBody> saveRfIdBind(@HeaderMap Map<String, String> header
+            , @Body RequestBody body);
+
+//    "Rfid": "string", //rfid读取到的值
+//            "Value": "string", //要绑定的值
+//            "ValueType": "string", //绑定类型：库位、容器号、序列号
+//            "UserCode": "string" //操作人代码
+
 }

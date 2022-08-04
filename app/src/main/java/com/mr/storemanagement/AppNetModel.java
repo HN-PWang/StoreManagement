@@ -258,4 +258,12 @@ public class AppNetModel extends BaseModel {
         return service.getInvFeedBox(getHeader(), InvCode, SiteCode, ContainerCode, UserCode);
     }
 
+    /**
+     * 绑定
+     */
+    public Observable<ResponseBody> saveRfIdBind(@Body RequestBody body) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.saveRfIdBind(getHeader(), body);
+    }
+
 }

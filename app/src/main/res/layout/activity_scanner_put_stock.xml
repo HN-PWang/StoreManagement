@@ -41,7 +41,9 @@
             android:background="@drawable/re_f5f5f5_radius_12dp"
             android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
             android:gravity="center_vertical"
+            android:imeOptions="actionDone"
             android:paddingHorizontal="12dp"
+            android:singleLine="true"
             android:textColor="#333333"
             app:layout_constraintTop_toBottomOf="@id/tv_site_title" />
 

@@ -33,7 +33,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         , View.OnFocusChangeListener {
 
     private ConstraintLayout mConstraintLayout;
-    private TextView tvSearchSite;
+    private SMEditText tvSearchSite;
     private TextView tvOldCalled;
     private SMEditText etOldContainerNo;
     private TextView tvNewCalled;
@@ -80,7 +80,6 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         tvScanSerial = findViewById(R.id.tv_scan_serial);
         tvScanSerialTag = findViewById(R.id.tv_scan_serial_tag);
         etCount = findViewById(R.id.et_count);
-        tvSearchSite.setOnClickListener(this);
         ivScanRfId.setOnClickListener(this);
         findViewById(R.id.tv_complete).setOnClickListener(this);
         findViewById(R.id.tv_to_scanner).setOnClickListener(this);
@@ -88,6 +87,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         findViewById(R.id.tv_check_stock).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
 
+        tvSearchSite.setOnFocusChangeListener(this);
         etOldContainerNo.setOnFocusChangeListener(this);
         etNewContainerNo.setOnFocusChangeListener(this);
         etCxNo.setOnFocusChangeListener(this);
@@ -115,6 +115,16 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     }
 
     private void initListener() {
+        tvSearchSite.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    writeSiteCode(v.getText().toString().trim());
+                }
+                return false;
+            }
+        });
+
         etOldContainerNo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
