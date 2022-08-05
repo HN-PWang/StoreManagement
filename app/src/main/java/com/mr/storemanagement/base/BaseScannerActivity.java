@@ -114,6 +114,7 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
                     break;
                 case MSG_HINT_WHAT:
                     dismissLoadingDialog();
+                    onRfIdReadComplete();
                     break;
                 case MSG_SCANNER_WHAT:
                     String scanner = "";
@@ -136,6 +137,10 @@ public abstract class BaseScannerActivity extends BaseActivity implements IAsync
             }
         }
     };
+
+    public void onRfIdReadComplete() {
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState

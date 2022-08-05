@@ -237,9 +237,12 @@ public interface ApiService {
     Observable<ResponseBody> saveRfIdBind(@HeaderMap Map<String, String> header
             , @Body RequestBody body);
 
-//    "Rfid": "string", //rfid读取到的值
-//            "Value": "string", //要绑定的值
-//            "ValueType": "string", //绑定类型：库位、容器号、序列号
-//            "UserCode": "string" //操作人代码
+    /**
+     * 校验rfid是否合规
+     */
+    @POST("api/Mobile/CheckRfid")
+    Observable<ResponseBody> checkRfId(@HeaderMap Map<String, String> header
+            , @Body RequestBody body);
+
 
 }

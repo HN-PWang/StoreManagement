@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         MainMenuBean bean4 = new MainMenuBean(InventoryNoPutActivity.class, "盘点"
                 , R.drawable.ic_baseline_edit_24);
 
-        MainMenuBean bean5 = new MainMenuBean(WarehouseBindActivity.class, "库位绑定RFID"
+        MainMenuBean bean5 = new MainMenuBean(WarehouseBindActivity.class, "RfId绑定"
                 , R.drawable.ic_baseline_loyalty_24);
 
         MainMenuBean bean6 = new MainMenuBean(WarehouseSearchActivity.class, "库存查询"

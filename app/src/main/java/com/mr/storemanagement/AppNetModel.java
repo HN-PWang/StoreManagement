@@ -266,4 +266,11 @@ public class AppNetModel extends BaseModel {
         return service.saveRfIdBind(getHeader(), body);
     }
 
+    /**
+     * 绑定
+     */
+    public Observable<ResponseBody> checkRfId(@Body RequestBody body) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.checkRfId(getHeader(), body);
+    }
 }

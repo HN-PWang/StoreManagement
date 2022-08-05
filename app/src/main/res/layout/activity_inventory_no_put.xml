@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/tv_search_site"
         android:layout_width="match_parent"
         android:layout_height="42dp"
@@ -30,7 +30,9 @@
         android:drawableRight="@drawable/ic_baseline_arrow_drop_down_24"
         android:gravity="center_vertical"
         android:hint="请输入站点"
+        android:imeOptions="actionDone"
         android:paddingHorizontal="12dp"
+        android:singleLine="true"
         android:textColor="#333333"
         android:textColorHint="#C6C6C6"
         app:layout_constraintTop_toBottomOf="@id/tv_site_title" />

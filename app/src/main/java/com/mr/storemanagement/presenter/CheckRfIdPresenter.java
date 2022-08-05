@@ -2,7 +2,6 @@ package com.mr.storemanagement.presenter;
 
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.listener.NetLoadingListener;
@@ -22,29 +21,23 @@ import okhttp3.ResponseBody;
  * @date: 2022/7/11
  * @description:
  */
-public class BindRfIdSavePresenter extends SMBasePresenter {
+public class CheckRfIdPresenter extends SMBasePresenter<String> {
 
     private RequestBody mRequestBody;
 
-    public BindRfIdSavePresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
+    public CheckRfIdPresenter(BaseActivity baseActivity, NetResultListener resultListener, NetLoadingListener loadingListener) {
         super(baseActivity, resultListener, loadingListener);
     }
 
-    public void bind(List<String> rfIds, String Value, String ValueType, String UserCode) {
+    public void check(String RfIdType, List<String> RfIdList) {
 
         JSONObject object = new JSONObject();
 
-        if (NullUtils.isNotEmpty(rfIds))
-            object.put("Rfid", JSONArray.toJSONString(rfIds));
+        if (!TextUtils.isEmpty(RfIdType))
+            object.put("RfIdType", RfIdType);
 
-        if (!TextUtils.isEmpty(Value))
-            object.put("Value", Value);
-
-        if (!TextUtils.isEmpty(ValueType))
-            object.put("ValueType", ValueType);
-
-        if (!TextUtils.isEmpty(UserCode))
-            object.put("UserCode", UserCode);
+        if (NullUtils.isNotEmpty(RfIdList))
+            object.put("RfIdList", RfIdList);
 
         mRequestBody = RequestBody.create(MediaType.parse("application/json"), object.toJSONString());
 
@@ -53,11 +46,11 @@ public class BindRfIdSavePresenter extends SMBasePresenter {
 
     @Override
     protected Observable<ResponseBody> toPerformApi() {
-        return netModel.saveRfIdBind(mRequestBody);
+        return netModel.checkRfId(mRequestBody);
     }
 
     @Override
-    protected Class getEntityClass() {
-        return null;
+    protected Class<String> getEntityClass() {
+        return String.class;
     }
 }

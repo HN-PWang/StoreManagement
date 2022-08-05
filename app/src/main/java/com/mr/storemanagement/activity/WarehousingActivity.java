@@ -81,6 +81,16 @@ public class WarehousingActivity extends BaseScannerActivity implements View.OnC
 //            }
 //        });
 
+        tvSearchSite.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    tvSearchAsn.requestFocus();
+                }
+                return false;
+            }
+        });
+
         tvSearchAsn.addTextChangedListener(new AfterTextChangedListener() {
             @Override
             public void afterChanged(Editable editable) {

@@ -1,5 +1,8 @@
 package com.mr.storemanagement;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @auther: pengwang
  * @date: 2022/6/19
@@ -41,5 +44,7 @@ public class Constants {
     public static String _IsCommand6Cor6B = "6C";// 6C表示操作6C标签。6B表示操作6B标签。
     public static int _PingPong_ReadTime = 10000; // 默认是100:3
     public static int _PingPong_StopTime = 300;
+
+    public static final List<String> typeList = Arrays.asList(new String[]{"库位", "容器号", "序列号"});
 
 }
