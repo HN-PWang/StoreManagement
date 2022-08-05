@@ -25,13 +25,13 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "MAIN_SERVER_URL", '"192.168.100.101:7010"')
+            buildConfigField("String", "MAIN_SERVER_URL", '"http://192.168.100.101:7010"')
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         release {
-            buildConfigField("String", "MAIN_SERVER_URL", '"192.168.100.101:7010/"')
+            buildConfigField("String", "MAIN_SERVER_URL", '"http://192.168.100.101:7010/"')
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
