@@ -25,7 +25,7 @@ import com.mr.storemanagement.util.ShowMsgDialogUtil;
  */
 public class WarehouseBackActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvSearchSite;
+    private EditText tvSearchSite;
 
     private EditText etContainer;
 
@@ -153,6 +153,8 @@ public class WarehouseBackActivity extends BaseScannerActivity implements View.O
                 ToastUtils.show("操作成功");
 
                 setContainerMarker();
+
+                tvSearchSite.requestFocus();
             }
 
             @Override
