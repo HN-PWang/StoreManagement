@@ -71,7 +71,7 @@ public class WarehouseSearchActivity extends BaseScannerActivity
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                if (TextUtils.isEmpty(message)) {
+                if (!TextUtils.isEmpty(message)) {
                     etSearch.setText(message);
                 }
             }

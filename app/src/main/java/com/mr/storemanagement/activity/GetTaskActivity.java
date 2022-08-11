@@ -18,6 +18,7 @@ import com.mr.lib_base.util.ToastUtils;
 import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.GetTaskAdapter;
+import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.GetTaskBean;
 import com.mr.storemanagement.eventbean.OutStockEvent;
 import com.mr.storemanagement.manger.AccountManger;
@@ -34,7 +35,7 @@ import java.util.List;
 /**
  * 领取任务界面
  */
-public class GetTaskActivity extends BaseActivity implements View.OnClickListener {
+public class GetTaskActivity extends BaseScannerActivity implements View.OnClickListener {
 
     private EditText tvSearchSite;
     private RecyclerView rvTask;
@@ -63,6 +64,16 @@ public class GetTaskActivity extends BaseActivity implements View.OnClickListene
         rvTask.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new GetTaskAdapter(this, mDataList);
         rvTask.setAdapter(taskAdapter);
+
+        setOnScannerListener(new OnScannerListener() {
+            @Override
+            public void onScannerDataBack(String message) {
+                if (TextUtils.isEmpty(message))
+                    return;
+
+                tvSearchSite.setText(message);
+            }
+        });
     }
 
     @Override

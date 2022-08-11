@@ -112,6 +112,8 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
         setContainerText(false, "");
 
         initListener();
+
+        tvSearchSite.requestFocus();
     }
 
     private void initListener() {
@@ -443,13 +445,18 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     }
 
     private void setInputViewState() {
+        tvSearchSite.setSelected(mScannerInitiator == 0);
         etOldContainerNo.setSelected(mScannerInitiator == 1);
         etNewContainerNo.setSelected(mScannerInitiator == 2);
         etCxNo.setSelected(mScannerInitiator == 3);
         tvScanSerial.setSelected(mScannerInitiator == 4);
         etCount.setSelected(mScannerInitiator == 5);
 
-        if (mScannerInitiator == 1) {
+        if (mScannerInitiator == 0) {
+            if (!tvSearchSite.isFocused()) {
+                tvSearchSite.requestFocus();
+            }
+        } else if (mScannerInitiator == 1) {
             if (!etOldContainerNo.isFocused()) {
                 etOldContainerNo.requestFocus();
             }
