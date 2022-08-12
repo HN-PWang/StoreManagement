@@ -17,7 +17,7 @@ import java.util.List;
  * @auther: pengwang
  * @date: 2022/6/20
  * @email: 1929774468@qq.com
- * @description: 序列号适配器
+ * @description: 机件号适配器
  */
 public class SerialNumAdapter extends RecyclerView.Adapter<SerialNumAdapter.SerialNumViewHolder> {
 

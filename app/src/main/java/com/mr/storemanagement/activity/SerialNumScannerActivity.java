@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 序列号扫描界面
+ * 机件号扫描界面
  */
 public class SerialNumScannerActivity extends BaseScannerActivity implements View.OnClickListener {
 
@@ -121,7 +121,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
     }
 
     private void setCount() {
-        String str = "已扫描序列号[" + mDataList.size() + "]";
+        String str = "已扫描机件号[" + mDataList.size() + "]";
         tvCount.setText(str);
     }
 

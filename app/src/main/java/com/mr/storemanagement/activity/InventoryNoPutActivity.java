@@ -42,7 +42,7 @@ import java.util.List;
  */
 public class InventoryNoPutActivity extends BaseScannerActivity implements View.OnClickListener {
 
-    private TextView tvSearchSite;
+    private EditText tvSearchSite;
 
     private EditText tvSearchAsn;
 
@@ -119,6 +119,8 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
                 }
             }
         });
+
+        tvSearchSite.requestFocus();
 
         getAsn(false);
     }

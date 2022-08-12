@@ -45,6 +45,6 @@ public class Constants {
     public static int _PingPong_ReadTime = 10000; // 默认是100:3
     public static int _PingPong_StopTime = 300;
 
-    public static final List<String> typeList = Arrays.asList(new String[]{"库位", "容器号", "序列号"});
+    public static final List<String> typeList = Arrays.asList(new String[]{"库位", "容器号", "机件号"});
 
 }

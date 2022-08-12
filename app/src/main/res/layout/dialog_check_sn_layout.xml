@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:gravity="center"
-        android:text="序列号列表查看"
+        android:text="机件号列表查看"
         android:textColor="#333333"
         android:textSize="17dp"
         app:layout_constraintTop_toTopOf="parent" />

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:gravity="center"
-        android:text="扫描序列号"
+        android:text="扫描机件号"
         android:textColor="#333333"
         android:textSize="17dp"
         app:layout_constraintTop_toTopOf="parent" />

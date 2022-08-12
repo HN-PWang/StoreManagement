@@ -66,7 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:gravity="center"
-                android:text="序列号"
+                android:text="机件号"
                 android:textColor="#333333"
                 app:layout_constraintLeft_toRightOf="@id/tv_tab_2"
                 app:layout_constraintRight_toRightOf="parent"

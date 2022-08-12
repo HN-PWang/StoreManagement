@@ -69,7 +69,7 @@ public class ScannerPutStockActivity extends BaseScannerActivity implements View
     private SMEditText etItemCode;//册序号
     private TextView tvCalled;//已呼叫的料箱标签
     private SMEditText etContainerCode;//料箱
-    private TextView tvProductBatchTag;//序列号可扫描标记
+    private TextView tvProductBatchTag;//机件号可扫描标记
     private SMEditText etCount;//数量
     private TextView tvCollectedCount;//待收数量
     private TextView tvRfidScan;//扫描RFID

@@ -60,7 +60,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 
     private CombindCheckBean mCombindCheckBean;
 
-    private int mScannerInitiator = 0; //0:站点 1:旧料箱 2:新料箱 3:册序号 4:序列号 5:数量
+    private int mScannerInitiator = 0; //0:站点 1:旧料箱 2:新料箱 3:册序号 4:机件号 5:数量
 
     private int IS_SN = 0;
 
@@ -582,7 +582,7 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
                 combindSave();
                 break;
             case R.id.tv_to_scanner:
-                //扫描序列号
+                //扫描机件号
                 break;
             case R.id.tv_back:
                 //返回
