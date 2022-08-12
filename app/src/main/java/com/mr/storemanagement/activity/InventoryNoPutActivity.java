@@ -109,7 +109,7 @@ public class InventoryNoPutActivity extends BaseScannerActivity implements View.
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
-                if (TextUtils.isEmpty(message)) {
+                if (!TextUtils.isEmpty(message)) {
                     if (tvSearchSite.isFocused()) {
                         tvSearchSite.setText(message);
                         tvSearchAsn.requestFocus();

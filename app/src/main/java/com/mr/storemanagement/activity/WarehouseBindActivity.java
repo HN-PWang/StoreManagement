@@ -123,7 +123,6 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
 
                     snAdapter.notifyDataSetChanged();
 
-                    bindLocation();
                 }
                 return false;
             }
@@ -136,7 +135,7 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
     public void onRfIdReadComplete() {
 //        checkRfId(inputSnList);
 
-        bindLocation();
+//        bindLocation();
     }
 
     private void showTypeSelectDialog() {
