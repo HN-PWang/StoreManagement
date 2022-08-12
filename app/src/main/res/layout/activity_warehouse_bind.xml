@@ -81,6 +81,7 @@
         android:background="@drawable/bg_scanning_text"
         android:gravity="center"
         android:hint="请读取RFID"
+        android:imeOptions="actionDone"
         android:paddingHorizontal="6dp"
         android:singleLine="true"
         android:textColor="#333333"

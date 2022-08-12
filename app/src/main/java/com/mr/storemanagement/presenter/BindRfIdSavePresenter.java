@@ -22,7 +22,7 @@ import okhttp3.ResponseBody;
  * @date: 2022/7/11
  * @description:
  */
-public class BindRfIdSavePresenter extends SMBasePresenter {
+public class BindRfIdSavePresenter extends SMBasePresenter<String> {
 
     private RequestBody mRequestBody;
 
@@ -46,7 +46,9 @@ public class BindRfIdSavePresenter extends SMBasePresenter {
         if (!TextUtils.isEmpty(UserCode))
             object.put("UserCode", UserCode);
 
-        mRequestBody = RequestBody.create(MediaType.parse("application/json"), object.toJSONString());
+        String requestStr = object.toJSONString();
+
+        mRequestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
 
         executeRequest();
     }
@@ -57,7 +59,7 @@ public class BindRfIdSavePresenter extends SMBasePresenter {
     }
 
     @Override
-    protected Class getEntityClass() {
+    protected Class<String> getEntityClass() {
         return null;
     }
 }

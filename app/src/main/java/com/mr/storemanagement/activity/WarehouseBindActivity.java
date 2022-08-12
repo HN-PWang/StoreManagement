@@ -6,14 +6,12 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mr.lib_base.AfterTextChangedListener;
-import com.mr.lib_base.base.BaseActivity;
 import com.mr.lib_base.network.SMException;
 import com.mr.lib_base.network.listener.NetLoadingListener;
 import com.mr.lib_base.network.listener.NetResultListener;
@@ -26,13 +24,12 @@ import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.UserInfoBean;
 import com.mr.storemanagement.dialog.BindTypeDialog;
 import com.mr.storemanagement.manger.AccountManger;
-import com.mr.storemanagement.presenter.BindLocationPresenter;
 import com.mr.storemanagement.presenter.BindRfIdSavePresenter;
 import com.mr.storemanagement.presenter.CheckRfIdPresenter;
+import com.mr.storemanagement.util.NullUtils;
 import com.mr.storemanagement.util.ShowMsgDialogUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -91,8 +88,9 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
                 mRfid = message;
                 tvRfid.setText(mRfid);
 
-                if (!inputSnList.contains(message)) {
-                    inputSnList.add(message);
+                if (!mDataList.contains(message)) {
+                    mDataList.add(message);
+                    snAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -115,10 +113,17 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    inputSnList.clear();
-                    inputSnList.add(tvRfid.getText().toString());
+//                    inputSnList.clear();
+//                    inputSnList.add(tvRfid.getText().toString());
+//
+//                    checkRfId(inputSnList);
+//
+                    mDataList.clear();
+                    mDataList.add(mRfid);
 
-                    checkRfId(inputSnList);
+                    snAdapter.notifyDataSetChanged();
+
+                    bindLocation();
                 }
                 return false;
             }
@@ -129,7 +134,9 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
 
     @Override
     public void onRfIdReadComplete() {
-        checkRfId(inputSnList);
+//        checkRfId(inputSnList);
+
+        bindLocation();
     }
 
     private void showTypeSelectDialog() {
@@ -208,8 +215,7 @@ public class WarehouseBindActivity extends BaseScannerActivity implements View.O
             return;
         }
 
-        if (TextUtils.isEmpty(mRfid)) {
-//            ToastUtils.show("未读取RFID");
+        if (NullUtils.isEmpty(mDataList)) {
             ShowMsgDialogUtil.show(WarehouseBindActivity.this
                     , "未读取RFID");
             return;
