@@ -35,7 +35,7 @@ public class BindRfIdSavePresenter extends SMBasePresenter<String> {
         JSONObject object = new JSONObject();
 
         if (NullUtils.isNotEmpty(rfIds))
-            object.put("Rfid", JSONArray.toJSONString(rfIds));
+            object.put("Rfid", rfIds.get(0));
 
         if (!TextUtils.isEmpty(Value))
             object.put("Value", Value);

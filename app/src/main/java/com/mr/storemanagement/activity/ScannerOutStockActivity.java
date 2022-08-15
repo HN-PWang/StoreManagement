@@ -26,6 +26,7 @@ import com.mr.storemanagement.adapter.OutStockGoodsAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.bean.ContainerGoodsBean;
 import com.mr.storemanagement.eventbean.OutStockEvent;
+import com.mr.storemanagement.helper.ItemFormCodeHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.OutStockConfirmPresenter;
 import com.mr.storemanagement.util.DataUtil;
@@ -72,10 +73,13 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
 
     private ContainerGoodsBean currentGoodsBean;
 
+    private ItemFormCodeHelper formCodeHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner_out_stock);
+
 
         mSiteCode = getIntent().getStringExtra(Constants.SITE_CODE_KEY);
         mContainerCode = getIntent().getStringExtra(Constants.CONTAINER_CODE_KEY);
@@ -83,6 +87,8 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
         if (!TextUtils.isEmpty(cgd)) {
             mContainerGoodsList = JSONObject.parseArray(cgd, ContainerGoodsBean.class);
         }
+
+        formCodeHelper = new ItemFormCodeHelper(this);
 
         mDataList.addAll(mContainerGoodsList);
 
@@ -105,14 +111,19 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
                     if (!TextUtils.isEmpty(tvCxNo.getText().toString())) {
-                        currentGoodsBean = findGoodsByCode(tvCxNo.getText().toString());
-                        if (currentGoodsBean != null) {
-                            setGoodsInfoToView(currentGoodsBean);
-                        } else {
+                        formCodeHelper.request(tvCxNo.getText().toString(), new ItemFormCodeHelper.OnItemCodeBackListener() {
+                            @Override
+                            public void onBack(String backCode) {
+                                currentGoodsBean = findGoodsByCode(tvCxNo.getText().toString());
+                                if (currentGoodsBean != null) {
+                                    setGoodsInfoToView(currentGoodsBean);
+                                } else {
 //                            ToastUtils.show("容器中没有找到该商品");
-                            ShowMsgDialogUtil.show(ScannerOutStockActivity.this
-                                    , "容器中没有找到该商品");
-                        }
+                                    ShowMsgDialogUtil.show(ScannerOutStockActivity.this
+                                            , "容器中没有找到该商品");
+                                }
+                            }
+                        });
                     }
                 }
                 return false;
@@ -127,7 +138,7 @@ public class ScannerOutStockActivity extends BaseScannerActivity implements View
                     if (currentGoodsBean != null) {
                         setGoodsInfoToView(currentGoodsBean);
                     } else {
-//                        ToastUtils.show("容器中没有找到该商品");
+//                            ToastUtils.show("容器中没有找到该商品");
                         ShowMsgDialogUtil.show(ScannerOutStockActivity.this
                                 , "容器中没有找到该商品");
                     }

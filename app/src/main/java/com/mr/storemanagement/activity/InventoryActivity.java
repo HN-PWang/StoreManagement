@@ -38,6 +38,7 @@ import com.mr.storemanagement.dialog.InvDetailDialog;
 import com.mr.storemanagement.dialog.PutStorageDetailDialog;
 import com.mr.storemanagement.eventbean.SaveAsnEvent;
 import com.mr.storemanagement.eventbean.SaveInvEvent;
+import com.mr.storemanagement.helper.ItemFormCodeHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.AsnCloseOrderPresenter;
 import com.mr.storemanagement.presenter.AsnSaveDetailPresenter;
@@ -107,6 +108,8 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
 
     private int IS_SN = 0;
 
+    private ItemFormCodeHelper formCodeHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +127,8 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
         if (!TextUtils.isEmpty(data)) {
             mInvDetailsList = JSONObject.parseArray(data, InvDetailsBean.class);
         }
+
+        formCodeHelper = new ItemFormCodeHelper(this);
 
         mConstraintLayout = findViewById(R.id.constraint_layout);
         tvSite = findViewById(R.id.tv_search_site);
@@ -238,8 +243,13 @@ public class InventoryActivity extends BaseScannerActivity implements View.OnCli
      */
     private void writeItemCode(String code) {
         if (!TextUtils.isEmpty(code)) {
-            mCurrentItemCode = code;
-            checkScannerCodeByItemCode();
+            formCodeHelper.request(code, new ItemFormCodeHelper.OnItemCodeBackListener() {
+                @Override
+                public void onBack(String backCode) {
+                    mCurrentItemCode = backCode;
+                    checkScannerCodeByItemCode();
+                }
+            });
         }
     }
 

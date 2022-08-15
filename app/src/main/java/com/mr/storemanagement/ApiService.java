@@ -244,5 +244,11 @@ public interface ApiService {
     Observable<ResponseBody> checkRfId(@HeaderMap Map<String, String> header
             , @Body RequestBody body);
 
+    /**
+     * 后端解码
+     */
+    @POST("api/Mobile/ItemFromQrCode")
+    Observable<ResponseBody> itemFromQrCode(@HeaderMap Map<String, String> header
+            , @Body RequestBody body);
 
 }

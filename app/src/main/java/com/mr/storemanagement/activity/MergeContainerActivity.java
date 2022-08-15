@@ -22,6 +22,7 @@ import com.mr.storemanagement.bean.CombindCheckBean;
 import com.mr.storemanagement.bean.InvDetailsBean;
 import com.mr.storemanagement.dialog.ConfirmDialog;
 import com.mr.storemanagement.dialog.SearchStockDetailDialog;
+import com.mr.storemanagement.helper.ItemFormCodeHelper;
 import com.mr.storemanagement.manger.AccountManger;
 import com.mr.storemanagement.presenter.CombindCheckItemPresenter;
 import com.mr.storemanagement.presenter.CombindSavePresenter;
@@ -64,10 +65,14 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
 
     private int IS_SN = 0;
 
+    private ItemFormCodeHelper formCodeHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merge_container);
+
+        formCodeHelper = new ItemFormCodeHelper(this);
 
         mConstraintLayout = findViewById(R.id.constraint_layout);
         tvSearchSite = findViewById(R.id.tv_search_site);
@@ -233,10 +238,15 @@ public class MergeContainerActivity extends BaseScannerActivity implements View.
     private void writeNewContainer(String code) {
         if (!TextUtils.isEmpty(code)) {
             if (etNewContainerNo.isEnabled()) {
-                mNewContainerNo = code;
-                etNewContainerNo.setText(code);
+                formCodeHelper.request(code, new ItemFormCodeHelper.OnItemCodeBackListener() {
+                    @Override
+                    public void onBack(String backCode) {
+                        mNewContainerNo = backCode;
+                        etNewContainerNo.setText(backCode);
 
-                getCombindContainer(false);
+                        getCombindContainer(false);
+                    }
+                });
             }
         }
     }
