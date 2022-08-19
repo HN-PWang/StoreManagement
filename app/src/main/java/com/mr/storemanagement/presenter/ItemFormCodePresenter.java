@@ -27,6 +27,7 @@ public class ItemFormCodePresenter extends SMBasePresenter<String> {
 
 //        JSONObject object = new JSONObject();
 
+        code = "\"" + code + "\"";
 
         mRequestBody = RequestBody.create(MediaType.parse("application/json"), code);
 
