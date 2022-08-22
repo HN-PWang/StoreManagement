@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         MainMenuBean bean6 = new MainMenuBean(WarehouseSearchActivity.class, "库存查询"
                 , R.drawable.ic_baseline_search_24);
 
-        MainMenuBean bean7 = new MainMenuBean(MergeContainerActivity.class, "并箱"
+        MainMenuBean bean7 = new MainMenuBean(MergeContainerActivity.class, "下架扫描"
                 , R.drawable.ic_baseline_input_24);
 
         menuBeanList.add(bean1);
