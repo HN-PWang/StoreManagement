@@ -21,6 +21,7 @@ import com.mr.storemanagement.Constants;
 import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.SerialNumAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
+import com.mr.storemanagement.helper.CheckRfIdHelper;
 import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
@@ -46,6 +47,10 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
     public boolean snCodeUnNeedCheck = false;
 
+    private CheckRfIdHelper checkRfIdHelper;
+
+    private List<String> scannerList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
         findViewById(R.id.iv_rfid).setOnClickListener(this);
         findViewById(R.id.tv_clear).setOnClickListener(this);
+
+        checkRfIdHelper = new CheckRfIdHelper(this);
 
         snCodeUnNeedCheck = getIntent().getBooleanExtra(Constants.SN_CODE_UN_NEED_CHECK, false);
 
@@ -94,29 +101,70 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
         setOnScannerListener(new OnScannerListener() {
             @Override
             public void onScannerDataBack(String message) {
+                scannerList.clear();
                 addCode(message);
+                checkedRfId();
             }
         });
 
         setOnRfIdListener(new OnRfIdListener() {
             @Override
             public void onRFIdDataBack(String message) {
+                scannerList.clear();
                 addCode(message);
+                checkedRfId();
             }
         });
     }
 
     private void addCode(String data) {
-        if (snCodeUnNeedCheck) {
-            mDataList.add(data);
-            serialNumAdapter.notifyDataSetChanged();
-            setCount();
-        } else {
-            if (!TextUtils.isEmpty(data) && !mDataList.contains(data) && mCheckDataList.contains(data)) {
-                mDataList.add(data);
-                serialNumAdapter.notifyDataSetChanged();
-                setCount();
+        if (!TextUtils.isEmpty(data)) {
+            if (snCodeUnNeedCheck) {
+                scannerList.add(data);
+            } else {
+                if (mCheckDataList.contains(data)) {
+                    scannerList.add(data);
+                }
             }
+        }
+    }
+
+    @Override
+    public void onRfIdReadComplete() {
+        checkedRfId();
+    }
+
+    private void checkedRfId() {
+        checkRfIdHelper.check(scannerList, new CheckRfIdHelper.OnCheckRfIdBackListener() {
+            @Override
+            public void onBack(List<String> backList) {
+                if (snCodeUnNeedCheck) {
+                    handlerAddAndShowWork(backList, false);
+                } else {
+                    handlerAddAndShowWork(backList, true);
+//                    if (mCheckDataList.contains(backList)) {
+//                        handlerAddAndShowWork(backList,true);
+//                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * @param backList
+     * @param duplicateRemoval 去重
+     */
+    private void handlerAddAndShowWork(List<String> backList, boolean duplicateRemoval) {
+        if (NullUtils.isEmpty(backList)) {
+            for (String item : backList) {
+                if (duplicateRemoval) {
+                    if (!mDataList.contains(item))
+                        mDataList.add(item);
+                } else {
+                    mDataList.add(item);
+                }
+            }
+            setCount();
         }
     }
 
@@ -129,6 +177,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_rfid:
+                scannerList.clear();
                 readMactchData();
                 break;
             case R.id.tv_clear:
