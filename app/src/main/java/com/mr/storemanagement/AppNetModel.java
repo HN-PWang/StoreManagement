@@ -281,4 +281,12 @@ public class AppNetModel extends BaseModel {
         ApiService service = RetrofitManager.create(ApiService.class);
         return service.itemFromQrCode(getHeader(), body);
     }
+
+    /**
+     * 绑定
+     */
+    public Observable<ResponseBody> checkSnCode(@Body RequestBody body) {
+        ApiService service = RetrofitManager.create(ApiService.class);
+        return service.checkSnCode(getHeader(), body);
+    }
 }

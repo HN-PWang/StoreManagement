@@ -22,6 +22,7 @@ import com.mr.storemanagement.R;
 import com.mr.storemanagement.adapter.SerialNumAdapter;
 import com.mr.storemanagement.base.BaseScannerActivity;
 import com.mr.storemanagement.helper.CheckRfIdHelper;
+import com.mr.storemanagement.helper.CheckSnCodeHelper;
 import com.mr.storemanagement.util.NullUtils;
 
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
 
     private CheckRfIdHelper checkRfIdHelper;
 
+    private CheckSnCodeHelper checkSnCodeHelper;
+
     private List<String> scannerList = new ArrayList<>();
 
     @Override
@@ -67,6 +70,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
         findViewById(R.id.tv_clear).setOnClickListener(this);
 
         checkRfIdHelper = new CheckRfIdHelper(this);
+
+        checkSnCodeHelper = new CheckSnCodeHelper(this);
 
         snCodeUnNeedCheck = getIntent().getBooleanExtra(Constants.SN_CODE_UN_NEED_CHECK, false);
 
@@ -92,6 +97,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
                 if (i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_GO
                         || i == EditorInfo.IME_ACTION_NEXT) {
                     addCode(tvRdidRead.getText().toString());
+//                    checkedRfId();
+                    checkedSnCode();
                     tvRdidRead.setText("");
                 }
                 return false;
@@ -103,7 +110,8 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
             public void onScannerDataBack(String message) {
                 scannerList.clear();
                 addCode(message);
-                checkedRfId();
+//                checkedRfId();
+                checkedSnCode();
             }
         });
 
@@ -112,7 +120,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
             public void onRFIdDataBack(String message) {
                 scannerList.clear();
                 addCode(message);
-                checkedRfId();
+//                checkedRfId();
             }
         });
     }
@@ -150,12 +158,30 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
         });
     }
 
+    private void checkedSnCode() {
+        checkSnCodeHelper.check(scannerList.get(0), new CheckSnCodeHelper.OnCheckRfIdBackListener() {
+            @Override
+            public void onBack(String code) {
+                List<String> codes = new ArrayList<>();
+                codes.add(code);
+                if (snCodeUnNeedCheck) {
+                    handlerAddAndShowWork(codes, false);
+                } else {
+                    handlerAddAndShowWork(codes, true);
+//                    if (mCheckDataList.contains(backList)) {
+//                        handlerAddAndShowWork(backList,true);
+//                    }
+                }
+            }
+        });
+    }
+
     /**
      * @param backList
      * @param duplicateRemoval 去重
      */
     private void handlerAddAndShowWork(List<String> backList, boolean duplicateRemoval) {
-        if (NullUtils.isEmpty(backList)) {
+        if (NullUtils.isNotEmpty(backList)) {
             for (String item : backList) {
                 if (duplicateRemoval) {
                     if (!mDataList.contains(item))
@@ -165,6 +191,7 @@ public class SerialNumScannerActivity extends BaseScannerActivity implements Vie
                 }
             }
             setCount();
+            serialNumAdapter.notifyDataSetChanged();
         }
     }
 

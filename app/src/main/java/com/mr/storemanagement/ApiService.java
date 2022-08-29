@@ -251,4 +251,11 @@ public interface ApiService {
     Observable<ResponseBody> itemFromQrCode(@HeaderMap Map<String, String> header
             , @Body RequestBody body);
 
+    /**
+     * 后端解码
+     */
+    @POST("api/Mobile/SnFromQrCode")
+    Observable<ResponseBody> checkSnCode(@HeaderMap Map<String, String> header
+            , @Body RequestBody body);
+
 }
